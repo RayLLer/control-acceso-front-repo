@@ -11,10 +11,6 @@ import { RolesServices } from '../roles/roles.service';
 import { groupBy, transformPermissions } from '@/utils/permissions-transformer';
 import showNotification from '@/utils/message';
 
-type OfficialPayload = IUser & {
-  positionHeld: string;
-};
-
 const usersAdapter = createEntityAdapter<IUser>({
   sortComparer: (a, b) => (a.createdAt < b.createdAt ? 1 : -1),
 });
@@ -90,7 +86,7 @@ export const deleteUser = createAsyncThunk(
 const usersSlice = createSlice({
   name: 'users',
   initialState: usersAdapter.getInitialState({
-    error: '',
+    error: undefined as string | undefined,
     loading: false,
     loadingLoggedUser: false,
     loggedUser: {} as IUser,
