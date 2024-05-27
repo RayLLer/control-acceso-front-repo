@@ -1,0 +1,17 @@
+version: "3.5"
+services:
+  front:
+    image: $DOCKER_IMAGE
+    restart: always
+    expose:
+      - 3000
+    environment:
+      - BACKEND_HOST=http://$BACKEND_HOST:$BACKEND_PORT/api
+      - BACKEND_PORT=$BACKEND_PORT
+    networks:
+      - testopo-net
+
+networks:
+  testopo-net:
+    external:
+      name: $NETWORK
