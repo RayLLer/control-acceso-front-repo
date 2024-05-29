@@ -59,15 +59,6 @@ const User: FC = (): ReactElement => {
   const renderUserNameOrLastName = (user: IUser ) =>{
     let fullName = '';
     switch (user.role.name) {
-      case 'Cliente':
-        fullName = user.client?.fullName ?? '';
-        break;
-      case 'Conductor':
-        fullName = user.driver?.fullName ?? '';
-        break;
-      case 'Funcionario':
-        fullName = user.official?.fullName ?? '';
-        break;
       default:
         fullName = user?.fullName ?? '';
         break;

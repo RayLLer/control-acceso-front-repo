@@ -5,7 +5,7 @@ import { Button, Form, Input, Space, Spin, notification } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import Title from 'antd/es/typography/Title';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import {
   SelectAllRoles,
   fetchPermissions,
@@ -15,17 +15,25 @@ import {
   selectError,
   selectPermissions,
   selectRoleByID,
-} from '../../roles/roles.reducer';
+} from '../roles.reducer';
 import { RolesServices } from '../roles.service';
 import PermissionsCheckBox from './permissionsCheckBox';
 
 const rolesService = new RolesServices();
 
+const SuspenseForm = () => {
+  return (
+    <Suspense>
+      <FormRole />
+    </Suspense>
+  )
+}
+
 const FormRole = () => {
   const [form] = useForm();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
-  let roleId = searchParams.get('roleId');
+  let roleId = searchParams.get('roleId') ?? 0;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const error = useAppSelector(selectError);
@@ -39,16 +47,16 @@ const FormRole = () => {
       setLoadingGeneral(true);
       let response = await rolesService.getRoleById(
         sources.ROLES,
-        parseInt(roleId!)
+        +roleId
       );
 
       let rolePermissionsResponse = await rolesService.getPermissionsByRoleID(
         sources.ROLE_PERMISSION + '/getCustomPermissionsByRoleId',
-        parseInt(roleId!)
+        +roleId
       );
 
       const auxRolePermissions =
-        rolePermissionsResponse.data[0]?.custom_permissions.map((p) => {
+        rolePermissionsResponse.data[0]?.custom_permissions.map((p: any) => {
           return p.id;
         }) ?? [];
 
@@ -60,7 +68,7 @@ const FormRole = () => {
         permissions: auxRolePermissions,
       });
       setLoadingGeneral(false);
-    } catch (error) {
+    } catch (error: any) {
       setLoadingGeneral(false);
       notification.error({
         message: error.message ?? 'Error al obtener los permisos del rol',
@@ -87,8 +95,8 @@ const FormRole = () => {
         await dispatch(fetchRoles(undefined))
           .unwrap()
           .then((res) => {
-            const tempRol = res.find((r) => r.name === data.name);
-            roleId = tempRol.id.toString();
+            const tempRol = res!.find((r) => r.name === data.name);
+            roleId = tempRol!.id.toString();
           })
           .catch((err) => {});
       } else {
@@ -96,7 +104,7 @@ const FormRole = () => {
       }
       await rolesService.updatePermissions(
         sources.ROLE_PERMISSION + '/updateRole',
-        { roleId: parseInt(roleId), customPermissionsIds: data.permissions }
+        { roleId: +roleId, customPermissionsIds: data.permissions }
       );
       setLoading(false);
       router.push('pages/roles');
@@ -225,4 +233,4 @@ const FormRole = () => {
   );
 };
 
-export default FormRole;
+export default SuspenseForm;

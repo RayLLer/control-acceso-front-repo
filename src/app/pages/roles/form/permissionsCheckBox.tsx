@@ -40,9 +40,9 @@ const PermissionsCheckBox = ({
   };
 
   const initState = () => {
-    const newState = [];
+    const newState: any[] = [];
     permissions.forEach((p) => {
-      newState.push(userPermissions.includes(p.id));
+      newState.push(userPermissions!.includes(p.id));
     });
     return newState;
   };

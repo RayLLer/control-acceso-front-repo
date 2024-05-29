@@ -11,12 +11,10 @@ import { RolesServices } from './roles.service';
 const AUTHENTICATED = 'authenticated';
 const PUBLIC = 'public';
 
-const rolesAdapter = createEntityAdapter<IRole>({
-  selectId: (rol) => rol.id,
-});
+const rolesAdapter = createEntityAdapter<IRole>();
 const rolesServices = new RolesServices();
 
-function groupBy(xs, f) {
+function groupBy(xs: any[], f: (arg0: any) => any) {
   return xs.reduce(
     (r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r),
     {}
@@ -89,7 +87,7 @@ export const deleteRole = createAsyncThunk(
 const rolesSlice = createSlice({
   name: 'roles',
   initialState: rolesAdapter.getInitialState({
-    error: '',
+    error: '' as any,
     loading: false,
     permissions: [] as IPermissions[],
   }),
@@ -100,7 +98,7 @@ const rolesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchRoles.fulfilled, (state, action) => {
-      const filteredRoles = action.payload.filter(
+      const filteredRoles = action.payload!.filter(
         (rol) => rol.type !== AUTHENTICATED && rol.type !== PUBLIC
       );
       rolesAdapter.setAll(state, filteredRoles);
@@ -116,7 +114,7 @@ const rolesSlice = createSlice({
       // state.loading = true;
     });
     builder.addCase(fetchPermissions.fulfilled, (state, action) => {
-      state.permissions = [...action.payload.data];
+      state.permissions = [...action.payload!.data];
       // state.loading = false;
       state.error = undefined;
     });
@@ -161,7 +159,7 @@ const rolesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(deleteRole.fulfilled, (state, action) => {
-      rolesAdapter.removeOne(state, action.payload);
+      rolesAdapter.removeOne(state, action.payload!);
       state.loading = false;
       state.error = undefined;
     });

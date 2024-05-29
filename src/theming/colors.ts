@@ -16,6 +16,6 @@ export const colors: ColorsType = {
   colorTertiary: '#3c3d40',
   colorSuccess: '#12B347',
   colorWarning: '#FFC107',
-  colorError: '#FF0000',
+  colorError: '#050404',
   bgWhite: '#ffffff',
 };

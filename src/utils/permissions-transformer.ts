@@ -1,6 +1,6 @@
-export const groupBy = (xs, f) => {
+export const groupBy = (xs: any[], f: (arg0: any) => any) => {
   return xs.reduce(
-    (r, v, i, a, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r),
+    (r: { [x: string]: any[]; }, v: any, i: any, a: any, k = f(v)) => ((r[k] || (r[k] = [])).push(v), r),
     {}
   );
 };

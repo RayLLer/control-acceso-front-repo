@@ -1,15 +1,24 @@
 'use client';
-import {axiosInstance} from '@/utils/axios';
+import { axiosInstance } from '@/utils/axios';
 import { sources } from '@/utils/sources';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Input, notification } from 'antd';
+import {
+  Button,
+  Card,
+  Checkbox,
+  Form,
+  Image,
+  Input,
+  notification,
+  Typography,
+} from 'antd';
 import { isAxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styles from './page.module.css';
 import { paths } from '@/app/routes/paths';
-import useFcmToken from '@/app/hooks/useFcmToken';
 import { userService } from '@/app/pages/users/users.service';
+import Link from 'next/link';
 
 interface ILogin {
   identifier: string;
@@ -19,7 +28,6 @@ interface ILogin {
 const Login: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const {fcmToken} = useFcmToken()
 
   const onLogin = async (payload: ILogin) => {
     try {
@@ -29,13 +37,12 @@ const Login: React.FC = () => {
         payload
       );
       const user = response.data.user;
-      user.fcm = fcmToken;
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', response.data.jwt);
       const responseFcm = await userService.putUser(user.id, user);
       setLoading(false);
-      router.push(paths.map.root);
-    } catch (error) {
+      router.push(paths.home);
+    } catch (error: any) {
       setLoading(false);
       if (isAxiosError(error)) {
         notification.open({
@@ -61,13 +68,21 @@ const Login: React.FC = () => {
     // <Row justify='center' align='middle' style={{ minHeight: '98vh' }}>
     <div
       style={{
-        flexDirection: 'row',
-        minHeight: '96vh',
+        flexDirection: 'column',
+        width: '100vw',
+        height: '100vh',
+        margin: 0,
+        padding: 0,
         display: 'flex',
         justifyContent: 'center',
+        alignItems: 'center',
+        backgroundImage: 'url(/img/login-background.png)',
+        backgroundSize: 'cover',
       }}
     >
+      <Image src='/img/logo.png' width={200} alt='Logo' style={{marginBottom: '5px'}} />
       <Card className={styles.card}>
+        <Typography.Title level={3}>Ingresar</Typography.Title>
         <Form
           name='normal_login'
           className='login-form'
@@ -95,6 +110,10 @@ const Login: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
+            <Checkbox>Recuérdame</Checkbox>
+          </Form.Item>
+
+          <Form.Item>
             <Button
               type='primary'
               htmlType='submit'
@@ -104,6 +123,9 @@ const Login: React.FC = () => {
               Acceder
             </Button>
           </Form.Item>
+          <Link href='#'>
+            Has olvidado tu contraseña
+          </Link>
         </Form>
       </Card>
     </div>

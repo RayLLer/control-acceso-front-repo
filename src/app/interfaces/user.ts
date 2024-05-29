@@ -1,6 +1,5 @@
-import { IRole } from '../roles/roles.interface';
+import { IRole } from './role';
 
-type ID = {id: number}
 export interface IUser {
   id: number;
   username: string;
@@ -12,8 +11,7 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   role: IRole;
-  fullName?: string;
+  lastName?: string;
+  name?: string;
   phone?: string;
-  identityCard: string;
-  client: any
 }

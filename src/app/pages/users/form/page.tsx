@@ -1,6 +1,5 @@
 'use client';
 import { IRole } from '@/app/interfaces/role';
-import { officialServices } from '@/app/services/official';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   Button,
@@ -14,8 +13,8 @@ import {
 import { MaskedInput } from 'antd-mask-input';
 import { useForm } from 'antd/es/form/Form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { SelectAllRoles, fetchRoles } from '../../roles/roles.reducer';
+import { Suspense, useState } from 'react';
+import { SelectAllRoles } from '../../roles/roles.reducer';
 import { IUser } from '../users.interface';
 import {
   patchUsers,
@@ -35,14 +34,22 @@ const isUser = (data: any): data is IUser => {
   return 'username' in data;
 };
 
+const SuspenseForm = () => {
+  return (
+    <Suspense>
+      <FormUser />
+    </Suspense>
+  );
+};
+
 const FormUser = () => {
   const [form] = useForm();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
-  const userId = searchParams.get('userId');
+  const userId = searchParams.get('userId') ?? 0;
   const router = useRouter();
   const loading = useAppSelector(selectLoading);
-  const user = useAppSelector((state) => selectUserByID(state, userId));
+  const user = useAppSelector((state) => selectUserByID(state, +userId));
   const roles = useAppSelector(SelectAllRoles);
   const [loadingUsername] = useState(false);
   const [officialRole, setOfficialRole] = useState<IRole>();
@@ -52,7 +59,7 @@ const FormUser = () => {
 
   const fetchUser = async () => {
     try {
-      let response: any = await usersService.getById(parseInt(userId!));
+      let response: any = await usersService.getById(+userId);
       if (isUser(response.data)) {
         let fullName = '';
         let phone = ''
@@ -92,15 +99,15 @@ const FormUser = () => {
     }
   };
 
-  useEffect(() => {
-    form.setFieldValue('blocked', false);
-    dispatch(fetchRoles(undefined))
-      .unwrap()
-      .then((result) => {
-        setOfficialRole(result.find((role) => role.name === 'Funcionario'));
-        userId && fetchUser();
-      });
-  }, []);
+  // useEffect(() => {
+  //   form.setFieldValue('blocked', false);
+  //   dispatch(fetchRoles(undefined))
+  //     .unwrap()
+  //     .then((result) => {
+  //       setOfficialRole(result.find((role) => role.name === 'Funcionario'));
+  //       userId && fetchUser();
+  //     });
+  // }, []);
 
   const onFinish = async (data: any) => {
     let phone: string = data.phone;
@@ -130,11 +137,11 @@ const FormUser = () => {
           user: result.id,
           positionHeld: data.positionHeld,
         };
-        if (userId && user.official) {
-          officialServices.put(user.official.id, funcDto as any);
-        } else {
-          officialServices.post(funcDto as any);
-        }
+        // if (userId && user.official) {
+        //   officialServices.put(user.official.id, funcDto as any);
+        // } else {
+        //   officialServices.post(funcDto as any);
+        // }
         notification.success({
           message: userId
             ? 'Usuario editado correctamente'
@@ -360,7 +367,7 @@ const FormUser = () => {
           hasFeedback
         >
           <Input.Password
-            placeholder={userId && '••••••••'}
+            placeholder={userId ? '••••••••': ''}
           />
         </Form.Item>
 
@@ -387,7 +394,7 @@ const FormUser = () => {
           ]}
         >
           <Input.Password
-            placeholder={userId && '••••••••'}
+            placeholder={userId ? '••••••••': ''}
           />
         </Form.Item>
 
@@ -408,4 +415,4 @@ const FormUser = () => {
   );
 };
 
-export default FormUser;
+export default SuspenseForm;

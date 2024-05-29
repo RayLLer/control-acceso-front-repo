@@ -25,7 +25,7 @@ export class RolesServices extends BaseApi<IRole, IRole> {
   getPermissions(url: string) {
     return axiosInstance.get<IBaseRest<IPermissions>>(url);
   }
-  getPermissionsByRoleID(url: string, id) {
+  getPermissionsByRoleID(url: string, id: number) {
     return axiosInstance.get(`${url}/${id}`);
   }
 
