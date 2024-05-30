@@ -39,7 +39,7 @@ const Login: React.FC = () => {
       const user = response.data.user;
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', response.data.jwt);
-      const responseFcm = await userService.putUser(user.id, user);
+      // const responseFcm = await userService.putUser(user.id, user);
       setLoading(false);
       router.push(paths.home);
     } catch (error: any) {

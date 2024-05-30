@@ -3,5 +3,5 @@
 const ROOT = '/pages/'
 
 export const paths = {
-  home: ROOT,
+  home: `${ROOT}/home`,
 }

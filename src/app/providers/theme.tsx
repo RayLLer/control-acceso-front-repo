@@ -2,9 +2,12 @@ import { ConfigProvider, theme as antdTheme } from 'antd';
 import React, { useEffect } from 'react'
 import es_ES from 'antd/locale/es_ES';
 import { useAppSelector } from '../store/hooks';
+import { darkTheme } from '@/theming/theme-dark';
+import { lightTheme } from '@/theming/theme-light';
 
 const ThemeConfigProvider = ({children}: {children: React.ReactNode}) => {
-  const {theme, config} = useAppSelector((state) => state.settings);
+  const {theme} = useAppSelector((state) => state.settings);
+  const config = theme === 'dark' ? darkTheme : lightTheme;
 useEffect(() => {
   console.log(theme);
 }, [theme]);
@@ -17,6 +20,7 @@ useEffect(() => {
           theme === 'dark'
             ? antdTheme.darkAlgorithm
             : antdTheme.defaultAlgorithm,
+        
       }}
     >
       {children}

@@ -1,5 +1,5 @@
 import { ThemeConfig } from 'antd';
-import { components } from './components';
+import { componentsLigth } from './components';
 
 export const lightTheme: ThemeConfig = {
   token: {
@@ -8,7 +8,8 @@ export const lightTheme: ThemeConfig = {
     colorSuccess: '#12b347',
     colorWarning: '#edb926',
     wireframe: false,
+    fontFamily: `'Monserrat', sans-serif`,
   },
-  components,
+  components: componentsLigth,
   algorithm: [],
 };
