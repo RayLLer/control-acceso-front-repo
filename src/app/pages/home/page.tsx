@@ -1,8 +1,9 @@
+import HomeTemplate from '@/app/components/templates/home/home-template'
 import React from 'react'
 
 const HomePage = () => {
   return (
-    <div>HomePage</div>
+    <HomeTemplate />
   )
 }
 

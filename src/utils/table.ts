@@ -1,5 +1,4 @@
 import { TablePaginationConfig } from 'antd';
-import { FilterValue } from 'antd/es/table/interface';
 
 export interface TableParams {
   pagination?: TablePaginationConfig & {limit?: number};
@@ -9,11 +8,11 @@ export interface TableParams {
 }
 
 export const convertParams = (params: TableParams) => ({
-  ...params,
   pagination: {
     page: params.pagination?.current,
     pageSize: params.pagination?.pageSize,
     limit: params.pagination?.limit,
   },
   filters: params.filters,
+  sort: params.sortField ? {0:`${params.sortField}:${params.sortOrder}`} : undefined,
 });

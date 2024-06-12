@@ -67,7 +67,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     ),
     getItem(
       'Gestión de Preguntas',
-      paths.home + '/1',
+      paths.questions.root,
       false,
       <QuestionCircleOutlined />
     ),
@@ -156,7 +156,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           </Row>
         </Header>
         <Content style={{ margin: '0 16px' }}>
-          <Card style={{ marginTop: 10 }}>{children}</Card>
+          <Card style={{ marginTop: 10, minHeight: '80vh' }}>{children}</Card>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
           TestOpo©{new Date().getFullYear()}

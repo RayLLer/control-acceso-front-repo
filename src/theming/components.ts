@@ -4,14 +4,14 @@ export const componentsDark = {
     groupTitleColor: 'rgb(255, 255, 255)',
     itemColor: 'rgb(255, 255, 255)',
     itemBg: '#4d130b',
-    itemSelectedColor: 'rgb(237, 185, 38)',
+    itemSelectedColor: '#edb926',
   },
-  Table: {
-    headerColor: 'rgb(255, 255, 255)',
-    headerBg: '#4d130b',
-    headerSortActiveBg: '#4d130b',
-    headerSortHoverBg: '#4d130b',
-  },
+  // Table: {
+  //   headerColor: 'rgb(255, 255, 255)',
+  //   headerBg: '#4d130b',
+  //   headerSortActiveBg: '#4d130b',
+  //   headerSortHoverBg: '#4d130b',
+  // },
   Layout: {
     headerBg: '#302d2d',
     siderBg: '#4d130b',
@@ -30,12 +30,12 @@ export const componentsLigth = {
     itemBg: 'rgb(193, 48, 29)',
     itemSelectedColor: 'rgb(237, 185, 38)',
   },
-  Table: {
-    headerColor: 'rgb(255, 255, 255)',
-    headerBg: 'rgb(193, 48, 29)',
-    headerSortActiveBg: 'rgb(193, 48, 29)',
-    headerSortHoverBg: 'rgb(193, 48, 29)',
-  },
+  // Table: {
+  //   headerColor: 'rgb(255, 255, 255)',
+  //   headerBg: 'rgb(193, 48, 29)',
+  //   headerSortActiveBg: 'rgb(193, 48, 29)',
+  //   headerSortHoverBg: 'rgb(193, 48, 29)',
+  // },
   Layout: {
     headerBg: 'rgb(255, 255, 255)',
     siderBg: 'rgb(193, 48, 29)',

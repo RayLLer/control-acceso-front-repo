@@ -1,6 +1,6 @@
 'use client';
+import { AUTH, paths } from '@/app/routes/paths';
 import { axiosInstance } from '@/utils/axios';
-import { sources } from '@/utils/sources';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Button,
@@ -13,12 +13,10 @@ import {
   Typography,
 } from 'antd';
 import { isAxiosError } from 'axios';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styles from './page.module.css';
-import { paths } from '@/app/routes/paths';
-import { userService } from '@/app/pages/users/users.service';
-import Link from 'next/link';
 
 interface ILogin {
   identifier: string;
@@ -33,7 +31,7 @@ const Login: React.FC = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.post(
-        process.env.NEXT_PUBLIC_API_URL + '/' + sources.AUTH,
+        process.env.NEXT_PUBLIC_API_URL + '/' + AUTH,
         payload
       );
       const user = response.data.user;

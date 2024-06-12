@@ -1,4 +1,5 @@
-import { ColumnType } from 'antd/es/table';
+import { GetProp } from 'antd';
+import { ColumnType, TableProps } from 'antd/es/table';
 
 export interface StrapiResponse<T> {
   data: T[];
@@ -13,6 +14,19 @@ export interface IMeta {
   };
 }
 
-export type CountTVColumnsType<T> = ColumnType<T> & {
-  dataType?: 'string' | 'number' | 'date';
-};
+// export type CountTVColumnsType<T> = ColumnType<T> & {
+//   dataType?: 'string' | 'number' | 'date';
+// };
+
+export type ColumnsType<T> = TableProps<T>['columns'];
+export type TablePaginationConfig = Exclude<
+  GetProp<TableProps, 'pagination'>,
+  boolean
+>;
+
+export interface TableParams {
+  pagination?: TablePaginationConfig;
+  sortField?: string;
+  sortOrder?: string;
+  filters?: Parameters<GetProp<TableProps, 'onChange'>>[1];
+}
