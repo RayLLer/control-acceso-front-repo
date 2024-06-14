@@ -99,13 +99,15 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         width={250}
         collapsed={collapsed}
         onCollapse={setCollapsed}
+        
       >
         {!collapsed ? (
           <Image
             alt='Logo'
             src='/img/logo.png'
             height={70}
-            style={{ marginLeft: 10 }}
+            width={'80%'}
+            style={{ marginLeft: 20 }}
             preview={false}
           />
         ) : (
@@ -113,7 +115,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             alt='Logo'
             src='/img/logo-collapsed.png'
             height={30}
-            style={{ marginLeft: 10 }}
+            style={{ marginLeft: 5 }}
             preview={false}
           />
         )}

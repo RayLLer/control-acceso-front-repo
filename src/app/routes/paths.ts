@@ -9,6 +9,6 @@ export const paths = {
   questions: {
     root: `${ROOT}/questions`,
     create: `${ROOT}/questions/create`,
-    edit: `${ROOT}/questions/edit`,
+    edit: (id: number)=> `${ROOT}/questions/edit/${id}`,
   }
 }

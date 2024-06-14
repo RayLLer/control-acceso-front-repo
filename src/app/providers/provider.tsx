@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from '../store/store';
-import { ConfigProvider, theme as antdTheme, ThemeConfig } from 'antd';
+import { ConfigProvider, theme as antdTheme, ThemeConfig, App } from 'antd';
 import es_ES from 'antd/locale/es_ES';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
@@ -16,7 +16,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ReduxProvider store={store}>
       <ThemeConfigProvider>
-        <AntdRegistry>{children}</AntdRegistry>
+        <AntdRegistry>
+          <App>
+            {children}
+          </App>
+          </AntdRegistry>
       </ThemeConfigProvider>
     </ReduxProvider>
   );
