@@ -5,9 +5,11 @@ export interface TableParams {
   sortField?: string;
   sortOrder?: string;
   filters?: Record<string, any>;
+  populate?: any
 }
 
 export const convertParams = (params: TableParams) => ({
+  populate: params?.populate ?? '*',
   pagination: {
     page: params.pagination?.current,
     pageSize: params.pagination?.pageSize,

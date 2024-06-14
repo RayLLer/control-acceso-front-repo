@@ -22,12 +22,13 @@ import type { FilterDropdownProps } from 'antd/es/table/interface';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import FilterComponent from './filter';
 
-type Props<T, R> = {
+type Props<T, R> = TableProps & {
   columns: ColumnsType<T>;
   url: string;
   onAdd: () => void;
   onEdit: (id: number) => void;
   crud?: boolean;
+  defaultParameters?: any
 };
 
 const MagicTable = <T, R>({
@@ -36,6 +37,8 @@ const MagicTable = <T, R>({
   crud,
   onEdit,
   onAdd,
+  defaultParameters,
+  ...others
 }: Props<T, R>) => {
   const [data, setData] = useState<T[]>();
   const {modal} = App.useApp()
@@ -73,7 +76,7 @@ const MagicTable = <T, R>({
   const fetchData = (params: TableParams) => {
     setLoading(true);
     baseService
-      .get(params)
+      .get({...defaultParameters, ...params})
       .then((res) => {
         setLoading(false);
         setData(res.data.data);
@@ -274,6 +277,8 @@ const MagicTable = <T, R>({
         onChange={handleTableChange}
         bordered
         style={{ height: '100%' }}
+        scroll={{ x: 700}}
+        {...others}
       />
     </>
   );

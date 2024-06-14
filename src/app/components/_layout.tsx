@@ -58,7 +58,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { token } = antdTheme.useToken();
   const items: MenuItem[] = [
-    getItem('Gestión de Test', paths.home, false, <IdcardOutlined />),
+    getItem('Gestión de Test', paths.tests.root, false, <IdcardOutlined />),
     getItem(
       'Gestión de Temas y Subtemas',
       paths.home + '/0',

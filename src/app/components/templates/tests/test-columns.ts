@@ -1,0 +1,36 @@
+import { ColumnsType } from '@/app/interfaces/strapi';
+import { ITestResponse } from '@/app/interfaces/test';
+
+export const test_columns: ColumnsType<ITestResponse> = [
+  {
+    title: 'Nombre',
+    dataIndex: ['attributes', 'name'],
+    sorter: true,
+  },
+  {
+    title: 'Cuerpo',
+    dataIndex: ['attributes', 'category', 'data', 'attributes', 'name'],
+    sorter: true,
+  },
+  {
+    title: 'Tema',
+    dataIndex: ['attributes', 'theme', 'data', 'attributes', 'name'],
+    sorter: true,
+  },
+  {
+    title: 'Tipo de Test',
+    dataIndex: ['attributes', 'testType'],
+    sorter: true,
+  },
+  {
+    title: 'Cantidad de preguntas',
+    dataIndex: ['attributes', 'test_questions', 'data'],
+    render: (data) => data.length,
+  },
+  {
+    title: 'Fecha de creado',
+    dataIndex: ['attributes', 'publishedAt'],
+    sorter: true,
+    render: (data) => new Date(data).toLocaleDateString(),
+  }
+] 

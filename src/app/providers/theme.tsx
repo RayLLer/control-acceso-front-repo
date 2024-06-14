@@ -8,9 +8,6 @@ import { lightTheme } from '@/theming/theme-light';
 const ThemeConfigProvider = ({children}: {children: React.ReactNode}) => {
   const {theme} = useAppSelector((state) => state.settings);
   const config = theme === 'dark' ? darkTheme : lightTheme;
-useEffect(() => {
-  console.log(theme);
-}, [theme]);
   return (
     <ConfigProvider
       locale={es_ES}
