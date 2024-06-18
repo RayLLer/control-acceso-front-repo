@@ -3,7 +3,7 @@ import { ColumnsType } from '../../../interfaces/strapi';
 import { Button } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
-export const nested_columns: ColumnsType<TestQuestionResponse> = [
+export const nested_columns: ColumnsType<TestQuestionResponse>[] = [
   {
     title: 'Pregunta',
     dataIndex: ['attributes', 'question', 'data', 'attributes', 'questionText'],
