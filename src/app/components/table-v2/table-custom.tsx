@@ -186,7 +186,13 @@ const MagicTable = <T, R>({
     setTableParams(() => ({ ...newTableParams }));
   };
 
-  const getColumnSearchProps = (dataIndex: string): TableColumnType<T> => ({
+  // const getColmnHeader = (dataIndex: string) => {
+  //   return columns
+
+  const getColumnSearchProps = (
+    dataIndex: string,
+    title: string
+  ): TableColumnType<T> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -203,6 +209,7 @@ const MagicTable = <T, R>({
         visible={true}
         prefixCls='ant-table-filter-dropdown'
         dataIndex={dataIndex}
+        title={title}
         handleSearch={handleSearch}
         handleReset={handleReset}
       />
@@ -221,17 +228,29 @@ const MagicTable = <T, R>({
     },
   });
 
-  const table_columns: ColumnsType<T> = useMemo(() => {
+  const table_columns: ColumnsType<T>[] = useMemo(() => {
     const newColumns =
       columns?.map((column: any) => {
-        return {
-          ...column,
-          ...getColumnSearchProps(
-            column.dataIndex
-              .filter((f: string) => f !== 'attributes' && f !== 'data')
-              .join('.')
-          ),
-        };
+        // return {
+        //   ...column,
+        //   ...getColumnSearchProps(
+        //     column.dataIndex
+        //       .filter((f: string) => f !== 'attributes' && f !== 'data')
+        //       .join('.'),
+        //     column.title
+        //   ),
+        // };
+        return column.filtrable
+          ? {
+              ...column,
+              ...getColumnSearchProps(
+                column.dataIndex
+                  .filter((f: string) => f !== 'attributes' && f !== 'data')
+                  .join('.'),
+                column.title
+              ),
+            }
+          : column;
       }) ?? [];
     if (crud) {
       newColumns.push({

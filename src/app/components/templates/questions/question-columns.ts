@@ -1,26 +1,30 @@
 import { IQuestionResponse } from '@/app/interfaces/question';
 import { ColumnsType } from '@/app/interfaces/strapi';
 
-export const question_columns: ColumnsType<IQuestionResponse> = [
+export const question_columns: ColumnsType<IQuestionResponse>[] = [
   {
     title: 'Pregunta',
     dataIndex: ['attributes', 'questionText'],
     sorter: true,
+    filtrable: true,
   },
   {
     title: 'Cuerpo',
     dataIndex: ['attributes', 'category', 'data', 'attributes', 'name'],
     sorter: true,
+    filtrable: true,
   },
   {
     title: 'Tema',
     dataIndex: ['attributes', 'theme', 'data', 'attributes', 'name'],
     sorter: true,
+    filtrable: true,
   },
   {
     title: 'SubTema',
     dataIndex: ['attributes', 'sub_theme', 'data', 'attributes', 'name'],
     sorter: true,
+    filtrable: true,
   },
   // {
   //   title: 'Tema',

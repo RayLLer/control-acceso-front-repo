@@ -1,4 +1,4 @@
-import { GetProp } from 'antd';
+import { GetProp, TableColumnProps } from 'antd';
 import { ColumnType, TableProps } from 'antd/es/table';
 
 export interface StrapiResponse<T> {
@@ -50,7 +50,10 @@ export interface StrapiFilter extends NestedFilter {}
 //   dataType?: 'string' | 'number' | 'date';
 // };
 
-export type ColumnsType<T> = TableProps<T>['columns'];
+// export type ColumnsType<T> = TableProps<T>['columns'];
+export type ColumnsType<T> = TableColumnProps<T> & {
+  filtrable?: boolean;
+};
 export type TablePaginationConfig = Exclude<
   GetProp<TableProps, 'pagination'>,
   boolean

@@ -1,11 +1,12 @@
 import { ColumnsType } from '@/app/interfaces/strapi';
 import { ITestResponse } from '@/app/interfaces/test';
 
-export const test_columns: ColumnsType<ITestResponse> = [
+export const test_columns: ColumnsType<ITestResponse>[] = [
   {
     title: 'Nombre',
     dataIndex: ['attributes', 'name'],
     sorter: true,
+    filtrable: true,
   },
   {
     title: 'Cuerpo',

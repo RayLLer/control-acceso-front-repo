@@ -7,6 +7,7 @@ import { SearchOutlined } from '@ant-design/icons';
 const FilterComponent: FC<
   FilterDropdownProps & {
     dataIndex: string;
+    title: string;
     handleSearch: (
       value: string,
       confirm: FilterDropdownProps['confirm'],
@@ -22,6 +23,7 @@ const FilterComponent: FC<
   handleSearch,
   handleReset,
   setSelectedKeys,
+  title
 }) => {
   const [searchInput, setSearchInput] = React.useState<string>('');
   const [filterOperator, setFilterOperator] =
@@ -33,6 +35,8 @@ const FilterComponent: FC<
     handleReset(dataIndex);
     setSelectedKeys([]);
   };
+  
+  console.log(dataIndex)
 
   return (
     <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -47,7 +51,7 @@ const FilterComponent: FC<
       />
       <Input
         // ref={searchInput}
-        placeholder={`Search ${dataIndex}`}
+        placeholder={`${title}`}
         value={searchInput}
         onChange={(e) => {
           setSearchInput(e.target.value);
