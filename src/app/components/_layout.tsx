@@ -121,7 +121,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         )}
 
         <Menu
-          defaultSelectedKeys={[paths.tests.root]}
           mode='inline'
           items={items}
           style={{ marginTop: 20, fontWeight: 700 }}

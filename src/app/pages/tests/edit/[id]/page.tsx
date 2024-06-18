@@ -1,8 +1,7 @@
-import QuestionForm from '@/app/components/templates/questions/question-form';
-import React from 'react';
+import TestForm from '@/app/components/templates/tests/test-form';
 
 const EditQuestionPage = () => {
-  return <QuestionForm />;
+  return <TestForm />;
 };
 
 export default EditQuestionPage;

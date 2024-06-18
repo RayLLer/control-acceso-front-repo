@@ -1,20 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { ISelect } from '@/app/interfaces/basics';
-import {
-  ICategoryResponse,
-  IQuestion,
-  IQuestionResponse,
-} from '@/app/interfaces/question';
+import { IQuestion, IQuestionResponse } from '@/app/interfaces/question';
 import { paths } from '@/app/routes/paths';
 import { blockService } from '@/app/services/block.service';
 import { categoryService } from '@/app/services/category.service';
 import { questionService } from '@/app/services/question.service';
 import { subThemeService } from '@/app/services/subthemes.service';
 import { themeService } from '@/app/services/themes.service';
+import { uploadService } from '@/app/services/upload.service';
 import { convertForSelect } from '@/utils/select-utils';
-import { PlusOutlined } from '@ant-design/icons';
-import { App, Button, Form, Input, Select, Upload } from 'antd';
+import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { App, Button, Form, Input, Select, Upload, UploadFile } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -36,16 +33,27 @@ const QuestionForm = () => {
   const selectedTheme = Form.useWatch('theme', form);
   const selectedSubTheme = Form.useWatch('sub_theme', form);
 
-  console.log(selectedCategory, selectedSubTheme, selectedTheme);
-
   const updateFields = (question: IQuestionResponse) => {
     form.setFieldsValue(question.attributes);
-    form.setFieldValue('category', question.attributes.category.data.id);
-    form.setFieldValue('theme', question.attributes.theme.data.id);
-    form.setFieldValue('sub_theme', question.attributes.sub_theme.data.id);
-    form.setFieldValue('block', question.attributes.block.data.id);
+    form.setFieldValue('category', question.attributes.category.data?.id);
+    form.setFieldValue('theme', question.attributes.theme.data?.id);
+    form.setFieldValue('sub_theme', question.attributes.sub_theme.data?.id);
+    form.setFieldValue('block', question.attributes.block.data?.id);
+    form.setFieldValue('image', []);
 
-    form.setFieldValue('image', question.attributes.image.url);
+    if (question.attributes.image.data) {
+      const file: UploadFile = {
+        name: question.attributes.image.data.attributes.name,
+        uid: question.attributes.image.data.id,
+        status: 'done',
+        url:
+          process.env.NEXT_PUBLIC_BASE_URL +
+          question.attributes.image.data.attributes.url,
+      };
+      form.setFieldValue('image', [file]);
+    }
+
+    // form.setFieldValue('image', question.attributes.image.url);
   };
 
   const fetchQuestion = async () => {
@@ -149,26 +157,33 @@ const QuestionForm = () => {
   }, [selectedSubTheme]);
 
   const onFinish = async (values: any) => {
-    console.log('Success:', values);
-    console.log('la imagen es nueva', form.isFieldTouched('image'));
-    if (id) {
-      await questionService.put(+id, values);
-      notification.success({
-        message: 'Pregunta actualizada correctamente',
+    const dataToSend = { ...values };
+    delete dataToSend.image;
+    try {
+      if (values.image.length && !values.image[0].status) {
+        const response = await uploadService(values.image[0].originFileObj);
+        dataToSend.image = response?.data[0].id;
+      }
+      if (id) {
+        await questionService.put(+id, dataToSend);
+        notification.success({
+          message: 'Pregunta actualizada correctamente',
+          placement: 'topRight',
+        });
+      } else {
+        const response = await questionService.post(dataToSend);
+        notification.success({
+          message: 'Pregunta creada correctamente',
+          placement: 'topRight',
+        });
+        router.push(paths.questions.edit(response.data.data.id));
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Ha ocurrido un error al guardar la pregunta',
         placement: 'topRight',
       });
-    } else {
-      const response = await questionService.post(values);
-      notification.success({
-        message: 'Pregunta creada correctamente',
-        placement: 'topRight',
-      });
-      router.push(paths.questions.edit(response.data.data.id));
     }
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
   };
 
   const normFile = (e: any) => {
@@ -184,17 +199,25 @@ const QuestionForm = () => {
       name='questionForm'
       layout='horizontal'
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 14 }}
       labelWrap
     >
+      <Button
+        type='link'
+        color='primary'
+        icon={<ArrowLeftOutlined />}
+        style={{ marginBottom: 10 }}
+        onClick={() => router.push(paths.questions.root)}
+      >
+        VOLVER
+      </Button>
       <Form.Item
         label='Pregunta'
         name='questionText'
         rules={[{ required: true, message: 'Por favor, ingrese su pregunta.' }]}
       >
-        <Input.TextArea rows={3} />
+        <Input.TextArea rows={5} />
       </Form.Item>
 
       <Form.Item
@@ -216,7 +239,7 @@ const QuestionForm = () => {
         name={'image'}
         getValueFromEvent={normFile}
       >
-        <Upload listType='picture-card' maxCount={1}>
+        <Upload listType='picture-card' maxCount={1} beforeUpload={() => false}>
           <button style={{ border: 0, background: 'none' }} type='button'>
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Cargar</div>
