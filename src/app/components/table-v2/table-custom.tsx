@@ -16,7 +16,7 @@ import {
   Table,
   TableColumnType,
   TableProps,
-  theme as antdTheme
+  theme as antdTheme,
 } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -28,7 +28,8 @@ type Props<T, R> = TableProps & {
   onAdd: () => void;
   onEdit: (id: number) => void;
   crud?: boolean;
-  defaultParameters?: any
+  defaultParameters?: any;
+  moreActions?: { icon: any; onClick: (record: T) => void }[];
 };
 
 const MagicTable = <T, R>({
@@ -38,10 +39,11 @@ const MagicTable = <T, R>({
   onEdit,
   onAdd,
   defaultParameters,
+  moreActions,
   ...others
 }: Props<T, R>) => {
   const [data, setData] = useState<T[]>();
-  const {modal} = App.useApp()
+  const { modal } = App.useApp();
   const token = antdTheme.useToken().token;
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -76,7 +78,7 @@ const MagicTable = <T, R>({
   const fetchData = (params: TableParams) => {
     setLoading(true);
     baseService
-      .get({...defaultParameters, ...params})
+      .get({ ...defaultParameters, ...params })
       .then((res) => {
         setLoading(false);
         setData(res.data.data);
@@ -111,9 +113,7 @@ const MagicTable = <T, R>({
         });
       },
     });
-  }
-
-  
+  };
 
   useEffect(() => {
     !data && fetchData(tableParams);
@@ -237,27 +237,43 @@ const MagicTable = <T, R>({
       newColumns.push({
         title: 'Acciones',
         key: 'action',
-        render: (record: T) => (
-          <Space size='small'>
-            <Button
-              type='text'
-              shape='circle'
-              icon={<EditOutlined style={{ fontSize: 20 }} />}
-              size='large'
-              onClick={() => onEdit((record as any).id as number)}
-            />
-            <Button
-              type='text'
-              danger
-              size='large'
-              shape='circle'
-              icon={<DeleteOutlined style={{ fontSize: 20 }} />}
-              onClick={() =>handleDelete((record as any).id as number)}
-            />
-          </Space>
-        ),
+        render: (record: T) => {
+          const more = moreActions?.map((action, index) => {
+            return (
+              <Button
+                key={`index-${index}`}
+                type='text'
+                shape='circle'
+                icon={action.icon}
+                size='large'
+                onClick={() => action.onClick(record)}
+              />
+            );
+          });
+          return (
+            <Space size='small'>
+              <Button
+                type='text'
+                shape='circle'
+                icon={<EditOutlined style={{ fontSize: 20 }} />}
+                size='large'
+                onClick={() => onEdit((record as any).id as number)}
+              />
+              <Button
+                type='text'
+                danger
+                size='large'
+                shape='circle'
+                icon={<DeleteOutlined style={{ fontSize: 20 }} />}
+                onClick={() => handleDelete((record as any).id as number)}
+              />
+              {more}
+            </Space>
+          );
+        },
       });
     }
+
     return newColumns;
   }, [columns]);
 
@@ -277,7 +293,7 @@ const MagicTable = <T, R>({
         onChange={handleTableChange}
         bordered
         style={{ height: '100%' }}
-        scroll={{ x: 700}}
+        scroll={{ x: 700 }}
         {...others}
       />
     </>

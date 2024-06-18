@@ -13,7 +13,7 @@ export interface IQuestion {
   justificationText: string;
   referencia: string;
   clueText: string;
-  category: {data: ICategory};
+  category: {data: ICategoryResponse};
   theme: any; //TODO: Change to theme interface
   sub_theme: any; //TODO: Change to sub_theme interface
   deleted: boolean;
@@ -51,6 +51,15 @@ export interface ISubThemeResponse {
 }
 
 export interface ISubTheme {
+  name: string;
+}
+
+export interface IBlockResponse {
+  id: number;
+  attributes: IBlock;
+}
+
+export interface IBlock {
   name: string;
 }
 

@@ -14,7 +14,7 @@ export default function Home(props: any) {
     dispatch(setTheme(theme));
     !localStorage.getItem('token')
       ? router.push('auth/login')
-      : router.push(paths.home);
+      : router.push(paths.questions.root);
   }, []);
 
   return (

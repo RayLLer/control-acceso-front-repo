@@ -22,8 +22,8 @@ import {
   Switch,
   theme as antdTheme,
 } from 'antd';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { use, useEffect, useState } from 'react';
 import { paths } from '../routes/paths';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setTheme } from '../store/settings/settingsSlice';
@@ -53,6 +53,7 @@ function getItem(
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const path = usePathname()
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.settings.theme);
   const [collapsed, setCollapsed] = useState(false);
@@ -99,7 +100,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         width={250}
         collapsed={collapsed}
         onCollapse={setCollapsed}
-        
       >
         {!collapsed ? (
           <Image
@@ -121,11 +121,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         )}
 
         <Menu
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={[paths.tests.root]}
           mode='inline'
           items={items}
           style={{ marginTop: 20, fontWeight: 700 }}
           onClick={onClick}
+          defaultActiveFirst
         />
       </Sider>
       <Layout className='site-layout'>

@@ -19,6 +19,20 @@ export class BaseApi<T, R> {
     });
   }
 
+  getForSelect(labelAttr: string, params?: any) {
+    const convertedParams = params ? convertParams(params) : undefined;
+    return axiosInstance.get<StrapiResponse<T>>(this.url, {
+      params: {
+        fields: {
+          0: labelAttr,
+        },
+        _limit: -1,
+        ...convertedParams,
+        populate: undefined
+      },
+    });
+  }
+
   count() {
     return axiosInstance.get<any>(`${this.url}/count`);
   }
@@ -47,4 +61,3 @@ export class BaseApi<T, R> {
     return axiosInstance.delete<{ data: T }>(`${this.url}/${id}`);
   }
 }
-

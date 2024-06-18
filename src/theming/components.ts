@@ -41,4 +41,7 @@ export const componentsLigth = {
     siderBg: 'rgb(193, 48, 29)',
     triggerBg: 'rgb(193, 48, 29)',
   },
+  Result: {
+    algorithm: true,
+  },
 };

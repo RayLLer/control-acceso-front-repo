@@ -6,6 +6,7 @@ export interface TableParams {
   sortOrder?: string;
   filters?: Record<string, any>;
   populate?: any
+  fields?: any
 }
 
 export const convertParams = (params: TableParams) => ({
@@ -16,5 +17,6 @@ export const convertParams = (params: TableParams) => ({
     limit: params.pagination?.limit,
   },
   filters: params.filters,
+  fields: params.fields,
   sort: params.sortField ? {0:`${params.sortField}:${params.sortOrder}`} : undefined,
 });

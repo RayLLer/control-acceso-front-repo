@@ -1,12 +1,12 @@
 'use client';
-import React from 'react';
-import MagicTable from '../../table-v2/table-custom';
 import { ITest, ITestResponse } from '@/app/interfaces/test';
-import { test_columns } from './test-columns';
 import { Card, Table } from 'antd';
+import MagicTable from '../../table-v2/table-custom';
+import { test_columns } from './test-columns';
 import { nested_columns } from './test-nested-columns';
 
 const TestTemplate = () => {
+
   return (
     <MagicTable<ITestResponse, ITest>
       columns={test_columns}
@@ -37,6 +37,7 @@ const TestTemplate = () => {
             />
           </Card>
         ),
+        rowExpandable: (record: ITestResponse) => record.attributes.test_questions.data.length > 0,
       }}
     />
   );
