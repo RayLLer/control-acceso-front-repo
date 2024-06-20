@@ -7,7 +7,8 @@ import {
   SafetyCertificateOutlined,
   SunOutlined,
   UnorderedListOutlined,
-  UserOutlined
+  UserOutlined,
+  BugOutlined
 } from '@ant-design/icons';
 import {
   Button,
@@ -71,6 +72,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       paths.questions.root,
       false,
       <QuestionCircleOutlined />
+    ),
+    getItem(
+      'Quejas y Errores',
+      paths.error_reports.root,
+      false,
+      <BugOutlined />
     ),
     getItem('Gestión de Usuarios', '/pages/users', false, <UserOutlined />),
     getItem(

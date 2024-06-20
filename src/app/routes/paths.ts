@@ -16,4 +16,7 @@ export const paths = {
     create: `${ROOT}/tests/create`,
     edit: (id: number)=> `${ROOT}/tests/edit/${id}`,
   },
+  error_reports: {
+    root: `${ROOT}/error-reports`,
+  },
 }
