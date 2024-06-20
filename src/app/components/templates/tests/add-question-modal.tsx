@@ -1,0 +1,93 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Modal } from 'antd';
+import React, { FC, useEffect, useState } from 'react';
+import MagicTable from '../../table-v2/table-custom';
+import { IQuestion, IQuestionResponse } from '@/app/interfaces/question';
+import { question_columns } from '../questions/question-columns';
+import { testQuestionService } from '@/app/services/test-question';
+
+type Props = {
+  visible: boolean;
+  onClose: () => void;
+  testId: number;
+  excludedQuestions: number[];
+  refetch: () => void;
+};
+
+const AddQuestionModal: FC<Props> = ({
+  onClose,
+  testId,
+  visible,
+  excludedQuestions,
+  refetch
+}) => {
+  const [open] = useState(visible);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const handleAddQuestions = () => {
+    if (selectedRowKeys.length) {
+      // Add questions to the test
+      setConfirmLoading(true);
+      const promises: any[] = [];
+      selectedRowKeys.map((questionId) => {
+        promises.push(
+          testQuestionService.post({
+            test: testId,
+            question: questionId,
+          } as any)
+        );
+      });
+      Promise.all(promises)
+        .then(() => {
+          setConfirmLoading(false);
+          refetch();
+          onClose();
+        })
+        .catch(() => {
+          setConfirmLoading(false);
+        });
+    }
+  };
+
+  useEffect(() => {
+    !open && onClose();
+  }, [open]);
+
+  return (
+    <Modal
+      title='Agregar preguntas'
+      open={open}
+      onCancel={onClose}
+      onOk={handleAddQuestions}
+      destroyOnClose
+      width={'80%'}
+      style={{ top: 20 }}
+      confirmLoading={confirmLoading}
+    >
+      <MagicTable<IQuestionResponse, IQuestion>
+        columns={question_columns}
+        url={'questions'}
+        onAdd={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        onEdit={function (id: number): void {
+          throw new Error('Function not implemented.');
+        }}
+        rowSelection={{
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
+        }}
+        scroll={{ y: 400 }}
+        style={{ marginTop: 30 }}
+        defaultParameters={{
+          filters: {
+            id: { $notIn: excludedQuestions },
+          },
+        }}
+      />
+    </Modal>
+  );
+};
+
+export default AddQuestionModal;

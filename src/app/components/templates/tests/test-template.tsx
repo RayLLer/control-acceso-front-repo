@@ -1,47 +1,122 @@
 'use client';
-import { ITest, ITestResponse } from '@/app/interfaces/test';
-import { Card, Table } from 'antd';
+import { ITest, ITestResponse, TestQuestionResponse } from '@/app/interfaces/test';
+import { paths } from '@/app/routes/paths';
+import { BASE_FILTER } from '@/utils/constants/constants';
+import { FileAddOutlined,DeleteOutlined } from '@ant-design/icons';
+import { Button, Card, Table } from 'antd';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import MagicTable from '../../table-v2/table-custom';
+import AddQuestionModal from './add-question-modal';
 import { test_columns } from './test-columns';
 import { nested_columns } from './test-nested-columns';
-import { useRouter } from 'next/navigation';
-import { paths } from '@/app/routes/paths';
+import { testQuestionService } from '@/app/services/test-question';
 
 const TestTemplate = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [testId, setTestId] = useState<number | null>(null);
+  const [excludedQuestions, setExcludedQuestions] = useState<number[]>([]);
+  const [refetch, setRefetch] = useState(false);
+
+  const handleOpen = (record: ITestResponse) => {
+    setOpen(true);
+    setTestId(record.id);
+    setExcludedQuestions(
+      record.attributes.test_questions.data.map((q) => q.attributes.question.data.id),
+    );
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setTestId(null);
+    setExcludedQuestions([]);
+  };
+
+  useEffect(() => {
+   console.log(refetch, 'parent')
+  }, [refetch]);
+
+  const [temp_nested_columns] = useState([
+    ...nested_columns,
+    {
+      title: 'Acciones',
+      render: (record: TestQuestionResponse) => (
+        <div>
+          <Button
+            icon={<DeleteOutlined />}
+            type='text'
+            danger
+            size='large'
+            shape='circle'
+            onClick={async () => {
+              await testQuestionService.delete(record.id as number);
+              setRefetch(true); 
+            }}
+          ></Button>
+        </div>
+      ),
+    },
+  ]);
+
   return (
-    <MagicTable<ITestResponse, ITest>
-      columns={test_columns}
-      crud
-      onAdd={() => router.push(paths.tests.create)}
-      onEdit={(id) => router.push(paths.tests.edit(id))}
-      url='tests'
-      defaultParameters={{
-        populate: {
-          category: true,
-          theme: true,
-          test_questions: {
-            populate: {
-              question: {
-                populate: '*'
+    <>
+      <MagicTable<ITestResponse, ITest>
+        columns={test_columns}
+        crud
+        onAdd={() => router.push(paths.tests.create)}
+        onEdit={(id) => router.push(paths.tests.edit(id))}
+        url='tests'
+        refetch={refetch}
+        setRefetch={setRefetch}
+        defaultParameters={{
+          populate: {
+            oposition: true,
+            category: true,
+            theme: true,
+            sub_theme: true,
+            test_questions: {
+              populate: {
+                question: {
+                  populate: '*',
+                },
               },
             },
           },
-        },
-      }}
-      expandable={{
-        expandedRowRender: (record: ITestResponse) => (
-          <Card style={{margin: 20}}>
-            <Table
-              columns={nested_columns}
-              dataSource={record.attributes.test_questions.data}
-              pagination={false}
-            />
-          </Card>
-        ),
-        rowExpandable: (record: ITestResponse) => record.attributes.test_questions.data.length > 0,
-      }}
-    />
+          filters: {
+            ...BASE_FILTER,
+          },
+        }}
+        expandable={{
+          expandedRowRender: (record: ITestResponse) => (
+            <Card style={{ margin: 20 }}>
+              <Table
+                columns={temp_nested_columns}
+                dataSource={record.attributes.test_questions.data}
+                pagination={false}
+              />
+            </Card>
+          ),
+          rowExpandable: (record: ITestResponse) =>
+            record.attributes.test_questions.data.length > 0,
+        }}
+        moreActions={[
+          {
+            icon: <FileAddOutlined />,
+            onClick: handleOpen,
+          },
+        ]}
+      />
+      {(open && testId) && (
+        <AddQuestionModal
+          visible={open}
+          onClose={handleClose}
+          testId={testId}
+          excludedQuestions={excludedQuestions}
+          refetch={() => {setRefetch(true)}}
+        />
+      )}
+    </>
   );
 };
 

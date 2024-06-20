@@ -19,8 +19,13 @@ import {
   theme as antdTheme,
 } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, } from 'react';
 import FilterComponent from './filter';
+
+type ParametersType = {
+  populate?: any;
+  filters?: any;
+};
 
 type Props<T, R> = TableProps & {
   columns: ColumnsType<T>;
@@ -28,8 +33,10 @@ type Props<T, R> = TableProps & {
   onAdd: () => void;
   onEdit: (id: number) => void;
   crud?: boolean;
-  defaultParameters?: any;
-  moreActions?: { icon: any; onClick: (record: T) => void }[];
+  defaultParameters?: ParametersType;
+  refetch?: boolean;
+  setRefetch?: (value: boolean) => void;
+  moreActions?: { icon: React.ReactNode; onClick: (record: T) => void }[];
 };
 
 const MagicTable = <T, R>({
@@ -40,6 +47,8 @@ const MagicTable = <T, R>({
   onAdd,
   defaultParameters,
   moreActions,
+  refetch,
+  setRefetch,
   ...others
 }: Props<T, R>) => {
   const [data, setData] = useState<T[]>();
@@ -77,8 +86,13 @@ const MagicTable = <T, R>({
 
   const fetchData = (params: TableParams) => {
     setLoading(true);
+    const newParams = { ...params } as TableParams & ParametersType;
+    newParams.filters = { ...params.filters, ...defaultParameters?.filters };
+    newParams.populate = defaultParameters?.populate
+      ? { ...defaultParameters?.populate }
+      : undefined;
     baseService
-      .get({ ...defaultParameters, ...params })
+      .get(newParams)
       .then((res) => {
         setLoading(false);
         setData(res.data.data);
@@ -108,7 +122,7 @@ const MagicTable = <T, R>({
     modal.confirm({
       title: '¿Estás seguro de eliminar este registro?',
       onOk: () => {
-        baseService.delete(id).then(() => {
+        baseService.put(id, { deleted: true } as any).then(() => {
           fetchData(tableParams);
         });
       },
@@ -118,6 +132,14 @@ const MagicTable = <T, R>({
   useEffect(() => {
     !data && fetchData(tableParams);
   }, []);
+
+  useEffect(() => {
+    if(refetch && setRefetch) {
+      fetchData(tableParams)
+      setRefetch(false)
+    }
+  }, [refetch])
+  
 
   const convertSortOptions = (sorter: any) => {
     if (!sorter.order) return {};
@@ -186,9 +208,6 @@ const MagicTable = <T, R>({
     setTableParams(() => ({ ...newTableParams }));
   };
 
-  // const getColmnHeader = (dataIndex: string) => {
-  //   return columns
-
   const getColumnSearchProps = (
     dataIndex: string,
     title: string
@@ -221,25 +240,11 @@ const MagicTable = <T, R>({
         }}
       />
     ),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        // setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
   });
 
   const table_columns: ColumnsType<T>[] = useMemo(() => {
     const newColumns =
       columns?.map((column: any) => {
-        // return {
-        //   ...column,
-        //   ...getColumnSearchProps(
-        //     column.dataIndex
-        //       .filter((f: string) => f !== 'attributes' && f !== 'data')
-        //       .join('.'),
-        //     column.title
-        //   ),
-        // };
         return column.filtrable
           ? {
               ...column,
@@ -298,11 +303,13 @@ const MagicTable = <T, R>({
 
   return (
     <>
-      <Row justify='end' style={{ marginBottom: 16 }}>
-        <Button type='primary' onClick={onAdd} style={{ marginBottom: 16 }}>
-          Agregar
-        </Button>
-      </Row>
+      {crud && (
+        <Row justify='end' style={{ marginBottom: 16 }}>
+          <Button type='primary' onClick={onAdd} style={{ marginBottom: 16 }}>
+            Agregar
+          </Button>
+        </Row>
+      )}
       <Table
         columns={table_columns}
         rowKey={(record) => record.id}

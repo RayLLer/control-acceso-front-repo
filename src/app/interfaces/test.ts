@@ -23,14 +23,17 @@ export interface ITest {
   oposition: Category;
   category: Category;
   theme: Category;
-  test: Test;
+  sub_theme: Category;
+  test: {data?: ITestResponse};
   test_questions: TestQuestions;
   realized_tests: RealizedTests;
   users_permissions_user: UsersPermissionsUser;
+  initDate: Date
+  spireDate: Date
 }
 
 export interface Category {
-  data: CategoryData;
+  data?: CategoryData;
 }
 
 export interface CategoryData {
@@ -108,9 +111,9 @@ export interface TestQuestions {
 
 export interface TestQuestionResponse {
   id: number;
-  attributes: DatumAttributes;
+  attributes: TestQuestion;
 }
-export interface DatumAttributes {
+export interface TestQuestion {
   order: number;
   createdAt: Date;
   updatedAt: Date;

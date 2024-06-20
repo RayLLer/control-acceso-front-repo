@@ -18,5 +18,5 @@ export const convertParams = (params: TableParams) => ({
   },
   filters: params.filters,
   fields: params.fields,
-  sort: params.sortField ? {0:`${params.sortField}:${params.sortOrder}`} : undefined,
+  sort: params.sortField ? [`${params.sortField}:${params.sortOrder}`] : [{ createdAt: 'desc' }],
 });

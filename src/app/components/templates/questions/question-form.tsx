@@ -1,40 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import { ISelect } from '@/app/interfaces/basics';
-import { IQuestion, IQuestionResponse } from '@/app/interfaces/question';
+import { IQuestionForm, IQuestionResponse } from '@/app/interfaces/question';
 import { paths } from '@/app/routes/paths';
-import { blockService } from '@/app/services/block.service';
-import { categoryService } from '@/app/services/category.service';
 import { questionService } from '@/app/services/question.service';
-import { subThemeService } from '@/app/services/subthemes.service';
-import { themeService } from '@/app/services/themes.service';
 import { uploadService } from '@/app/services/upload.service';
-import { convertForSelect } from '@/utils/select-utils';
-import { PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { App, Button, Form, Input, Select, Upload, UploadFile } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useHierarchy } from './use-hierarchy';
 
 const QuestionForm = () => {
   const { id } = useParams();
   const { message, notification } = App.useApp();
-  const [form] = Form.useForm<IQuestion>();
-  const [categories, setCategories] = useState<ISelect[]>([]);
-  const [themes, setThemes] = useState<ISelect[]>([]);
-  const [subThemes, setSubThemes] = useState<ISelect[]>([]);
-  const [blocks, setBlocks] = useState<ISelect[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(false);
-  const [loadingThemes, setLoadingThemes] = useState(false);
-  const [loadingSubThemes, setLoadingSubThemes] = useState(false);
-  const [loadingBlocks, setLoadingBlocks] = useState(false);
+  const [form] = Form.useForm<IQuestionForm>();
+  
   const router = useRouter();
 
   const selectedCategory = Form.useWatch('category', form);
   const selectedTheme = Form.useWatch('theme', form);
   const selectedSubTheme = Form.useWatch('sub_theme', form);
 
+  const {categories, blocks, loadingBlocks, loadingCategories, loadingSubThemes, loadingThemes, subThemes, themes} = useHierarchy(+selectedCategory, selectedTheme, selectedSubTheme);
+
   const updateFields = (question: IQuestionResponse) => {
-    form.setFieldsValue(question.attributes);
+    form.setFieldsValue(question.attributes as unknown as IQuestionForm);
     form.setFieldValue('category', question.attributes.category.data?.id);
     form.setFieldValue('theme', question.attributes.theme.data?.id);
     form.setFieldValue('sub_theme', question.attributes.sub_theme.data?.id);
@@ -62,99 +52,14 @@ const QuestionForm = () => {
     updateFields((await response).data.data);
   };
 
-  const fetchCategories = async () => {
-    // Fetch categories
-    setLoadingCategories(true);
-    try {
-      const response = await categoryService.getForSelect('name');
-      setCategories(convertForSelect(response.data.data));
-    } catch (error) {
-      message.error('Error al cargar las categorías');
-    }
-    setLoadingCategories(false);
-  };
-
-  const fetchTheme = async () => {
-    // Fetch theme
-    setLoadingThemes(true);
-    try {
-      const response = await themeService.getForSelect('name', {
-        filters: {
-          category_themes: {
-            category: { id: { $eq: selectedCategory } },
-          },
-        },
-      });
-      setThemes(convertForSelect(response.data.data));
-    } catch (error) {
-      message.error('Error al cargar los temas');
-    }
-
-    setLoadingThemes(false);
-  };
-
-  const fetchSubTheme = async () => {
-    // Fetch subtheme
-    setLoadingSubThemes(true);
-    try {
-      const response = await subThemeService.getForSelect('name', {
-        filters: {
-          theme: {
-            id: { $eq: selectedTheme },
-          },
-        },
-      });
-      setSubThemes(convertForSelect(response.data.data));
-    } catch (error) {
-      message.error('Error al cargar los subtemas');
-    }
-    setLoadingSubThemes(false);
-  };
-
-  const fetchBlock = async () => {
-    // Fetch block
-    setLoadingBlocks(true);
-    try {
-      const response = await blockService.getForSelect('name', {
-        filters: {
-          sub_theme: {
-            id: { $eq: selectedSubTheme },
-          },
-        },
-      });
-      setBlocks(convertForSelect(response.data.data));
-    } catch (error) {
-      message.error('Error al cargar los bloques');
-    }
-    setLoadingBlocks(false);
-  };
-
   useEffect(() => {
     if (id) {
-      fetchCategories();
       fetchQuestion();
     }
     return () => {
       form.resetFields();
     };
   }, []);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      setThemes([]);
-      setSubThemes([]);
-      setBlocks([]);
-      fetchTheme();
-    }
-  }, [selectedCategory]);
-
-  useEffect(() => {
-    selectedTheme && fetchSubTheme();
-  }, [selectedTheme]);
-
-  useEffect(() => {
-    selectedSubTheme && fetchBlock();
-  }, [selectedSubTheme]);
 
   const onFinish = async (values: any) => {
     const dataToSend = { ...values };
@@ -317,9 +222,6 @@ const QuestionForm = () => {
       <Form.Item name='category' label='Cuerpo'>
         <Select
           options={categories}
-          onDropdownVisibleChange={(open: boolean) =>
-            open && !categories.length && fetchCategories()
-          }
           loading={loadingCategories}
           onChange={() => {
             form.setFieldsValue({

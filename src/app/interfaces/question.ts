@@ -14,14 +14,38 @@ export interface IQuestion {
   referencia: string;
   clueText: string;
   category: {data: ICategoryResponse};
-  theme: any; //TODO: Change to theme interface
-  sub_theme: any; //TODO: Change to sub_theme interface
+  theme: {data: IThemeResponse}; //TODO: Change to theme interface
+  sub_theme: {data: ISubThemeResponse}; //TODO: Change to sub_theme interface
   deleted: boolean;
   test_questions: any; //TODO: Change to test_question interface
   realized_questions: any; //TODO: Change to test_question interface
   error_reports: any; //TODO: Change to test_question interface
   retired_questions: any; //TODO: Change to test_question interface
-  block: any; //TODO: Change to block interface
+  block: {data: IBlockResponse}; //TODO: Change to block interface
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date;
+}
+
+export interface IQuestionForm {
+  questionText: string;
+  correctAnswer: string;
+  image: any; //TODO: Change to image interface
+  incorrectAnswer1: string;
+  incorrectAnswer2: string;
+  incorrectAnswer3: string;
+  justificationText: string;
+  referencia: string;
+  clueText: string;
+  category: number;
+  theme: number; //TODO: Change to theme interface
+  sub_theme: number; //TODO: Change to sub_theme interface
+  deleted: boolean;
+  test_questions: number; //TODO: Change to test_question interface
+  realized_questions: any; //TODO: Change to test_question interface
+  error_reports: any; //TODO: Change to test_question interface
+  retired_questions: any; //TODO: Change to test_question interface
+  block: number; //TODO: Change to block interface
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date;

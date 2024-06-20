@@ -2,6 +2,7 @@ import { ITestResponse, Question, TestQuestionResponse, TestQuestions } from '@/
 import { ColumnsType } from '../../../interfaces/strapi';
 import { Button } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import { testQuestionService } from '@/app/services/test-question';
 
 export const nested_columns: ColumnsType<TestQuestionResponse>[] = [
   {
@@ -47,19 +48,5 @@ export const nested_columns: ColumnsType<TestQuestionResponse>[] = [
       'name',
     ],
   },
-  {
-    title: 'Acciones',
-    render: (record: TestQuestionResponse) => (
-      <div>
-        <Button
-          icon={<DeleteOutlined />}
-          type='text'
-          danger
-          size='large'
-          shape='circle'
-          onClick={() => {}}
-        ></Button>
-      </div>
-    ),
-  },
+  
 ];

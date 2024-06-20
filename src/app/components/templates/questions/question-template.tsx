@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import React from 'react'
+import React from 'react';
 import MagicTable from '../../table-v2/table-custom';
 import { IQuestion, IQuestionResponse } from '@/app/interfaces/question';
 import { question_columns } from './question-columns';
 import { paths } from '@/app/routes/paths';
 import { useRouter } from 'next/navigation';
+import { BASE_FILTER } from '@/utils/constants/constants';
 
 const QuestionTemplate = () => {
   const router = useRouter();
@@ -16,11 +17,14 @@ const QuestionTemplate = () => {
       url='questions'
       crud
       onEdit={(id) => router.push(paths.questions.edit(id))}
-      onAdd={() =>
-        router.push(paths.questions.create)
-      }
+      onAdd={() => router.push(paths.questions.create)}
+      defaultParameters={{
+        filters: {
+          ...BASE_FILTER,
+        },
+      }}
     />
   );
-}
+};
 
-export default QuestionTemplate
+export default QuestionTemplate;
