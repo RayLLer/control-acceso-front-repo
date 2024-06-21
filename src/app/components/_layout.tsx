@@ -1,5 +1,7 @@
 'use client';
 import {
+  BugOutlined,
+  FileDoneOutlined,
   IdcardOutlined,
   LogoutOutlined,
   MoonOutlined,
@@ -7,8 +9,7 @@ import {
   SafetyCertificateOutlined,
   SunOutlined,
   UnorderedListOutlined,
-  UserOutlined,
-  BugOutlined
+  UserOutlined
 } from '@ant-design/icons';
 import {
   Button,
@@ -21,10 +22,11 @@ import {
   MenuProps,
   Row,
   Switch,
+  Typography,
   theme as antdTheme,
 } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { paths } from '../routes/paths';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setTheme } from '../store/settings/settingsSlice';
@@ -52,6 +54,8 @@ function getItem(
   } as MenuItem;
 }
 
+const FONT_SIZE = 20;
+
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const path = usePathname()
@@ -60,31 +64,42 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { token } = antdTheme.useToken();
   const items: MenuItem[] = [
-    getItem('Gestión de Test', paths.tests.root, false, <IdcardOutlined />),
+    getItem(
+      'Gestión de Test',
+      paths.tests.root,
+      false,
+      <IdcardOutlined style={{ fontSize: FONT_SIZE }} />
+    ),
     getItem(
       'Gestión de Temas y Subtemas',
       paths.home + '/0',
       false,
-      <UnorderedListOutlined />
+      <UnorderedListOutlined style={{ fontSize: FONT_SIZE }} />
     ),
     getItem(
       'Gestión de Preguntas',
       paths.questions.root,
       false,
-      <QuestionCircleOutlined />
+      <QuestionCircleOutlined style={{ fontSize: FONT_SIZE }} />
+    ),
+    getItem(
+      'Tests Realizados',
+      paths.realized_tests.root,
+      false,
+      <FileDoneOutlined style={{ fontSize: FONT_SIZE }} />
     ),
     getItem(
       'Quejas y Errores',
       paths.error_reports.root,
       false,
-      <BugOutlined />
+      <BugOutlined style={{ fontSize: FONT_SIZE }} />
     ),
     getItem('Gestión de Usuarios', '/pages/users', false, <UserOutlined />),
     getItem(
       'Roles y permisos',
       '/pages/roles',
       false,
-      <SafetyCertificateOutlined />
+      <SafetyCertificateOutlined style={{ fontSize: FONT_SIZE }} />
     ),
   ];
 

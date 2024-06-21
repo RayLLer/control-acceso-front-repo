@@ -297,6 +297,31 @@ const MagicTable = <T, R>({
         },
       });
     }
+    else {
+      newColumns.push({
+        title: 'Acciones',
+        key: 'action',
+        render: (record: T) => {
+          const more = moreActions?.map((action, index) => {
+            return (
+              <Button
+                key={`index-${index}`}
+                type='text'
+                shape='circle'
+                icon={action.icon}
+                size='large'
+                onClick={() => action.onClick(record)}
+              />
+            );
+          });
+          return (
+            <Space size='small'>
+              {more}
+            </Space>
+          );
+        },
+      });
+    }
 
     return newColumns;
   }, [columns]);

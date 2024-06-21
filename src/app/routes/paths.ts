@@ -19,4 +19,7 @@ export const paths = {
   error_reports: {
     root: `${ROOT}/error-reports`,
   },
+  realized_tests: {
+    root: `${ROOT}/realized-tests`,
+  },
 }
