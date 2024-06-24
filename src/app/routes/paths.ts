@@ -21,5 +21,6 @@ export const paths = {
   },
   realized_tests: {
     root: `${ROOT}/realized-tests`,
+    details: (userId: number, testId: number) => `${ROOT}/realized-tests/details/${userId}/${testId}`,
   },
 }
