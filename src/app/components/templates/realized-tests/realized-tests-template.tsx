@@ -1,6 +1,7 @@
 'use client'
 import {
-  IRealizedTest
+  IRealizedTest,
+  IRealizedTestAttemptsResponse
 } from '@/app/interfaces/realized-tests';
 import MagicTable from '../../table-v2/table-custom';
 import { realized_tests_columns } from './realized-tests-columns';
@@ -11,7 +12,7 @@ import { paths } from '@/app/routes/paths';
 const RealizedTestsTemplate = () => {
   const router = useRouter()
   return (
-    <MagicTable<IRealizedTest, IRealizedTest>
+    <MagicTable<IRealizedTestAttemptsResponse, IRealizedTestAttemptsResponse>
       url='realized-tests/last-grouped-by-user'
       columns={realized_tests_columns}
       onAdd={function (): void {
@@ -23,9 +24,14 @@ const RealizedTestsTemplate = () => {
       moreActions={[
         {
           icon: <EyeOutlined />,
-          onClick: (record: IRealizedTest) => {
-            router.push(paths.realized_tests.details(record.users_permissions_user.id, record.test.id))
-          }
+          onClick: (record: IRealizedTestAttemptsResponse) => {
+            router.push(
+              paths.realized_tests.details(
+                record.user.id,
+                record.lastTest.test.id
+              )
+            );
+          },
         },
       ]}
     />

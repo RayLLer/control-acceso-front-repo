@@ -1,36 +1,47 @@
-import { IRealizedTest } from '@/app/interfaces/realized-tests';
+import { IRealizedTestAttemptsResponse } from '@/app/interfaces/realized-tests';
 import { ColumnsType } from '@/app/interfaces/strapi';
 import moment from 'moment';
 
-export const realized_tests_columns: ColumnsType<IRealizedTest>[] = [
+export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[] = [
   {
     title: 'Usuario',
-    dataIndex: ['users_permissions_user', 'username'],
+    dataIndex: ['user', 'username'],
     filtrable: true,
   },
   {
     title: 'Test',
-    dataIndex: ['test', 'name'],
+    dataIndex: ['lastTest', 'test', 'name'],
     filtrable: true,
   },
   {
     title: 'Cantidad de intentos',
     dataIndex: ['attempts'],
     filtrable: true,
+    render: (value) => `${value ?? 0}`,
+  },
+  {
+    title: 'Calificación',
+    dataIndex: ['lastTest', 'calification'],
+    render: (value) => (value ? `${value}` : 'No calificado'),
+  },
+  {
+    title: 'Calificación Combinada',
+    dataIndex: ['lastTest', 'combinedCalification'],
+    render: (value) => (value ? `${value}` : 'No calificado'),
   },
   {
     title: 'Último resultado',
-    dataIndex: ['calification'],
+    dataIndex: ['lastTest', 'evaluationPercent'],
     filtrable: true,
     render: (value) =>
       `${new Intl.NumberFormat('es-Es', {
         style: 'percent',
-        minimumFractionDigits: 0,
+        minimumFractionDigits: 1,
       }).format(value / 100)}`,
   },
   {
     title: 'fecha del último intento',
-    dataIndex: ['initDate'],
+    dataIndex: ['lastTest', 'finishDate'],
     filtrable: true,
     render: (value) =>
       value ? moment(value).format('DD/MM/YYYY HH:mm:ss') : '',
