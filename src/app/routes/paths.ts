@@ -24,6 +24,11 @@ export const paths = {
     root: `${ROOT}/realized-tests`,
     details: (userId: number, testId: number) => `${ROOT}/realized-tests/details/${userId}/${testId}`,
   },
+  theme_subtheme_block: {
+    root: `${ROOT}/theme-subtheme-block`,
+    create: `${ROOT}/theme-subtheme-block/create`,
+    edit: (id: number)=> `${ROOT}/theme-subtheme-block/edit/${id}`,
+  },
   forgot_password: `${AUTH_ROOT}/forgot-password`,
   reset_password: `${AUTH_ROOT}/reset-password`,
   login: `${AUTH_ROOT}/login`,
