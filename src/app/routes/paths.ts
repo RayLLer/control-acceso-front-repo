@@ -1,6 +1,7 @@
 
 // Define the paths for the routes
-const ROOT = '/pages/'
+const ROOT = '/pages'
+const AUTH_ROOT = '/auth';
 
 export const AUTH = 'auth/local';
 
@@ -23,4 +24,7 @@ export const paths = {
     root: `${ROOT}/realized-tests`,
     details: (userId: number, testId: number) => `${ROOT}/realized-tests/details/${userId}/${testId}`,
   },
+  forgot_password: `${AUTH_ROOT}/forgot-password`,
+  reset_password: `${AUTH_ROOT}/reset-password`,
+  login: `${AUTH_ROOT}/login`,
 }
