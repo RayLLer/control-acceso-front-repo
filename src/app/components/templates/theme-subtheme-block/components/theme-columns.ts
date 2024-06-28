@@ -16,4 +16,10 @@ export const theme_columns: ColumnsType<IThemeResponse>[] = [
     render: (data: any[]) =>
       data?.map((d) => d.attributes.category.data?.attributes.name).join(', ') ?? '',
   },
+  {
+    title: 'Etiqueta',
+    dataIndex: ['attributes', 'tag'],
+    sorter: true,
+    filtrable: true,
+  },
 ];

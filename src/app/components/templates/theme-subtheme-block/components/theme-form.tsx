@@ -17,6 +17,8 @@ type Props = {
   themeId?: number;
 };
 
+const TAGS = ['Informatica', 'General'];
+
 const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const editMode = !!themeId;
   const [form] = Form.useForm();
@@ -31,7 +33,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
       const response = await themeService.getById(themeId, {
         populate: { category_themes: { populate: 'category' } },
       });
-      setTheme(()=> response.data.data)
+      setTheme(() => response.data.data);
       updateFields(response.data.data);
     }
   };
@@ -71,7 +73,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   }, [excludedCategories]);
 
   const onFinish = async (values: any) => {
-    const dataTosend = {...values}
+    const dataTosend = { ...values };
     setLoading(true);
     try {
       if (editMode && theme) {
@@ -117,12 +119,13 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
       }
       onSaved();
     } catch (error: any) {
-      if(isAxiosError(error)){
+      if (isAxiosError(error)) {
         notification.error({
           type: 'error',
           message: 'Error',
           description:
-            error.response?.data?.error.message ?? 'Ha ocurrido un error al guardar el tema.',
+            error.response?.data?.error.message ??
+            'Ha ocurrido un error al guardar el tema.',
         });
       }
     }
@@ -145,7 +148,11 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
         >
           <Input />
         </Form.Item>
-        <Form.Item label='Cuerpo/s' name='categories'>
+        <Form.Item
+          label='Cuerpo/s'
+          name='categories'
+          rules={[{ required: true, message: 'El cuerpo es requerido' }]}
+        >
           <Select
             mode='tags'
             options={categoriesFiltered}
@@ -156,6 +163,16 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
             }}
             onChange={(values) => {
               setExcludedCategories(values);
+            }}
+          />
+        </Form.Item>
+        <Form.Item label='Etiqueta' name='tag'>
+          <Select
+            options={TAGS.map((tag) => ({ label: tag, value: tag }))}
+            filterOption={(input, opt) => {
+              return (
+                opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
+              );
             }}
           />
         </Form.Item>
