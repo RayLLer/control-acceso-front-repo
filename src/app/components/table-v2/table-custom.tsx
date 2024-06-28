@@ -19,7 +19,13 @@ import {
   theme as antdTheme,
 } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
-import React, { useCallback, useEffect, useMemo, useRef, useState, } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import FilterComponent from './filter';
 
 type ParametersType = {
@@ -35,6 +41,7 @@ type Props<T, R> = TableProps & {
   crud?: boolean;
   defaultParameters?: ParametersType;
   refetch?: boolean;
+  deleteEntry?: boolean;
   setRefetch?: (value: boolean) => void;
   moreActions?: { icon: React.ReactNode; onClick: (record: T) => void }[];
 };
@@ -48,6 +55,7 @@ const MagicTable = <T, R>({
   defaultParameters,
   moreActions,
   refetch,
+  deleteEntry,
   setRefetch,
   ...others
 }: Props<T, R>) => {
@@ -122,9 +130,13 @@ const MagicTable = <T, R>({
     modal.confirm({
       title: '¿Estás seguro de eliminar este registro?',
       onOk: () => {
-        baseService.put(id, { deleted: true } as any).then(() => {
-          fetchData(tableParams);
-        });
+        !deleteEntry
+          ? baseService.put(id, { deleted: true } as any).then(() => {
+              fetchData(tableParams);
+            })
+          : baseService.delete(id).then(() => {
+              fetchData(tableParams);
+            });
       },
     });
   };
@@ -134,12 +146,11 @@ const MagicTable = <T, R>({
   }, []);
 
   useEffect(() => {
-    if(refetch && setRefetch) {
-      fetchData(tableParams)
-      setRefetch(false)
+    if (refetch && setRefetch) {
+      fetchData(tableParams);
+      setRefetch(false);
     }
-  }, [refetch])
-  
+  }, [refetch]);
 
   const convertSortOptions = (sorter: any) => {
     if (!sorter.order) return {};
@@ -296,9 +307,8 @@ const MagicTable = <T, R>({
           );
         },
       });
-    }
-    else {
-      if(moreActions){
+    } else {
+      if (moreActions) {
         newColumns.push({
           title: 'Acciones',
           key: 'action',
@@ -315,11 +325,7 @@ const MagicTable = <T, R>({
                 />
               );
             });
-            return (
-              <Space size='small'>
-                {more}
-              </Space>
-            );
+            return <Space size='small'>{more}</Space>;
           },
         });
       }

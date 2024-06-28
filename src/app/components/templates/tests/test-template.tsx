@@ -33,10 +33,6 @@ const TestTemplate = () => {
     setExcludedQuestions([]);
   };
 
-  useEffect(() => {
-   console.log(refetch, 'parent')
-  }, [refetch]);
-
   const [temp_nested_columns] = useState([
     ...nested_columns,
     {

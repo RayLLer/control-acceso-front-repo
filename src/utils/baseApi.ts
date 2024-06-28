@@ -21,7 +21,6 @@ export class BaseApi<T, R> {
 
   getForSelect(labelAttr: string, params?: any) {
     const convertedParams = params ? convertParams(params) : undefined;
-    console.log(convertedParams)
     return axiosInstance.get<StrapiResponse<T>>(this.url, {
       params: {
         ...convertedParams,

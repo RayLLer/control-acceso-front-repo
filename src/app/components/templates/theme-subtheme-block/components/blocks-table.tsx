@@ -1,26 +1,56 @@
 import MagicTable from '@/app/components/table-v2/table-custom';
-import { IBlock, IBlockResponse, ISubTheme, ISubThemeResponse } from '@/app/interfaces/question';
-import React from 'react'
-import { subtheme_columns } from './sub-theme-columns';
+import {
+  IBlock,
+  IBlockResponse
+} from '@/app/interfaces/question';
 import { block_columns } from './blocks-columns';
+import { useState } from 'react';
+import BlockForm from './blocks-form';
 
 const BlockTable = () => {
-  return (
-    <MagicTable<IBlockResponse, IBlock>
-      columns={block_columns}
-      url={'blocks'}
-      crud
-      onAdd={function (): void {
-        throw new Error('Function not implemented.');
-      }}
-      onEdit={function (id: number): void {
-        throw new Error('Function not implemented.');
-      }}
-      defaultParameters={{
-        populate: { sub_theme: '*' },
-      }}
-    />
-  );
-}
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBlockId, setSelectedBlockId] = useState<
+    number | undefined
+  >();
+  const [refetch, setRefetch] = useState(false);
 
-export default BlockTable
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedBlockId(undefined);
+  };
+
+  return (
+    <>
+      <MagicTable<IBlockResponse, IBlock>
+        columns={block_columns}
+        url={'blocks'}
+        crud
+        onAdd={handleShowModal}
+        onEdit={(id: number): void => {
+          handleShowModal();
+          setSelectedBlockId(id);
+        }}
+        setRefetch={setRefetch}
+        refetch={refetch}
+        defaultParameters={{
+          populate: { sub_theme: '*' },
+        }}
+        deleteEntry
+      />
+      {showModal && (
+        <BlockForm
+          blockId={selectedBlockId}
+          open={showModal}
+          onClose={handleCloseModal}
+          onSaved={() => {
+            handleCloseModal();
+            setRefetch(true);
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+export default BlockTable;
