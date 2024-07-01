@@ -71,7 +71,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       <IdcardOutlined style={{ fontSize: FONT_SIZE }} />
     ),
     getItem(
-      'Gestión de Temas, Subtemas y Bloques',
+      'Gestión de Categorías',
       paths.theme_subtheme_block.root,
       false,
       <UnorderedListOutlined style={{ fontSize: FONT_SIZE }} />
