@@ -39,7 +39,7 @@ const Login: React.FC = () => {
       localStorage.setItem('token', response.data.jwt);
       // const responseFcm = await userService.putUser(user.id, user);
       setLoading(false);
-      router.push(paths.home);
+      router.push(paths.tests.root);
     } catch (error: any) {
       setLoading(false);
       if (isAxiosError(error)) {

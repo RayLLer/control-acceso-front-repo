@@ -33,6 +33,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
       const response = await themeService.getById(themeId, {
         populate: { category_themes: { populate: 'category' } },
       });
+
       setTheme(() => response.data.data);
       updateFields(response.data.data);
     }
@@ -49,10 +50,10 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   };
 
   const updateFields = (theme: IThemeResponse) => {
-    console.log(theme.attributes.name);
-    form.setFieldValue('name', theme.attributes.name);
+    console.log(theme)
     form.setFieldsValue({
       name: theme.attributes.name,
+      tag: theme.attributes.tag,
       categories: theme.attributes.category_themes.data?.map(
         (categoryTheme) => categoryTheme.attributes.category.data.id
       ),
@@ -91,9 +92,9 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
             })
           );
         });
-        await Promise.all(promises);
         delete dataTosend.categories;
         await themeService.put(themeId, dataTosend as ITheme);
+        await Promise.all(promises);
         notification.success({
           type: 'success',
           message: 'Guardado',
