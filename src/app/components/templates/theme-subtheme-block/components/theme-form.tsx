@@ -7,8 +7,8 @@ import { categoryThemeService } from '@/app/services/category-theme.service';
 import { categoryService } from '@/app/services/category.service';
 import { themeService } from '@/app/services/themes.service';
 import { App, Form, Input, Modal, Select } from 'antd';
-import { AxiosError, isAxiosError } from 'axios';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { isAxiosError } from 'axios';
+import { FC, useEffect, useState } from 'react';
 
 type Props = {
   open: boolean;
@@ -17,7 +17,7 @@ type Props = {
   themeId?: number;
 };
 
-const TAGS = ['Informatica', 'General'];
+const TAGS = ['Informática', 'General'];
 
 const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const editMode = !!themeId;
