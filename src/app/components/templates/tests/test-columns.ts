@@ -39,9 +39,9 @@ export const test_columns: ColumnsType<ITestResponse>[] = [
   },
   {
     title: 'Fecha de creado',
-    dataIndex: ['attributes', 'publishedAt'],
+    dataIndex: ['attributes', 'createdAt'],
     sorter: true,
-    render: (data) => new Date(data).toLocaleDateString(),
+    render: (data) => (data ? new Date(data).toLocaleDateString() : ''),
   },
   {
     title: 'Año',

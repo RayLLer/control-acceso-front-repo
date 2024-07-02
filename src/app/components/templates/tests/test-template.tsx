@@ -81,6 +81,9 @@ const TestTemplate = () => {
           },
           filters: {
             ...BASE_FILTER,
+            testType: {
+              $ne: 'Personalizado'
+            },
           },
         }}
         expandable={{
@@ -103,13 +106,15 @@ const TestTemplate = () => {
           },
         ]}
       />
-      {(open && testId) && (
+      {open && testId && (
         <AddQuestionModal
           visible={open}
           onClose={handleClose}
           testId={testId}
           excludedQuestions={excludedQuestions}
-          refetch={() => {setRefetch(true)}}
+          refetch={() => {
+            setRefetch(true);
+          }}
         />
       )}
     </>
