@@ -157,14 +157,14 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           }}
         >
           <Row justify={'end'} gutter={8}>
-            <Col>
+            {/* <Col>
               <Switch
                 value={theme === 'dark'}
                 onChange={changeTheme}
                 checkedChildren={<MoonOutlined />}
                 unCheckedChildren={<SunOutlined />}
               />
-            </Col>
+            </Col> */}
 
             <Col style={{ marginRight: 20 }}>
               <Dropdown

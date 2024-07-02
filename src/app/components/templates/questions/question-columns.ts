@@ -26,6 +26,18 @@ export const question_columns: ColumnsType<IQuestionResponse>[] = [
     sorter: true,
     filtrable: true,
   },
+  {
+    title: 'Bloque',
+    dataIndex: ['attributes', 'block', 'data', 'attributes', 'name'],
+    sorter: true,
+    filtrable: true,
+  },
+  {
+    title: 'Ley y Artículo',
+    dataIndex: ['attributes', 'referencia'],
+    sorter: true,
+    filtrable: true,
+  },
   // {
   //   title: 'Tema',
   //   dataIndex: ['attributes', 'theme', 'data', 'attributes', 'name'],

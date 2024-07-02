@@ -48,5 +48,9 @@ export const nested_columns: ColumnsType<TestQuestionResponse>[] = [
       'name',
     ],
   },
+  {
+    title: 'Bloque',
+    dataIndex: ['attributes', 'question', 'data', 'attributes', 'block', 'data', 'attributes', 'name'],
+  }
   
 ];

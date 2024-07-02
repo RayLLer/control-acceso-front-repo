@@ -78,7 +78,7 @@ const AddQuestionModal: FC<Props> = ({
           selectedRowKeys,
           onChange: setSelectedRowKeys,
         }}
-        scroll={{ y: 400 }}
+        scroll={{ x: 700, y: 400 }}
         style={{ marginTop: 30 }}
         defaultParameters={{
           filters: {
