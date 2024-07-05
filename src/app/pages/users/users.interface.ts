@@ -12,7 +12,7 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   role: IRole;
-  fullName?: string;
+  name?: string;
   phone?: string;
   identityCard: string;
   client: any

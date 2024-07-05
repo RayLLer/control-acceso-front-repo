@@ -62,12 +62,15 @@ const QuestionForm = () => {
   }, []);
 
   const onFinish = async (values: any) => {
+    debugger
     const dataToSend = { ...values };
     delete dataToSend.image;
     try {
-      if (values.image.length && !values.image[0].status) {
-        const response = await uploadService(values.image[0].originFileObj);
-        dataToSend.image = response?.data[0].id;
+      if(values.image){
+        if (values.image.length && !values.image[0].status) {
+          const response = await uploadService(values.image[0].originFileObj);
+          dataToSend.image = response?.data[0].id;
+        }
       }
       if (id) {
         await questionService.put(+id, dataToSend);
@@ -84,6 +87,7 @@ const QuestionForm = () => {
         router.push(paths.questions.edit(response.data.data.id));
       }
     } catch (error) {
+      console.log(error)
       notification.error({
         message: 'Ha ocurrido un error al guardar la pregunta',
         placement: 'topRight',

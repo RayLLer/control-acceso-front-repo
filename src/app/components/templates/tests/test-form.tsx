@@ -21,8 +21,6 @@ const testTypeOpt = [
   { label: 'Oficial', value: OFICIAL },
 ];
 
-
-
 const suTestTypeOpt = [
   { label: 'General', value: 'General' },
   { label: 'Práctico', value: 'Práctico' },
@@ -30,7 +28,7 @@ const suTestTypeOpt = [
 
 const TestForm = () => {
   const { id } = useParams();
-  const {notification} = App.useApp();
+  const { notification } = App.useApp();
   const [form] = Form.useForm();
   const router = useRouter();
   const [asociatedTests, setAsociatedTests] = useState<ISelect[]>([]);
@@ -67,7 +65,6 @@ const TestForm = () => {
     const response = await testService.getForSelect('name', {
       filters: {
         suTestType: { $eq: subTestType === 'General' ? 'Práctico' : 'General' },
-        year: { $eq: year },
       },
     });
     setAsociatedTests(convertForSelect(response.data.data));
@@ -77,7 +74,6 @@ const TestForm = () => {
     // Fetch test by id
     const response = await testService.getById(+id);
     updateFields(response.data.data);
-
   };
 
   useEffect(() => {
@@ -85,10 +81,10 @@ const TestForm = () => {
   }, [id]);
 
   useEffect(() => {
-    if (testType === OFICIAL && subTestType && year) {
+    if (testType === OFICIAL && subTestType) {
       fetchAsociatedTest();
     }
-  }, [testType, subTestType, year]);
+  }, [testType, subTestType]);
 
   const onFinish = async (values: ITest) => {
     // Submit form
@@ -97,7 +93,7 @@ const TestForm = () => {
       dataToSend.initDate = dataToSend.initDate.toISOString();
       dataToSend.spireDate = dataToSend.spireDate.toISOString();
       dataToSend.timeLimit = +dataToSend.timeLimit;
-      dataToSend.oposition = 1
+      dataToSend.oposition = 1;
       if (id) {
         await testService.put(+id, dataToSend);
         notification.success({ message: 'Test actualizado correctamente' });
@@ -107,7 +103,7 @@ const TestForm = () => {
         router.push(paths.tests.edit(response.data.data.id));
       }
     } catch (error) {
-      notification.error({ message: 'Error al guardar el test' });  
+      notification.error({ message: 'Error al guardar el test' });
     }
   };
 
@@ -216,10 +212,7 @@ const TestForm = () => {
       {renderLinkedTest()}
 
       {subTestType === 'Práctico' && (
-        <Form.Item
-          label='Descripción del caso práctico'
-          name='practicCaseText'
-        >
+        <Form.Item label='Descripción del caso práctico' name='practicCaseText'>
           <Input.TextArea rows={5} />
         </Form.Item>
       )}
@@ -237,7 +230,6 @@ const TestForm = () => {
             message: 'Por favor, ingrese la fecha de entrada en vigor.',
           },
         ]}
-        
       >
         <DatePicker style={{ width: '100%' }} format={dateFormat} />
       </Form.Item>

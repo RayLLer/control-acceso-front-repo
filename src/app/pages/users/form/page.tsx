@@ -13,8 +13,8 @@ import {
 import { MaskedInput } from 'antd-mask-input';
 import { useForm } from 'antd/es/form/Form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useState } from 'react';
-import { SelectAllRoles } from '../../roles/roles.reducer';
+import { Suspense, useEffect, useState } from 'react';
+import { fetchRoles, SelectAllRoles } from '../../roles/roles.reducer';
 import { IUser } from '../users.interface';
 import {
   patchUsers,
@@ -99,15 +99,19 @@ const FormUser = () => {
     }
   };
 
-  // useEffect(() => {
-  //   form.setFieldValue('blocked', false);
-  //   dispatch(fetchRoles(undefined))
-  //     .unwrap()
-  //     .then((result) => {
-  //       setOfficialRole(result.find((role) => role.name === 'Funcionario'));
-  //       userId && fetchUser();
-  //     });
-  // }, []);
+  useEffect(() => {
+    console.log(roles)
+  }, [roles])
+  
+
+  useEffect(() => {
+    form.setFieldValue('blocked', false);
+    dispatch(fetchRoles(undefined))
+      .unwrap()
+      .then((result) => {
+        userId && fetchUser();
+      });
+  }, []);
 
   const onFinish = async (data: any) => {
     let phone: string = data.phone;
@@ -301,12 +305,10 @@ const FormUser = () => {
         >
           <Select
             placeholder='Selecciona un rol'
-            options={disabled ? roles : roles.filter((role) => role.name === 'Funcionario')}
+            options={roles}
             fieldNames={{ value: 'id', label: 'name' }}
             disabled={disabled}
-            onChange={(value) => {
-              setDisabledPosition(value !== officialRole?.id);
-            }}
+            
           ></Select>
         </Form.Item>
 

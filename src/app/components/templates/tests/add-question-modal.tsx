@@ -56,7 +56,7 @@ const AddQuestionModal: FC<Props> = ({
 
   return (
     <Modal
-      title='Agregar preguntas'
+      title='Adicionar Preguntas'
       open={open}
       onCancel={onClose}
       onOk={handleAddQuestions}

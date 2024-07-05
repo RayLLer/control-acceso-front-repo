@@ -56,16 +56,6 @@ const User: FC = (): ReactElement => {
     });
   };
 
-  const renderUserNameOrLastName = (user: IUser ) =>{
-    let fullName = '';
-    switch (user.role.name) {
-      default:
-        fullName = user?.fullName ?? '';
-        break;
-    }
-    return fullName;
-  }
-
   const columns: ColumnsType<IUser> = [
     {
       title: 'Usuario',
@@ -83,7 +73,7 @@ const User: FC = (): ReactElement => {
       title: 'Nombre Completo',
       dataIndex: '',
       key: 'name',
-      render: (user: IUser) => renderUserNameOrLastName(user),
+      render: (user: IUser) => user.name,
     },
     {
       title: 'Rol',
