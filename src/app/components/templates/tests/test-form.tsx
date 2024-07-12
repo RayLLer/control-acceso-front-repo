@@ -124,8 +124,8 @@ const TestForm = () => {
       name='questionForm'
       layout='horizontal'
       onFinish={onFinish}
-      labelCol={{ span: 4 }}
-      wrapperCol={{ span: 14 }}
+      labelCol={{ span: 2 }}
+      wrapperCol={{ span: 16 }}
       labelWrap
     >
       <Button
