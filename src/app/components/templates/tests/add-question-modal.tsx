@@ -5,6 +5,7 @@ import MagicTable from '../../table-v2/table-custom';
 import { IQuestion, IQuestionResponse } from '@/app/interfaces/question';
 import { question_columns } from '../questions/question-columns';
 import { testQuestionService } from '@/app/services/test-question';
+import { BASE_FILTER } from '@/utils/constants/constants';
 
 type Props = {
   visible: boolean;
@@ -83,6 +84,7 @@ const AddQuestionModal: FC<Props> = ({
         defaultParameters={{
           filters: {
             id: { $notIn: excludedQuestions },
+            ...BASE_FILTER
           },
         }}
       />

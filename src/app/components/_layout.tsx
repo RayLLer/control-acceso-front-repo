@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import {
   BugOutlined,
@@ -9,7 +10,7 @@ import {
   SafetyCertificateOutlined,
   SunOutlined,
   UnorderedListOutlined,
-  UserOutlined
+  UserOutlined,
 } from '@ant-design/icons';
 import {
   Button,
@@ -26,22 +27,25 @@ import {
   theme as antdTheme,
 } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { paths } from '../routes/paths';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setTheme } from '../store/settings/settingsSlice';
+import { PermissionsEnum, validatePermissionName } from '@/utils/permissions';
+import { getLoggedUser } from '../pages/users/users.reducer';
+import useValidatePermissions from '@/utils/hooks/use-validate-permissions';
 
 const { Sider, Content, Footer, Header } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
 
 const userMenuItems: MenuItem[] = [
-  getItem('Salir', '/auth/login', false, <LogoutOutlined />)
+  getItem('Salir', '/auth/login', false, <LogoutOutlined />),
 ];
 
 function getItem(
   label: React.ReactNode,
   key: React.Key,
-  disabled?: boolean,
+  active?: boolean,
   icon?: React.ReactNode,
   children?: MenuItem[]
 ): MenuItem {
@@ -50,7 +54,7 @@ function getItem(
     icon,
     children,
     label,
-    disabled,
+    disabled: !active,
   } as MenuItem;
 }
 
@@ -58,50 +62,69 @@ const FONT_SIZE = 20;
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const path = usePathname()
+  const path = usePathname();
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.settings.theme);
   const [collapsed, setCollapsed] = useState(false);
   const { token } = antdTheme.useToken();
-  const items: MenuItem[] = [
-    getItem(
-      'Gestión de Test',
-      paths.tests.root,
-      false,
-      <IdcardOutlined style={{ fontSize: FONT_SIZE }} />
-    ),
-    getItem(
-      'Gestión de Categorías',
-      paths.theme_subtheme_block.root,
-      false,
-      <UnorderedListOutlined style={{ fontSize: FONT_SIZE }} />
-    ),
-    getItem(
-      'Gestión de Preguntas',
-      paths.questions.root,
-      false,
-      <QuestionCircleOutlined style={{ fontSize: FONT_SIZE }} />
-    ),
-    getItem(
-      'Tests Realizados',
-      paths.realized_tests.root,
-      false,
-      <FileDoneOutlined style={{ fontSize: FONT_SIZE }} />
-    ),
-    getItem(
-      'Quejas y Errores',
-      paths.error_reports.root,
-      false,
-      <BugOutlined style={{ fontSize: FONT_SIZE }} />
-    ),
-    getItem('Gestión de Usuarios', '/pages/users', false, <UserOutlined />),
-    getItem(
-      'Roles y permisos',
-      '/pages/roles',
-      false,
-      <SafetyCertificateOutlined style={{ fontSize: FONT_SIZE }} />
-    ),
-  ];
+
+  const { loggedUser } = useAppSelector((state) => state.users);
+
+  const { validate } = useValidatePermissions();
+
+  const items: MenuItem[] = useMemo(() => {
+    console.log(loggedUser);
+    return !loggedUser.id
+      ? []
+      : [
+          getItem(
+            'Gestión de Test',
+            paths.tests.root,
+            validate(PermissionsEnum.GestionarTest),
+            <IdcardOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            'Gestión de Categorías',
+            paths.theme_subtheme_block.root,
+            validate(PermissionsEnum.GestionarCategorias),
+            <UnorderedListOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            'Gestión de Preguntas',
+            paths.questions.root,
+            validate(PermissionsEnum.GestionarPreguntas),
+            <QuestionCircleOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            'Tests Realizados',
+            paths.realized_tests.root,
+            validate(PermissionsEnum.VerTestsRealizados),
+            <FileDoneOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            'Quejas y Errores',
+            paths.error_reports.root,
+            validate(PermissionsEnum.VerReporteDeQuejasYErrores),
+            <BugOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            'Gestión de Usuarios',
+            '/pages/users',
+            validate(PermissionsEnum.GestionarUsuarios),
+            <UserOutlined />
+          ),
+          getItem(
+            'Roles y permisos',
+            '/pages/roles',
+            validate(PermissionsEnum.GestionarRolesPermisos),
+            <SafetyCertificateOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+        ];
+  }, [loggedUser]);
+
+  useEffect(() => {
+    dispatch(getLoggedUser(undefined));
+  }, []);
 
   const onClick: MenuProps['onClick'] = (e) => {
     if (e.key == '/auth/login') {

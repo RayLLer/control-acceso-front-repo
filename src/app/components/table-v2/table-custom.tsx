@@ -16,6 +16,7 @@ import {
   Table,
   TableColumnType,
   TableProps,
+  Tooltip,
   theme as antdTheme,
 } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
@@ -33,6 +34,12 @@ type ParametersType = {
   filters?: any;
 };
 
+type ActionType<T> = {
+    icon: React.ReactNode;
+    onClick: (record?: T) => void;
+    tooltip: string;
+  }
+
 type Props<T, R> = TableProps & {
   columns: ColumnsType<T>;
   url: string;
@@ -43,7 +50,8 @@ type Props<T, R> = TableProps & {
   refetch?: boolean;
   deleteEntry?: boolean;
   setRefetch?: (value: boolean) => void;
-  moreActions?: { icon: React.ReactNode; onClick: (record: T) => void }[];
+  moreActions?: ActionType<T>[];
+  topActions?: ActionType<T>[]
 };
 
 const MagicTable = <T, R>({
@@ -54,6 +62,7 @@ const MagicTable = <T, R>({
   onAdd,
   defaultParameters,
   moreActions,
+  topActions,
   refetch,
   deleteEntry,
   setRefetch,
@@ -275,33 +284,39 @@ const MagicTable = <T, R>({
         render: (record: T) => {
           const more = moreActions?.map((action, index) => {
             return (
-              <Button
-                key={`index-${index}`}
-                type='text'
-                shape='circle'
-                icon={action.icon}
-                size='large'
-                onClick={() => action.onClick(record)}
-              />
+              <Tooltip title={action.tooltip} key={`index-${index}`}>
+                <Button
+                  key={`index-${index}`}
+                  type='text'
+                  shape='circle'
+                  icon={action.icon}
+                  size='large'
+                  onClick={() => action.onClick(record)}
+                />
+              </Tooltip>
             );
           });
           return (
             <Space size='small'>
-              <Button
-                type='text'
-                shape='circle'
-                icon={<EditOutlined style={{ fontSize: 20 }} />}
-                size='large'
-                onClick={() => onEdit((record as any).id as number)}
-              />
-              <Button
-                type='text'
-                danger
-                size='large'
-                shape='circle'
-                icon={<DeleteOutlined style={{ fontSize: 20 }} />}
-                onClick={() => handleDelete((record as any).id as number)}
-              />
+              <Tooltip title='Editar'>
+                <Button
+                  type='text'
+                  shape='circle'
+                  icon={<EditOutlined style={{ fontSize: 20 }} />}
+                  size='large'
+                  onClick={() => onEdit((record as any).id as number)}
+                />
+              </Tooltip>
+              <Tooltip title='Eliminar'>
+                <Button
+                  type='text'
+                  danger
+                  size='large'
+                  shape='circle'
+                  icon={<DeleteOutlined style={{ fontSize: 20 }} />}
+                  onClick={() => handleDelete((record as any).id as number)}
+                />
+              </Tooltip>
               {more}
             </Space>
           );
@@ -315,14 +330,16 @@ const MagicTable = <T, R>({
           render: (record: T) => {
             const more = moreActions?.map((action, index) => {
               return (
-                <Button
-                  key={`index-${index}`}
-                  type='text'
-                  shape='circle'
-                  icon={action.icon}
-                  size='large'
-                  onClick={() => action.onClick(record)}
-                />
+                <Tooltip title={action.tooltip} key={`index-${index}`}>
+                  <Button
+                    key={`index-${index}`}
+                    type='text'
+                    shape='circle'
+                    icon={action.icon}
+                    size='large'
+                    onClick={() => action.onClick(record)}
+                  />
+                </Tooltip>
               );
             });
             return <Space size='small'>{more}</Space>;
@@ -341,6 +358,21 @@ const MagicTable = <T, R>({
           <Button type='primary' onClick={onAdd} style={{ marginBottom: 16 }}>
             Agregar
           </Button>
+          {topActions?.map((action, index) => {
+            return (
+              <Tooltip title={action.tooltip} key={`index-${index}`}>
+                <Button
+                  key={`index-${index}`}
+                  type='primary'
+                  // icon={action.icon}
+                  onClick={() => action.onClick()}
+                  style={{ marginLeft: 8, marginBottom: 16 }}
+                >
+                  {action.tooltip}
+                </Button>
+              </Tooltip>
+            );
+          })}
         </Row>
       )}
       <Table

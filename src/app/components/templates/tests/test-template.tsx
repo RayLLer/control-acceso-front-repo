@@ -19,11 +19,11 @@ const TestTemplate = () => {
   const [excludedQuestions, setExcludedQuestions] = useState<number[]>([]);
   const [refetch, setRefetch] = useState(false);
 
-  const handleOpen = (record: ITestResponse) => {
+  const handleOpen = (record?: ITestResponse) => {
     setOpen(true);
-    setTestId(record.id);
+    setTestId(record!.id);
     setExcludedQuestions(
-      record.attributes.test_questions.data.map((q) => q.attributes.question.data.id),
+      record!.attributes.test_questions.data.map((q) => q.attributes.question.data.id),
     );
   };
 
@@ -103,6 +103,7 @@ const TestTemplate = () => {
           {
             icon: <FileAddOutlined />,
             onClick: handleOpen,
+            tooltip: 'Agregar Preguntas',
           },
         ]}
       />

@@ -3,6 +3,7 @@ import { ISubTheme, ISubThemeResponse } from '@/app/interfaces/question';
 import { subtheme_columns } from './sub-theme-columns';
 import { useState } from 'react';
 import SubThemeForm from './sub-theme-form';
+import { BASE_FILTER } from '@/utils/constants/constants';
 
 const SubThemeTable = () => {
   const [showModal, setShowModal] = useState(false);
@@ -17,23 +18,23 @@ const SubThemeTable = () => {
 
   return (
     <>
-    <MagicTable<ISubThemeResponse, ISubTheme>
-      columns={subtheme_columns}
-      url={'sub-themes'}
-      crud
-      onAdd={handleShowModal}
-      onEdit={(id: number): void => {
-        handleShowModal();
-        setSelectedSubThemeId(id);
-      }}
-      setRefetch={setRefetch}
-      refetch={refetch}
-      defaultParameters={{
-        populate: { theme: '*' },
-      }}
-      deleteEntry
-    />
-    {showModal && (
+      <MagicTable<ISubThemeResponse, ISubTheme>
+        columns={subtheme_columns}
+        url={'sub-themes'}
+        crud
+        onAdd={handleShowModal}
+        onEdit={(id: number): void => {
+          handleShowModal();
+          setSelectedSubThemeId(id);
+        }}
+        setRefetch={setRefetch}
+        refetch={refetch}
+        defaultParameters={{
+          populate: { theme: '*' },
+          filters: { ...BASE_FILTER },
+        }}
+      />
+      {showModal && (
         <SubThemeForm
           subThemeId={selectedSubThemeId}
           open={showModal}

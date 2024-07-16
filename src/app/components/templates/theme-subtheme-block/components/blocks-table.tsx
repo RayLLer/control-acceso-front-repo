@@ -6,6 +6,7 @@ import {
 import { block_columns } from './blocks-columns';
 import { useState } from 'react';
 import BlockForm from './blocks-form';
+import { BASE_FILTER } from '@/utils/constants/constants';
 
 const BlockTable = () => {
   const [showModal, setShowModal] = useState(false);
@@ -35,8 +36,8 @@ const BlockTable = () => {
         refetch={refetch}
         defaultParameters={{
           populate: { sub_theme: '*' },
+          filters: { ...BASE_FILTER },
         }}
-        deleteEntry
       />
       {showModal && (
         <BlockForm

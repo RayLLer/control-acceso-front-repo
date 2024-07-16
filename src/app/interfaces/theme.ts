@@ -15,6 +15,7 @@ export interface ITheme {
   questions: Questions;
   tests: Tests;
   category_themes: CategoryThemes;
+  deleted: boolean
 }
 
 interface Questions {

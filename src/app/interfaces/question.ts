@@ -66,7 +66,8 @@ export interface IThemeResponse {
 }
 
 export interface ITheme {
-  name: string
+  name: string;
+  deleted: boolean;
 }
 
 export interface ISubThemeResponse {
@@ -76,7 +77,8 @@ export interface ISubThemeResponse {
 
 export interface ISubTheme {
   name: string;
-  theme: {data: IThemeResponse};
+  theme: { data: IThemeResponse };
+  deleted: boolean;
 }
 
 export interface IBlockResponse {
@@ -87,5 +89,6 @@ export interface IBlockResponse {
 export interface IBlock {
   name: string;
   sub_theme: {data: ISubThemeResponse};
+  deleted: boolean;
 }
 

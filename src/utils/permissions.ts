@@ -19,10 +19,11 @@
 export enum PermissionsEnum {
   GestionarUsuarios = 'Gestionar Usuarios',
   GestionarRolesPermisos = 'Gestionar Roles y Permisos',
-  GestionarEstado = 'Gestionar estado de conductores, vehículos y anticipos',
-  GestionarTarifas = 'Gestionar Tarifas',
-  VerChat = 'Ver Chat',
-  GestionarConfiguracionesGenerales = 'Gestionar Configuraciones Generales',
+  GestionarCategorias = 'Gestionar Categorías',
+  GestionarPreguntas = 'Gestionar Preguntas',
+  VerTestsRealizados = 'Ver Tests Realizados',
+  VerReporteDeQuejasYErrores = 'Ver Reporte de Quejas y Errores',
+  GestionarTest = 'Gestionar Test',
 }
 
 interface Permission {

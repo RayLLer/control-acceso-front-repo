@@ -28,6 +28,7 @@ export const fetchRoles = createAsyncThunk(
       let response = await rolesServices.getRoles(sources.ROLES, params);
       return response.data.roles;
     } catch (error: any) {
+      console.log(error)
       rejectWithValue(error.data.message);
     }
   }
@@ -49,7 +50,8 @@ export const postRoles = createAsyncThunk(
   'user/postRoles',
   async (payload: IRole, { rejectWithValue }) => {
     try {
-      let response = await rolesServices.post(payload);
+      debugger
+      let response = await rolesServices.postRole(sources.ROLES, payload);
       return response.data;
     } catch (error: any) {
       rejectWithValue(error.data.message);
@@ -128,7 +130,7 @@ const rolesSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(postRoles.fulfilled, (state, action) => {
-      rolesAdapter.addOne(state, action.payload!.data);
+      // rolesAdapter.addOne(state, action.payload!.data);
       state.loading = false;
       state.error = undefined;
     });

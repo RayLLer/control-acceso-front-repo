@@ -30,10 +30,11 @@ const ThemeTable = () => {
         }}
         defaultParameters={{
           populate: { category_themes: { populate: 'category' } },
+          filters: {...BASE_FILTER}
         }}
         setRefetch={setRefetch}
         refetch={refetch}
-        deleteEntry
+        
       />
       {showModal && (
         <ThemeForm

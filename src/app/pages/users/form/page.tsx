@@ -63,7 +63,6 @@ const FormUser = () => {
       if (isUser(response.data)) {
         let fullName = '';
         let phone = ''
-        setDisabled(() => response.data.role.name !== 'Funcionario');
         setDisabledPosition(() => response.data.role.name !== 'Funcionario');
         if (response.data.role.name === 'Funcionario') {
           fullName = response.data.official?.fullName
@@ -193,6 +192,7 @@ const FormUser = () => {
         // }}
         style={{ maxWidth: 600 }}
         scrollToFirstError
+        labelWrap
       >
         <Form.Item
           name='username'

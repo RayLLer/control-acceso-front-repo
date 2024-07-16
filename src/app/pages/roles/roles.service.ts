@@ -5,7 +5,7 @@ import { IPermissions, IRole, IRoutesInfo } from './roles.interface';
 
 export class RolesServices extends BaseApi<IRole, IRole> {
   constructor() {
-    super('/roles');
+    super('users-permissions/roles');
   }
   getRoles(url: string, params: { [key: string]: any }) {
     return axiosInstance.get<{ roles: IRole[] }>(url, {
@@ -38,4 +38,12 @@ export class RolesServices extends BaseApi<IRole, IRole> {
   ) {
     return axiosInstance.post(url, payload);
   }
+  
+  postRole(
+    url: string,
+    payload: IRole
+  ) {
+    return axiosInstance.post(url, payload);
+  }
+
 }

@@ -26,8 +26,8 @@ const SuspenseForm = () => {
     <Suspense>
       <FormRole />
     </Suspense>
-  )
-}
+  );
+};
 
 const FormRole = () => {
   const [form] = useForm();
@@ -45,10 +45,7 @@ const FormRole = () => {
   const fetchRole = async () => {
     try {
       setLoadingGeneral(true);
-      let response = await rolesService.getRoleById(
-        sources.ROLES,
-        +roleId
-      );
+      let response = await rolesService.getRoleById(sources.ROLES, +roleId);
 
       let rolePermissionsResponse = await rolesService.getPermissionsByRoleID(
         sources.ROLE_PERMISSION + '/getCustomPermissionsByRoleId',
@@ -91,25 +88,36 @@ const FormRole = () => {
       roleId && (roleDto.id = roleId);
       setLoading(true);
       if (!roleId) {
-        await dispatch(postRoles(roleDto));
-        await dispatch(fetchRoles(undefined))
+        dispatch(postRoles(roleDto))
           .unwrap()
-          .then((res) => {
-            const tempRol = res!.find((r) => r.name === data.name);
-            roleId = tempRol!.id.toString();
+          .then(() => {
+            dispatch(fetchRoles(undefined))
+              .unwrap()
+              .then((res) => {
+                const tempRol = res!.find((r) => r.name === data.name);
+                roleId = tempRol!.id.toString();
+              })
+              .catch((err) => {
+                console.log(err, 'aki');
+              });
           })
-          .catch((err) => {});
+          .catch((err) => {
+            notification.error({ message: 'Error al guardar el rol' });
+          });
       } else {
-        await dispatch(patchRoles(roleDto));
+        dispatch(patchRoles(roleDto));
       }
       await rolesService.updatePermissions(
         sources.ROLE_PERMISSION + '/updateRole',
         { roleId: +roleId, customPermissionsIds: data.permissions }
       );
       setLoading(false);
-      router.push('pages/roles');
+      router.replace('pages/roles');
     } catch (error) {
       setLoading(false);
+      notification.error({
+        message: 'Error al guardar el rol',
+      });
     }
   };
 
@@ -156,6 +164,7 @@ const FormRole = () => {
           maxWidth: '70%',
         }}
         scrollToFirstError
+        labelWrap
       >
         <Form.Item
           name='name'
