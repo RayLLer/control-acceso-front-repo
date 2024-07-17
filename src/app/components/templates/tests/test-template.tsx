@@ -3,7 +3,7 @@ import { ITest, ITestResponse, TestQuestionResponse } from '@/app/interfaces/tes
 import { paths } from '@/app/routes/paths';
 import { BASE_FILTER } from '@/utils/constants/constants';
 import { FileAddOutlined,DeleteOutlined } from '@ant-design/icons';
-import { Button, Card, Table } from 'antd';
+import { Button, Card, Table, TablePaginationConfig } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import MagicTable from '../../table-v2/table-custom';
@@ -87,15 +87,18 @@ const TestTemplate = () => {
           },
         }}
         expandable={{
-          expandedRowRender: (record: ITestResponse) => (
+          expandedRowRender: (record: ITestResponse) => {
+            return(
             <Card style={{ margin: 20 }}>
               <Table
                 columns={temp_nested_columns}
                 dataSource={record.attributes.test_questions.data}
-                pagination={false}
+                scroll={{ x: 700, y: 400 }}
+                pagination={{pageSize: 5}}
+                
               />
             </Card>
-          ),
+          )},
           rowExpandable: (record: ITestResponse) =>
             record.attributes.test_questions.data.length > 0,
         }}

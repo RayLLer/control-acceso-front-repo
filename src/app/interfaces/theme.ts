@@ -1,3 +1,5 @@
+import { ICategoryResponse } from './question';
+
 export enum TAG {
   INFORMATIC = 'Informática',
 }
@@ -14,7 +16,7 @@ export interface ITheme {
   updatedAt: string;
   questions: Questions;
   tests: Tests;
-  category_themes: CategoryThemes;
+  category_themes: {data?: CategoryThemes[]};
   deleted: boolean
 }
 
@@ -69,5 +71,8 @@ interface TestAttributes {
 }
 
 interface CategoryThemes {
-  data: any[];
+  id: number;
+  attributes: {
+    category: {data: ICategoryResponse};
+  }
 }

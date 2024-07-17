@@ -13,7 +13,7 @@ import { useHierarchy } from '../questions/use-hierarchy';
 import moment from 'moment';
 import { dateFormat } from '@/utils/constants/constants';
 
-const OFICIAL = 'Test oficial';
+const OFICIAL = 'Oficial';
 const CHALLENGE = 'Reto';
 
 const testTypeOpt = [
@@ -124,7 +124,7 @@ const TestForm = () => {
       name='questionForm'
       layout='horizontal'
       onFinish={onFinish}
-      labelCol={{ span: 2 }}
+      labelCol={{ span: 4 }}
       wrapperCol={{ span: 16 }}
       labelWrap
     >
@@ -212,7 +212,16 @@ const TestForm = () => {
       {renderLinkedTest()}
 
       {subTestType === 'Práctico' && (
-        <Form.Item label='Descripción del caso práctico' name='practicCaseText'>
+        <Form.Item
+          label='Descripción del caso práctico'
+          name='practicCaseText'
+          rules={[
+            {
+              required: subTestType === 'Práctico',
+              message: 'La descripción del caso práctico es requerida',
+            },
+          ]}
+        >
           <Input.TextArea rows={5} />
         </Form.Item>
       )}
@@ -224,24 +233,24 @@ const TestForm = () => {
       <Form.Item
         label='Fecha de entrada en vigor'
         name='initDate'
-        rules={[
-          {
-            required: true,
-            message: 'Por favor, ingrese la fecha de entrada en vigor.',
-          },
-        ]}
+        // rules={[
+        //   {
+        //     required: true,
+        //     message: 'Por favor, ingrese la fecha de entrada en vigor.',
+        //   },
+        // ]}
       >
         <DatePicker style={{ width: '100%' }} format={dateFormat} />
       </Form.Item>
       <Form.Item
         label='Fecha de caducidad'
         name='spireDate'
-        rules={[
-          {
-            required: true,
-            message: 'Por favor, ingrese la fecha de caducidad.',
-          },
-        ]}
+        // rules={[
+        //   {
+        //     required: true,
+        //     message: 'Por favor, ingrese la fecha de caducidad.',
+        //   },
+        // ]}
       >
         <DatePicker style={{ width: '100%' }} format={dateFormat} />
       </Form.Item>

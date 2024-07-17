@@ -8,7 +8,8 @@ import { categoryService } from '@/app/services/category.service';
 import { themeService } from '@/app/services/themes.service';
 import { App, Form, Input, Modal, Select } from 'antd';
 import { isAxiosError } from 'axios';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
+import './style.css';
 
 type Props = {
   open: boolean;
@@ -24,7 +25,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const [form] = Form.useForm();
   const { notification } = App.useApp();
   const [theme, setTheme] = useState<IThemeResponse>();
-  const [categoriesFiltered, setCategoriesFiltered] = useState<ISelect[]>([]);
+  const [categories, setCategories] = useState<ISelect[]>([]);
   const [excludedCategories, setExcludedCategories] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +42,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
 
   const fetchCategories = async () => {
     const response = await categoryService.getForSelect('name');
-    setCategoriesFiltered(
+    setCategories(
       response.data.data.map((category) => ({
         label: category.attributes.name,
         value: category.id,
@@ -50,7 +51,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   };
 
   const updateFields = (theme: IThemeResponse) => {
-    console.log(theme)
+    console.log(theme);
     form.setFieldsValue({
       name: theme.attributes.name,
       tag: theme.attributes.tag,
@@ -65,13 +66,15 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
     editMode && fetchTheme();
   }, [editMode]);
 
-  useEffect(() => {
-    setCategoriesFiltered(
-      categoriesFiltered.filter(
-        (category) => !excludedCategories.includes(category.value)
-      )
-    );
-  }, [excludedCategories]);
+  // useEffect(() => {
+  //   if(excludedCategories.length) {
+  //     setCategoriesFiltered(
+  //       categoriesFiltered.filter(
+  //         (category) => !excludedCategories.includes(category.value)
+  //       )
+  //     );
+  //   }
+  // }, [excludedCategories]);
 
   const onFinish = async (values: any) => {
     const dataTosend = { ...values };
@@ -79,11 +82,9 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
     try {
       if (editMode && theme) {
         const promises: any[] = [];
-        theme?.attributes.category_themes.data?.forEach(
-          (catId: ICategoryResponse) => {
-            promises.push(categoryThemeService.delete(catId.id));
-          }
-        );
+        theme?.attributes.category_themes.data?.forEach((catId) => {
+          promises.push(categoryThemeService.delete(catId.id));
+        });
         dataTosend.categories.forEach((catId: number) => {
           promises.push(
             categoryThemeService.post({
@@ -140,6 +141,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
       onCancel={onClose}
       onOk={() => form.submit()}
       confirmLoading={loading}
+      className='my-custom-class'
     >
       <Form onFinish={onFinish} form={form}>
         <Form.Item
@@ -156,13 +158,14 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
         >
           <Select
             mode='tags'
-            options={categoriesFiltered}
+            options={categories}
             filterOption={(input, opt) => {
               return (
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
             onChange={(values) => {
+              console.log(values);
               setExcludedCategories(values);
             }}
           />
@@ -175,6 +178,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
+            allowClear
           />
         </Form.Item>
       </Form>

@@ -19,16 +19,11 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
     filtrable: true,
     render: (value) => `${value ?? 0}`,
   },
-  {
-    title: 'Calificación',
-    dataIndex: ['lastTest', 'calification'],
-    render: (value) => (value ? `${value}` : 'No calificado'),
-  },
-  {
-    title: 'Calificación Combinada',
-    dataIndex: ['lastTest', 'combinedCalification'],
-    render: (value) => (value ? `${value}` : 'No calificado'),
-  },
+  // {
+  //   title: 'Calificación',
+  //   dataIndex: ['lastTest', 'evaluationPercent'],
+  //   // render: (value) => (value ? `${value}` : 'No calificado'),
+  // },
   {
     title: 'Último resultado',
     dataIndex: ['lastTest', 'evaluationPercent'],

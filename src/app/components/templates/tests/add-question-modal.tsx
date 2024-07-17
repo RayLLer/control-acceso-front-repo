@@ -65,6 +65,7 @@ const AddQuestionModal: FC<Props> = ({
       width={'80%'}
       style={{ top: 20 }}
       confirmLoading={confirmLoading}
+      okButtonProps={{ disabled: !selectedRowKeys.length }}
     >
       <MagicTable<IQuestionResponse, IQuestion>
         columns={question_columns}

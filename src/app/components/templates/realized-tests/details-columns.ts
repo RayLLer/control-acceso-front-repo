@@ -38,16 +38,7 @@ export const details_columns: ColumnsType<IRealizedTestResponse>[] = [
     dataIndex: ['attributes', 'blanckAnswersQty'],
     align: 'right',
   },
-  {
-    title: 'Porcentaje de Aciertos',
-    dataIndex: ['attributes', 'evaluationPercent'],
-    align: 'right',
-    render: (value) =>
-      `${new Intl.NumberFormat('es-Es', {
-        style: 'percent',
-        minimumFractionDigits: 0,
-      }).format(value / 100)}`,
-  },
+
   {
     title: 'Duración',
     dataIndex: ['attributes', 'duration'],
@@ -64,11 +55,17 @@ export const details_columns: ColumnsType<IRealizedTestResponse>[] = [
     title: 'Fecha de Finalización',
     dataIndex: ['attributes', 'finishDate'],
     align: 'right',
-    render: (value) => (value ? moment(value).format('DD/mm/yyyy HH:mm:ss') : 'No finalizado'),
+    render: (value) =>
+      value ? moment(value).format('DD/mm/yyyy HH:mm:ss') : 'No finalizado',
   },
   {
     title: 'Calificación',
-    dataIndex: ['attributes', 'calification'],
+    dataIndex: ['attributes', 'evaluationPercent'],
     align: 'right',
+    render: (value) =>
+      `${new Intl.NumberFormat('es-Es', {
+        style: 'percent',
+        minimumFractionDigits: 0,
+      }).format(value / 100)}`,
   },
 ];

@@ -73,9 +73,9 @@ const FilterComponent: FC<
         >
           Buscar
         </Button>
-        <Button onClick={reset} size='small' style={{ width: 90 }}>
+        {/* <Button onClick={reset} size='small' style={{ width: 90 }}>
           Limpiar
-        </Button>
+        </Button> */}
         <Button
           type='link'
           size='small'

@@ -24,14 +24,15 @@ const RealizedTestsTemplate = () => {
       moreActions={[
         {
           icon: <EyeOutlined />,
-          onClick: (record: IRealizedTestAttemptsResponse) => {
+          onClick: (record) => {
             router.push(
               paths.realized_tests.details(
-                record.user.id,
-                record.lastTest.test.id
+                record!.user.id,
+                record!.lastTest.test.id
               )
             );
           },
+          tooltip: 'Ver detalles',
         },
       ]}
     />

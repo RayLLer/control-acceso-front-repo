@@ -42,10 +42,5 @@ export const test_columns: ColumnsType<ITestResponse>[] = [
     dataIndex: ['attributes', 'createdAt'],
     sorter: true,
     render: (data) => (data ? new Date(data).toLocaleDateString() : ''),
-  },
-  {
-    title: 'Año',
-    dataIndex: ['attributes', 'year'],
-    sorter: true,
-  },
+  }
 ]; 

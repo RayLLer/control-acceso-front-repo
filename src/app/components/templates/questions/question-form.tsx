@@ -62,7 +62,6 @@ const QuestionForm = () => {
   }, []);
 
   const onFinish = async (values: any) => {
-    debugger
     const dataToSend = { ...values };
     delete dataToSend.image;
     try {

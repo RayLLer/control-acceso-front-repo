@@ -9,7 +9,7 @@ export const selectFilters = [
   },
   {
     label: 'Distinto',
-    value: '$ne',
+    value: '$nei',
   },
   {
     label: 'Menor que',
@@ -108,7 +108,7 @@ export const filtersSelectNumberOrDate = [
   },
   {
     label: 'Distinto',
-    value: '$ne',
+    value: '$nei',
   },
   {
     label: 'Menor que',

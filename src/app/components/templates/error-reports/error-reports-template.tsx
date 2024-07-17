@@ -18,6 +18,14 @@ const ErrorReportsTemplate = () => {
       onEdit={function (id: number): void {
         throw new Error('Function not implemented.');
       }}
+      defaultParameters={{
+        populate: {
+          users_permissions_user: {populate: 'role'},
+          question: {
+            populate: 'theme'
+          }
+        },
+      }}
     />
   );
 };

@@ -10,11 +10,11 @@ export const theme_columns: ColumnsType<IThemeResponse>[] = [
   },
   {
     title: 'Cuerpo/s',
-    dataIndex: ['attributes', 'category_themes', 'data'],
+    dataIndex: ['attributes', 'category_themes', 'category', 'attributes', 'name'],
     sorter: true,
     filtrable: true,
-    render: (data: any[]) =>
-      data?.map((d) => d.attributes.category.data?.attributes.name).join(', ') ?? '',
+    render: (_, record) =>
+      record.attributes.category_themes.data?.map((d) => d.attributes.category.data?.attributes.name).join(', ') ?? '',
   },
   {
     title: 'Etiqueta',

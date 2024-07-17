@@ -9,6 +9,11 @@ export const error_report_columns: ColumnsType<IErrorReportResponse>[] = [
     filtrable: true,
   },
   {
+    title: 'Tema',
+    dataIndex: ['attributes', 'question', 'data', 'attributes', 'theme', 'data', 'attributes', 'name'],
+    filtrable: true,
+  },
+  {
     title: 'Causa',
     dataIndex: ['attributes', 'selectedCause'],
     filtrable: true,
