@@ -12,7 +12,7 @@ const ThemeSubthemeBlockTemplate = () => {
       <Tabs.TabPane tab='Temas' key='theme'>
         <ThemeTable />
       </Tabs.TabPane>
-      <Tabs.TabPane tab='Sub Temas' key='sub-theme'>
+      <Tabs.TabPane tab='Subtemas' key='sub-theme'>
         <SubThemeTable />
       </Tabs.TabPane>
       <Tabs.TabPane tab='Bloques' key='block'>
