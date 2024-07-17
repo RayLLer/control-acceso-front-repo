@@ -65,6 +65,7 @@ const TestForm = () => {
     const response = await testService.getForSelect('name', {
       filters: {
         suTestType: { $eq: subTestType === 'General' ? 'Práctico' : 'General' },
+        year: { $eq: form.getFieldValue('year')},
       },
     });
     setAsociatedTests(convertForSelect(response.data.data));
@@ -194,20 +195,24 @@ const TestForm = () => {
           <Select options={suTestTypeOpt} defaultValue={'General'} allowClear />
         </Form.Item>
       )}
-      <Form.Item
-        label='Año'
-        name='year'
-        rules={[{ required: true, message: 'El año es requerido' }]}
-      >
-        <Input
-          type='number'
-          min={1900}
-          onFocus={() => {
-            !form.getFieldValue('year') &&
-              form.setFieldValue('year', new Date().getFullYear());
-          }}
-        />
-      </Form.Item>
+      {testType === OFICIAL && (
+        <Form.Item
+          label='Año'
+          name='year'
+          rules={[
+            { required: testType === OFICIAL, message: 'El año es requerido' },
+          ]}
+        >
+          <Input
+            type='number'
+            min={1900}
+            onFocus={() => {
+              !form.getFieldValue('year') &&
+                form.setFieldValue('year', new Date().getFullYear());
+            }}
+          />
+        </Form.Item>
+      )}
 
       {renderLinkedTest()}
 

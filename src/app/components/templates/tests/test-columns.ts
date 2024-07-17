@@ -7,30 +7,35 @@ export const test_columns: ColumnsType<ITestResponse>[] = [
     dataIndex: ['attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Cuerpo',
     dataIndex: ['attributes', 'category', 'data', 'attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Tema',
     dataIndex: ['attributes', 'theme', 'data', 'attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'SubTema',
     dataIndex: ['attributes', 'sub_theme', 'data', 'attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Tipo de Test',
     dataIndex: ['attributes', 'testType'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Cantidad de preguntas',
@@ -42,5 +47,5 @@ export const test_columns: ColumnsType<ITestResponse>[] = [
     dataIndex: ['attributes', 'createdAt'],
     sorter: true,
     render: (data) => (data ? new Date(data).toLocaleDateString() : ''),
-  }
+  },
 ]; 

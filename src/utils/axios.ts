@@ -1,5 +1,6 @@
 import axios from 'axios';
 // import { BASE_URL } from './sources';
+import secureStorage from 'react-secure-storage'
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -17,7 +18,7 @@ axiosInstance.interceptors.request.use(async (config) => {
     return config;
   }
   if (!config.url?.includes('auth/local')) {
-    const token = localStorage.getItem('token');
+    const token = secureStorage.getItem('token');
     config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;

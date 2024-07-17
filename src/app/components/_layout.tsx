@@ -34,12 +34,13 @@ import { setTheme } from '../store/settings/settingsSlice';
 import { PermissionsEnum, validatePermissionName } from '@/utils/permissions';
 import { getLoggedUser } from '../pages/users/users.reducer';
 import useValidatePermissions from '@/utils/hooks/use-validate-permissions';
+import secureStorage from 'react-secure-storage'
 
 const { Sider, Content, Footer, Header } = Layout;
 type MenuItem = Required<MenuProps>['items'][number];
 
 const userMenuItems: MenuItem[] = [
-  getItem('Salir', '/auth/login', false, <LogoutOutlined />),
+  getItem('Salir', '/auth/login', true, <LogoutOutlined />),
 ];
 
 function getItem(
@@ -127,7 +128,13 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   const onClick: MenuProps['onClick'] = (e) => {
     if (e.key == '/auth/login') {
-      localStorage.clear();
+      const keepSign = secureStorage.getItem('keepSign');
+      if(keepSign){
+        secureStorage.removeItem('user');
+        secureStorage.removeItem('token');
+      } else {
+        secureStorage.clear();
+      }
     }
     router.push(e.key);
   };

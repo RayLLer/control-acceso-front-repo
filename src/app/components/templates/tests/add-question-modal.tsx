@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Modal } from 'antd';
+import { Button, Modal, Row } from 'antd';
 import React, { FC, useEffect, useState } from 'react';
 import MagicTable from '../../table-v2/table-custom';
 import { IQuestion, IQuestionResponse } from '@/app/interfaces/question';
@@ -55,17 +55,31 @@ const AddQuestionModal: FC<Props> = ({
     !open && onClose();
   }, [open]);
 
+  const renderFooter = (
+    <Row>
+      <Button
+        type='primary'
+        disabled={!selectedRowKeys.length}
+        onClick={handleAddQuestions}
+        style={{ marginRight: 10 }}
+        loading={confirmLoading}
+      >
+        Adicionar
+      </Button>
+      <Button onClick={onClose}>Cancelar</Button>
+    </Row>
+  );
+
   return (
     <Modal
       title='Adicionar Preguntas'
       open={open}
       onCancel={onClose}
-      onOk={handleAddQuestions}
       destroyOnClose
       width={'80%'}
       style={{ top: 20 }}
-      confirmLoading={confirmLoading}
       okButtonProps={{ disabled: !selectedRowKeys.length }}
+      footer={renderFooter}
     >
       <MagicTable<IQuestionResponse, IQuestion>
         columns={question_columns}

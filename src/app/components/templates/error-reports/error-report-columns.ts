@@ -7,33 +7,54 @@ export const error_report_columns: ColumnsType<IErrorReportResponse>[] = [
     title: 'Pregunta',
     dataIndex: ['attributes', 'question', 'data', 'attributes', 'questionText'],
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Tema',
-    dataIndex: ['attributes', 'question', 'data', 'attributes', 'theme', 'data', 'attributes', 'name'],
+    dataIndex: [
+      'attributes',
+      'question',
+      'data',
+      'attributes',
+      'theme',
+      'data',
+      'attributes',
+      'name',
+    ],
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Causa',
     dataIndex: ['attributes', 'selectedCause'],
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Texto del error',
     dataIndex: ['attributes', 'textError'],
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Fecha',
     dataIndex: ['attributes', 'date'],
     filtrable: true,
-    render (value, record, index) {
+    filterType: 'date',
+    render(value, record, index) {
       return moment(value).format('DD/MM/YYYY HH:mm:ss');
     },
   },
   {
     title: 'Usuario',
-    dataIndex: ['attributes', 'users_permissions_user', 'data', 'attributes', 'username'],
+    dataIndex: [
+      'attributes',
+      'users_permissions_user',
+      'data',
+      'attributes',
+      'username',
+    ],
     filtrable: true,
+    filterType: 'string',
   },
-]
+];

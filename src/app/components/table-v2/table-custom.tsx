@@ -235,7 +235,8 @@ const MagicTable = <T, R>({
 
   const getColumnSearchProps = (
     dataIndex: string,
-    title: string
+    title: string,
+    filterType: 'string' | 'number' | 'date' | 'boolean'
   ): TableColumnType<T> => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -256,6 +257,7 @@ const MagicTable = <T, R>({
         title={title}
         handleSearch={handleSearch}
         handleReset={handleReset}
+        type={filterType}
       />
     ),
     filterIcon: (filtered: boolean) => (
@@ -268,6 +270,7 @@ const MagicTable = <T, R>({
   });
 
   const table_columns: ColumnsType<T>[] = useMemo(() => {
+    console.log(columns)
     const newColumns =
       columns?.map((column: any) => {
         return column.filtrable
@@ -277,7 +280,8 @@ const MagicTable = <T, R>({
                 column.dataIndex
                   .filter((f: string) => f !== 'attributes' && f !== 'data')
                   .join('.'),
-                column.title
+                column.title,
+                column.filterType
               ),
             }
           : column;

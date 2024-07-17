@@ -12,11 +12,13 @@ export const subtheme_columns: ColumnsType<ISubThemeResponse>[] = [
     dataIndex: ['attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Tema',
     dataIndex: ['attributes', 'theme', 'data', 'attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
 ];

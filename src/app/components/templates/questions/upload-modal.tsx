@@ -1,5 +1,5 @@
 'use client';
-import { Modal, notification, Upload } from 'antd';
+import { Button, Modal, notification, Row, Upload } from 'antd';
 import React, { FC, useState } from 'react';
 
 import { InboxOutlined } from '@ant-design/icons';
@@ -31,16 +31,31 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
     }
   };
 
+  const renderFooter = (
+    <Row>
+      <Button
+        type='primary'
+        disabled={!file || !file?.length}
+        onClick={handleUpload}
+        style={{ marginRight: 10 }}
+      >
+        Subir
+      </Button>
+      <Button onClick={onClose}>Cancelar</Button>
+    </Row>
+  );
+
   return (
     <Modal
       title='Subir preguntas'
       open={open}
       destroyOnClose
-      onOk={() => handleUpload(file)}
+      // onOk={() => handleUpload(file)}
       onCancel={() => {
         setFile(undefined);
         onClose();
       }}
+      footer={renderFooter}
       okButtonProps={{ disabled: !file || !file?.length }}
     >
       <Upload.Dragger

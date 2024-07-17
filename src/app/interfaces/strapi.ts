@@ -53,6 +53,7 @@ export interface StrapiFilter extends NestedFilter {}
 // export type ColumnsType<T> = TableProps<T>['columns'];
 export type ColumnsType<T> = TableColumnProps<T> & {
   filtrable?: boolean;
+  filterType?: 'string' | 'number' | 'date' | 'boolean';
 };
 export type TablePaginationConfig = Exclude<
   GetProp<TableProps, 'pagination'>,

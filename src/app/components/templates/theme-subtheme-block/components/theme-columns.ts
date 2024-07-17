@@ -7,19 +7,30 @@ export const theme_columns: ColumnsType<IThemeResponse>[] = [
     dataIndex: ['attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'Cuerpo/s',
-    dataIndex: ['attributes', 'category_themes', 'category', 'attributes', 'name'],
+    dataIndex: [
+      'attributes',
+      'category_themes',
+      'category',
+      'attributes',
+      'name',
+    ],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
     render: (_, record) =>
-      record.attributes.category_themes.data?.map((d) => d.attributes.category.data?.attributes.name).join(', ') ?? '',
+      record.attributes.category_themes.data
+        ?.map((d) => d.attributes.category.data?.attributes.name)
+        .join(', ') ?? '',
   },
   {
     title: 'Etiqueta',
     dataIndex: ['attributes', 'tag'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
 ];

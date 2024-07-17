@@ -1,4 +1,5 @@
 import axios from 'axios';
+import secureStorage from 'react-secure-storage'
 
 export const uploadService = async (file: any) => {
   try {
@@ -7,7 +8,7 @@ export const uploadService = async (file: any) => {
     return axios.post(process.env.NEXT_PUBLIC_API_URL + '/upload', form, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${secureStorage.getItem('token')}`,
       },
     });
   } catch (error) {
@@ -26,7 +27,7 @@ export const uploadQuestions = async (file: any) => {
       {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${secureStorage.getItem('token')}`,
         },
       }
     );

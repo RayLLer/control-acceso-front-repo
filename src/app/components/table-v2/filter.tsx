@@ -1,12 +1,20 @@
 import { Select, Input, Space, Button } from 'antd';
 import { FilterDropdownProps } from 'antd/es/table/interface';
-import React, { FC } from 'react';
-import { selectFilters } from './filter-values';
+import React, { FC, useMemo } from 'react';
+import {
+  filtersSelectBoolean,
+  filtersSelectNumberOrDate,
+  filtersSelectString,
+  selectFilters,
+} from './filter-values';
 import { SearchOutlined } from '@ant-design/icons';
+
+type DataType = 'string' | 'number' | 'date' | 'boolean';
 
 const FilterComponent: FC<
   FilterDropdownProps & {
     dataIndex: string;
+    type?: DataType;
     title: string;
     handleSearch: (
       value: string,
@@ -23,11 +31,26 @@ const FilterComponent: FC<
   handleSearch,
   handleReset,
   setSelectedKeys,
-  title
+  title,
+  type = 'string',
 }) => {
   const [searchInput, setSearchInput] = React.useState<string>('');
-  const [filterOperator, setFilterOperator] =
-    React.useState<string>('$containsi');
+  const [filterOperator, setFilterOperator] = React.useState<string>(
+    type === 'string' ? '$containsi' : '$eq'
+  );
+
+  const filters = useMemo(() => {
+    switch (type) {
+      case 'string':
+        return filtersSelectString;
+      case 'number':
+        return filtersSelectNumberOrDate;
+      case 'date':
+        return filtersSelectNumberOrDate;
+      case 'boolean':
+        return filtersSelectBoolean;
+    }
+  }, [type]);
 
   const reset = () => {
     setFilterOperator('$containsi');
@@ -35,13 +58,11 @@ const FilterComponent: FC<
     handleReset(dataIndex);
     setSelectedKeys([]);
   };
-  
-  console.log(dataIndex)
 
   return (
     <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
       <Select
-        options={selectFilters}
+        options={filters}
         value={filterOperator}
         style={{ marginBottom: 8, width: '100%' }}
         onChange={(value) => {

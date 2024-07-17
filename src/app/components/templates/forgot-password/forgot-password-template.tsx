@@ -1,7 +1,7 @@
 'use client'
 import { paths } from '@/app/routes/paths'
 import { axiosBaseInstance, axiosInstance } from '@/utils/axios'
-import { App, Button, Card, Flex, Form, Input } from 'antd'
+import { App, Button, Card, Flex, Form, Input, Row } from 'antd'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
@@ -81,11 +81,14 @@ const ForgotPasswordTemplate = () => {
           >
             <Input placeholder='test@testopo.com' />
           </Form.Item>
-          <Form.Item >
+          <Row >
             <Button type='primary' htmlType='submit' loading={loading}>
               Enviar
             </Button>
-          </Form.Item>
+            <Button type='link' onClick={() => router.push(paths.login)}>
+              Cancelar
+            </Button>
+          </Row>
         </Form>
       </Card>
     </div>

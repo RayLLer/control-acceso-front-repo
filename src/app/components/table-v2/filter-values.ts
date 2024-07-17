@@ -76,11 +76,11 @@ export const filtersSelectString = [
   },
   {
     label: 'Contiene',
-    value: '$contains',
+    value: '$containsi',
   },
   {
     label: 'No contiene',
-    value: '$notContains',
+    value: '$notContainsi',
   },
 
   {
@@ -93,11 +93,11 @@ export const filtersSelectString = [
   },
   {
     label: 'Comienza con',
-    value: '$startsWith',
+    value: '$startsWithi',
   },
   {
     label: 'Termina en',
-    value: '$endsWith',
+    value: '$endsWithi',
   },
 ];
 

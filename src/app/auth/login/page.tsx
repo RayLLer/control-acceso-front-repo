@@ -15,19 +15,28 @@ import {
 import { isAxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './page.module.css';
+import secureStorage from 'react-secure-storage'
 
 interface ILogin {
   identifier: string;
   password: string;
+  keepSign: boolean;
 }
 
 const Login: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [keepSign, setKeepSign] = useState(false);
 
-  const onLogin = async (payload: ILogin) => {
+  const [form] = Form.useForm();
+
+  const onLogin = async (data: ILogin) => {
+    const payload = {
+      identifier: data.identifier,
+      password: data.password,
+    };
     try {
       setLoading(true);
       const response = await axiosInstance.post(
@@ -35,32 +44,43 @@ const Login: React.FC = () => {
         payload
       );
       const user = response.data.user;
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', response.data.jwt);
+      secureStorage.setItem('user', JSON.stringify(user));
+      secureStorage.setItem('token', response.data.jwt);
+      secureStorage.setItem('keepSign', keepSign);
+      if(keepSign){
+        secureStorage.setItem('identifier', data.identifier);
+        secureStorage.setItem('password', data.password);
+      } else {
+        secureStorage.removeItem('identifier');
+        secureStorage.removeItem('password');
+      }
+
       // const responseFcm = await userService.putUser(user.id, user);
       setLoading(false);
       router.push(paths.tests.root);
     } catch (error: any) {
       setLoading(false);
       if (isAxiosError(error)) {
-        notification.open({
-          type: 'error',
-          message: 'Error',
-          description: error.response?.data.error.message,
+        notification.error({
+          message: 'Identificador o Contraseña incorrectos',
         });
       }
     }
   };
 
-  // const onLogin = (payload: ILogin) => {
-  //   signIn('credentials', { ...payload, redirect: false })
-  //     .then((res) => {
-  //       console.log(res);
-  //     })
-  //     .catch((e) => {
-  //       console.log(e);
-  //     });
-  // };
+  useEffect(() => {
+    debugger
+    const keepSign = secureStorage.getItem('keepSign') as boolean;
+    setKeepSign(keepSign);
+    if(keepSign){
+      const identifier = secureStorage.getItem('identifier') as string;
+      const password = secureStorage.getItem('password') as string;
+      if(identifier && password){
+        form.setFieldsValue({identifier, password, keepSign })
+      }
+    }
+  }, [])
+  
 
   return (
     // <Row justify='center' align='middle' style={{ minHeight: '98vh' }}>
@@ -78,7 +98,12 @@ const Login: React.FC = () => {
         backgroundSize: 'cover',
       }}
     >
-      <Image src='/img/logo.png' width={200} alt='Logo' style={{marginBottom: '5px'}} />
+      <Image
+        src='/img/logo.png'
+        width={200}
+        alt='Logo'
+        style={{ marginBottom: '5px' }}
+      />
       <Card className={styles.card}>
         <Typography.Title level={3}>Ingresar</Typography.Title>
         <Form
@@ -86,6 +111,7 @@ const Login: React.FC = () => {
           className='login-form'
           initialValues={{ remember: true }}
           onFinish={onLogin}
+          form={form}
         >
           <Form.Item
             name='identifier'
@@ -107,8 +133,9 @@ const Login: React.FC = () => {
             />
           </Form.Item>
 
-          <Form.Item>
-            <Checkbox>Recuérdame</Checkbox>
+          <Form.Item name={'keepSign'}>
+            {/* <Checkbox >Recuérdame</Checkbox> */}
+            <Checkbox checked={keepSign} onChange={(value)=> setKeepSign(value.target.checked)}>Recuérdame</Checkbox>
           </Form.Item>
 
           <Form.Item>
@@ -121,9 +148,7 @@ const Login: React.FC = () => {
               Acceder
             </Button>
           </Form.Item>
-          <Link href={paths.forgot_password}>
-            Has olvidado tu contraseña
-          </Link>
+          <Link href={paths.forgot_password}>Has olvidado tu contraseña</Link>
         </Form>
       </Card>
     </div>

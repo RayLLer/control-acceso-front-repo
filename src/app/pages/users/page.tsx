@@ -37,25 +37,28 @@ const User: FC = (): ReactElement => {
       dataIndex: ['username'],
       key: 'username',
       filtrable: true,
-      
+      filterType: 'string',
     },
     {
       title: 'Correo',
       dataIndex: ['email'],
       key: 'email',
       filtrable: true,
+      filterType: 'string',
     },
     {
       title: 'Nombre Completo',
       dataIndex: ['name'],
       key: 'name',
       filtrable: true,
+      filterType: 'string',
     },
     {
       title: 'Rol',
       dataIndex: ['role', 'name'],
       key: 'role.name',
       filtrable: true,
+      filterType: 'string',
     },
     {
       title: 'Bloqueado',

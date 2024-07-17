@@ -222,7 +222,11 @@ const QuestionForm = () => {
         <Input.TextArea rows={3} />
       </Form.Item>
 
-      <Form.Item name='category' label='Cuerpo'>
+      <Form.Item
+        name='category'
+        label='Cuerpo'
+        rules={[{ required: true, message: 'Seleccione un cuerpo.' }]}
+      >
         <Select
           options={categories}
           loading={loadingCategories}
@@ -236,15 +240,27 @@ const QuestionForm = () => {
         />
       </Form.Item>
 
-      <Form.Item name='theme' label='Tema'>
+      <Form.Item
+        name='theme'
+        label='Tema'
+        rules={[{ required: true, message: 'Seleccione un tema.' }]}
+      >
         <Select options={themes} loading={loadingThemes} />
       </Form.Item>
 
-      <Form.Item name='sub_theme' label='SubTema'>
+      <Form.Item
+        name='sub_theme'
+        label='SubTema'
+        rules={[{ required: true, message: 'Seleccione un subtema.' }]}
+      >
         <Select options={subThemes} loading={loadingSubThemes} />
       </Form.Item>
 
-      <Form.Item name='block' label='Bloque'>
+      <Form.Item
+        name='block'
+        label='Bloque'
+        rules={[{ required: true, message: 'Seleccione un bloque.' }]}
+      >
         <Select options={blocks} loading={loadingBlocks} />
       </Form.Item>
 

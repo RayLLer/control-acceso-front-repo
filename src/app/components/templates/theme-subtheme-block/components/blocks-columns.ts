@@ -10,11 +10,13 @@ export const block_columns: ColumnsType<IBlockResponse>[] = [
     dataIndex: ['attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
   {
     title: 'SubTema',
     dataIndex: ['attributes', 'sub_theme', 'data', 'attributes', 'name'],
     sorter: true,
     filtrable: true,
+    filterType: 'string',
   },
 ];
