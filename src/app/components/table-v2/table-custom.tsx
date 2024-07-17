@@ -112,23 +112,28 @@ const MagicTable = <T, R>({
       .get(newParams)
       .then((res) => {
         setLoading(false);
-        setData(res.data.data);
-        setTableParams({
-          ...params,
-          pagination: {
-            current: res.data.meta.pagination?.page,
-            pageSize: res.data.meta.pagination?.pageSize,
-            total: res.data.meta.pagination?.total,
-          },
-        });
-        tableParamsRef.current = {
-          ...params,
-          pagination: {
-            current: res.data.meta.pagination?.page,
-            pageSize: res.data.meta.pagination?.pageSize,
-            total: res.data.meta.pagination?.total,
-          },
-        };
+        if(url === 'users') {
+          setData(res.data as any);
+        } else {
+
+          setData(res.data.data);
+          setTableParams({
+            ...params,
+            pagination: {
+              current: res.data.meta.pagination?.page,
+              pageSize: res.data.meta.pagination?.pageSize,
+              total: res.data.meta.pagination?.total,
+            },
+          });
+          tableParamsRef.current = {
+            ...params,
+            pagination: {
+              current: res.data.meta.pagination?.page,
+              pageSize: res.data.meta.pagination?.pageSize,
+              total: res.data.meta.pagination?.total,
+            },
+          };
+        }
       })
       .catch(() => {
         setLoading(false);

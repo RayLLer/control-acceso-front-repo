@@ -2,7 +2,7 @@
 import { Button, Modal, Row, Table, Tooltip } from 'antd';
 import { FC, ReactElement, use, useEffect, useState } from 'react';
 
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import type { TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import {
   EditOutlined,
@@ -24,152 +24,56 @@ import {
 import { convertParams } from '@/utils/table';
 import { useRouter } from 'next/navigation';
 import { PermissionsEnum, validatePermissionName } from '@/utils/permissions';
+import MagicTable from '@/app/components/table-v2/table-custom';
+import { ColumnsType } from '@/app/interfaces/strapi';
 
-const usersService = new UsersService();
-
-interface TableParams {
-  pagination?: TablePaginationConfig;
-  sortField?: string;
-  sortOrder?: string;
-  filters?: Record<string, FilterValue>;
-}
 
 const User: FC = (): ReactElement => {
-  const [data, setData] = useState<IUser[]>();
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 5,
-    },
-  });
-  const loading = useAppSelector(selectLoading);
-  const users = useAppSelector(SelectAllUsers);
-  const loggedUser = useAppSelector(selectLoggedUser);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
+  const router = useRouter()
 
-  const showConfirmDelete = (user: IUser) => {
-    const modal = Modal.confirm({
-      title: 'Eliminar',
-      content: `¿Está seguro de eliminar el usuario ${user.username}?`,
-      onOk: () => dispatch(deleteUser(user.id)),
-    });
-  };
-
-  const columns: ColumnsType<IUser> = [
+  const columns: ColumnsType<IUser>[] = [
     {
       title: 'Usuario',
-      dataIndex: '',
+      dataIndex: ['username'],
       key: 'username',
-      render: (user: IUser) => user.username,
+      filtrable: true,
+      
     },
     {
       title: 'Correo',
-      dataIndex: '',
+      dataIndex: ['email'],
       key: 'email',
-      render: (user: IUser) => user.email,
+      filtrable: true,
     },
     {
       title: 'Nombre Completo',
-      dataIndex: '',
+      dataIndex: ['name'],
       key: 'name',
-      render: (user: IUser) => user.name,
+      filtrable: true,
     },
     {
       title: 'Rol',
-      dataIndex: '',
-      key: 'role',
-      render: (user: IUser) => user.role.name,
+      dataIndex: ['role', 'name'],
+      key: 'role.name',
+      filtrable: true,
     },
     {
       title: 'Bloqueado',
-      dataIndex: '',
+      dataIndex: ['blocked'],
       key: 'blocked',
       render: (user: IUser) => (user.blocked ? 'Bloqueado' : 'No bloqueado'),
     },
-    {
-      title: 'Acciones',
-      dataIndex: '',
-      key: 'actions',
-      render: (user) => {
-        return (
-          <Row wrap={false} justify={'space-evenly'}>
-            <Link
-              href={{
-                pathname: '/pages/users/form',
-                query: { userId: user.id },
-              }}
-            >
-              <Tooltip title={'Editar'}>
-                <Button
-                  type='primary'
-                  icon={<EditOutlined style={{ fontSize: 'large' }} />}
-                />
-              </Tooltip>
-            </Link>
-            <Tooltip title={'Eliminar'}>
-              <Button
-                type='primary'
-                danger
-                icon={<DeleteOutlined style={{ fontSize: 'large' }} />}
-                onClick={() => showConfirmDelete(user)}
-              />
-            </Tooltip>
-          </Row>
-        );
-      },
-    },
   ];
 
-  useEffect(() => {
-    // !validatePermissionName(
-    //   PermissionsEnum.USERS,
-    //   loggedUser.role.permissions
-    // ) && router.replace('/pages/dashboard');
-  }, []);
-
-  useEffect(() => {
-    dispatch(getUsers(convertParams(tableParams)));
-  }, [JSON.stringify(tableParams)]);
-
-  const handleTableChange = (
-    pagination: TablePaginationConfig,
-    filters: Record<string, FilterValue>,
-    sorter: SorterResult<any>
-  ) => {
-    setTableParams({
-      pagination,
-      filters,
-      ...sorter,
-    });
-    // if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-    //   setData([]);
-    // }
-  };
-
   return (
-    <>
-      <Row style={{ marginBottom: 15 }} justify={'end'}>
-        <Link href={{ pathname: '/pages/users/form' }}>
-          <Button type='primary' icon={<UserAddOutlined />}>
-            Crear usuario
-          </Button>
-        </Link>
-      </Row>
-
-      <Table
-        columns={columns}
-        dataSource={users}
-        // pagination={tableParams.pagination}
-        pagination={{ pageSize: 10 }}
-        loading={loading}
-        rowKey={(record: IUser) => record.id}
-        scroll={{ x: 500 }}
-        // onChange={(pagination, filters, sorter) => {
-        //   handleTableChange;
-        // }}
-      />
-    </>
+    <MagicTable<IUser, IUser>
+      columns={columns}
+      url={'users'}
+      onAdd={() => router.push('users/form')}
+      onEdit={(id) => router.push(`users/form/${id}`,)}
+      deleteEntry
+      crud
+    />
   );
 };
 
