@@ -65,7 +65,7 @@ const TestForm = () => {
     const response = await testService.getForSelect('name', {
       filters: {
         suTestType: { $eq: subTestType === 'General' ? 'Práctico' : 'General' },
-        year: { $eq: form.getFieldValue('year')},
+        year: { $eq: form.getFieldValue('year') },
       },
     });
     setAsociatedTests(convertForSelect(response.data.data));
@@ -231,8 +231,17 @@ const TestForm = () => {
         </Form.Item>
       )}
 
-      <Form.Item label='Tiempo límite' name='timeLimit'>
-        <Input type='number' suffix='minutos' />
+      <Form.Item
+        label='Tiempo límite'
+        name='timeLimit'
+        rules={[
+          {
+            min: 0,
+            message: 'No debe admitir valores negativos',
+          },
+        ]}
+      >
+        <Input type='number' suffix='minutos' min={0} />
       </Form.Item>
 
       <Form.Item
