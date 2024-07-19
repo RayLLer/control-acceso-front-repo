@@ -69,7 +69,6 @@ const Login: React.FC = () => {
   };
 
   useEffect(() => {
-    debugger
     const keepSign = secureStorage.getItem('keepSign') as boolean;
     setKeepSign(keepSign);
     if(keepSign){
