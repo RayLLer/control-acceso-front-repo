@@ -28,6 +28,7 @@ import React, {
   useState,
 } from 'react';
 import FilterComponent from './filter';
+import { AUTHENTICATED, PUBLIC } from '@/app/pages/roles/roles.reducer';
 
 type ParametersType = {
   populate?: any;
@@ -35,10 +36,10 @@ type ParametersType = {
 };
 
 type ActionType<T> = {
-    icon: React.ReactNode;
-    onClick: (record?: T) => void;
-    tooltip: string;
-  }
+  icon: React.ReactNode;
+  onClick: (record?: T) => void;
+  tooltip: string;
+};
 
 type Props<T, R> = TableProps & {
   columns: ColumnsType<T>;
@@ -51,7 +52,7 @@ type Props<T, R> = TableProps & {
   deleteEntry?: boolean;
   setRefetch?: (value: boolean) => void;
   moreActions?: ActionType<T>[];
-  topActions?: ActionType<T>[]
+  topActions?: ActionType<T>[];
 };
 
 const MagicTable = <T, R>({
@@ -110,29 +111,39 @@ const MagicTable = <T, R>({
       : undefined;
     baseService
       .get(newParams)
-      .then((res) => {
+      .then((res: any) => {
         setLoading(false);
-        if(url === 'users') {
-          setData(res.data as any);
-        } else {
+        switch (url) {
+          case 'users':
+            setData(res.data as any);
+            break;
+          case 'users-permissions/roles':
+            setData(
+              res.data.roles.filter(
+                (rol: any) => rol.type !== AUTHENTICATED && rol.type !== PUBLIC
+              ) as any
+            );
+            break;
 
-          setData(res.data.data);
-          setTableParams({
-            ...params,
-            pagination: {
-              current: res.data.meta.pagination?.page,
-              pageSize: res.data.meta.pagination?.pageSize,
-              total: res.data.meta.pagination?.total,
-            },
-          });
-          tableParamsRef.current = {
-            ...params,
-            pagination: {
-              current: res.data.meta.pagination?.page,
-              pageSize: res.data.meta.pagination?.pageSize,
-              total: res.data.meta.pagination?.total,
-            },
-          };
+          default:
+            setData(res.data.data);
+            setTableParams({
+              ...params,
+              pagination: {
+                current: res.data.meta.pagination?.page,
+                pageSize: res.data.meta.pagination?.pageSize,
+                total: res.data.meta.pagination?.total,
+              },
+            });
+            tableParamsRef.current = {
+              ...params,
+              pagination: {
+                current: res.data.meta.pagination?.page,
+                pageSize: res.data.meta.pagination?.pageSize,
+                total: res.data.meta.pagination?.total,
+              },
+            };
+            break;
         }
       })
       .catch(() => {
@@ -270,7 +281,6 @@ const MagicTable = <T, R>({
   });
 
   const table_columns: ColumnsType<T>[] = useMemo(() => {
-    console.log(columns)
     const newColumns =
       columns?.map((column: any) => {
         return column.filtrable

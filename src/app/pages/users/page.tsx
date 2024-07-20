@@ -1,31 +1,11 @@
 'use client';
-import { Button, Modal, Row, Table, Tooltip } from 'antd';
-import { FC, ReactElement, use, useEffect, useState } from 'react';
+import { FC, ReactElement } from 'react';
 
-import type { TablePaginationConfig } from 'antd/es/table';
-import type { FilterValue, SorterResult } from 'antd/es/table/interface';
-import {
-  EditOutlined,
-  UserAddOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons';
 
-import { IUser } from './users.interface';
-import { UsersService } from './users.service';
-import Link from 'next/link';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import {
-  SelectAllUsers,
-  deleteUser,
-  getUsers,
-  selectLoading,
-  selectLoggedUser,
-} from './users.reducer';
-import { convertParams } from '@/utils/table';
-import { useRouter } from 'next/navigation';
-import { PermissionsEnum, validatePermissionName } from '@/utils/permissions';
 import MagicTable from '@/app/components/table-v2/table-custom';
 import { ColumnsType } from '@/app/interfaces/strapi';
+import { useRouter } from 'next/navigation';
+import { IUser } from './users.interface';
 
 
 const User: FC = (): ReactElement => {

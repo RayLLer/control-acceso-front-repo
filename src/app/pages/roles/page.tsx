@@ -1,142 +1,50 @@
 'use client';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { TableParams, convertParams } from '@/utils/table';
-import {
-  Button,
-  Modal,
-  Row,
-  Table,
-  TablePaginationConfig,
-  Tooltip,
-} from 'antd';
-import {
-  ColumnsType,
-  FilterValue,
-  SorterResult,
-} from 'antd/es/table/interface';
-import { FC, useState, useEffect } from 'react';
+import { FC } from 'react';
 import { IRole } from './roles.interface';
-import {
-  SelectAllRoles,
-  deleteRole,
-  fetchRoles,
-  selectLoading,
-} from './roles.reducer';
-import Link from 'next/link';
 
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { selectLoggedUser } from '../users/users.reducer';
+import MagicTable from '@/app/components/table-v2/table-custom';
+import { ColumnsType } from '@/app/interfaces/strapi';
 import { useRouter } from 'next/navigation';
-import { PermissionsEnum, validatePermissionName } from '@/utils/permissions';
 
 const Roles: FC = () => {
-  const dispatch = useAppDispatch();
   const router = useRouter();
-  const roles = useAppSelector(SelectAllRoles);
-  const loading = useAppSelector(selectLoading);
-  const loggedUser = useAppSelector(selectLoggedUser);
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
 
-  const columns: ColumnsType<IRole> = [
+  const columns: ColumnsType<IRole>[] = [
     {
       title: 'Nombre',
-      dataIndex: '',
+      dataIndex: ['name'],
       key: 'name',
-      render: (role: IRole) => `${(role && role.name) || ''}`,
+      // filtrable: true,
+      filterType: 'string',
     },
     {
       title: 'Descripción',
-      dataIndex: '',
+      dataIndex: ['description'],
       key: 'description',
-      render: (role: IRole) => `${(role && role.description) || ''}`,
+      // filtrable: true,
+      filterType: 'string',
     },
     {
       title: 'Tipo',
-      dataIndex: '',
+      dataIndex: ['type'],
       key: 'type',
-      render: (role: IRole) => `${(role && role.type) || ''}`,
-    },
-    {
-      title: 'Acciones',
-      dataIndex: '',
-      key: 'actions',
-      render: (role: IRole) => {
-        return (
-          <Row wrap={false} justify={'space-evenly'}>
-            <Link
-              href={{
-                pathname: '/pages/roles/form',
-                query: { roleId: role.id },
-              }}
-            >
-              <Tooltip title={'Editar'}>
-                <Button
-                  type='primary'
-                  icon={<EditOutlined style={{ fontSize: 'large' }} />}
-                />
-              </Tooltip>
-            </Link>
-            <Tooltip title={'Eliminar'}>
-              <Button
-                type='primary'
-                danger
-                icon={<DeleteOutlined style={{ fontSize: 'large' }} />}
-                onClick={() => showConfirmDelete(role)}
-              />
-            </Tooltip>
-          </Row>
-        );
-      },
+      // filtrable: true,
+      filterType: 'string',
     },
   ];
 
-  const handleFetchRoles = () => {
-    dispatch(fetchRoles(convertParams(tableParams)));
-  };
-
-  useEffect(() => {
-    // !hasPermission(loggedUser.role.permissions, 'user', 'find') &&
-    //   router.replace('/pages/dashboard');
-  }, []);
-
-  useEffect(() => {
-    handleFetchRoles();
-  }, [JSON.stringify(tableParams)]);
-
-  const showConfirmDelete = (role: IRole) => {
-    const modal = Modal.confirm({
-      title: 'Eliminar',
-      content: `¿Está seguro de eliminar el rol ${role.name}?`,
-      onOk: () => dispatch(deleteRole(role.id)),
-    });
-  };
-
   return (
-    <>
-      <Row style={{ marginBottom: 15 }} justify={'end'}>
-        <Link href={{ pathname: '/pages/roles/form' }}>
-          <Button type='primary' icon={<PlusOutlined />}>
-            Crear rol
-          </Button>
-        </Link>
-      </Row>
-      <Table
-        columns={columns}
-        dataSource={roles}
-        pagination={{ pageSize: 15 }}
-        loading={loading}
-        rowKey={(record: IRole) => record.id}
-        scroll={{ x: 500 }}
-        // onChange={(pagination, filters, sorter) =>
-        //   handleTableChange(pagination, filters, sorter)
-        // }
-      />
-    </>
+    <MagicTable<IRole, IRole>
+      columns={columns}
+      url={'users-permissions/roles'}
+      onAdd={function (): void {
+        router.push('roles/form');
+      }}
+      onEdit={function (id: number): void {
+        router.push(`roles/form?roleId=${id}`);
+      }}
+      crud
+    />
   );
 };
 

@@ -14,8 +14,7 @@ type Props = {
 const UploadModal: FC<Props> = ({ open, onClose }) => {
   const [file, setFile] = useState<any>();
 
-  const handleUpload = async (file: any) => {
-    console.log(file[0]);
+  const handleUpload = async () => {
     try {
       await uploadQuestions(file[0]);
       notification.success({
@@ -63,7 +62,6 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
         beforeUpload={() => false}
         accept='.xlsx, .xls'
         onChange={(e) => {
-          console.log(e)
           if (Array.isArray(e)) {
             setFile(e);
             return;

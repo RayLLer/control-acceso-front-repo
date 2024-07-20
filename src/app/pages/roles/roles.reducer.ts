@@ -8,8 +8,8 @@ import {
 import { IPermissions, IRole, IRoutesInfo } from './roles.interface';
 import { RolesServices } from './roles.service';
 
-const AUTHENTICATED = 'authenticated';
-const PUBLIC = 'public';
+export const AUTHENTICATED = 'authenticated';
+export const PUBLIC = 'public';
 
 const rolesAdapter = createEntityAdapter<IRole>();
 const rolesServices = new RolesServices();
