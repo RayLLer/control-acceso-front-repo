@@ -1,0 +1,57 @@
+import MagicTable from '@/app/components/table-v2/table-custom';
+import {
+  IBlock,
+  IBlockResponse
+} from '@/app/interfaces/question';
+import { block_columns } from './blocks-columns';
+import { useState } from 'react';
+import BlockForm from './blocks-form';
+import { BASE_FILTER } from '@/utils/constants/constants';
+
+const BlockTable = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBlockId, setSelectedBlockId] = useState<
+    number | undefined
+  >();
+  const [refetch, setRefetch] = useState(false);
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedBlockId(undefined);
+  };
+
+  return (
+    <>
+      <MagicTable<IBlockResponse, IBlock>
+        columns={block_columns}
+        url={'blocks'}
+        crud
+        onAdd={handleShowModal}
+        onEdit={(id: number): void => {
+          handleShowModal();
+          setSelectedBlockId(id);
+        }}
+        setRefetch={setRefetch}
+        refetch={refetch}
+        defaultParameters={{
+          populate: { sub_theme: '*' },
+          filters: { ...BASE_FILTER },
+        }}
+      />
+      {showModal && (
+        <BlockForm
+          blockId={selectedBlockId}
+          open={showModal}
+          onClose={handleCloseModal}
+          onSaved={() => {
+            handleCloseModal();
+            setRefetch(true);
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+export default BlockTable;

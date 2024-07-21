@@ -1,0 +1,16 @@
+.tmp/
+.cache/
+.git/
+build/
+data/
+/.dockerignore
+/.editorconfig
+/.env.example
+/.env.local
+/.gitignore
+/front.yml
+/install.sh
+/favicon.png
+/README.md
+*Dockerfile*
+node_modules
