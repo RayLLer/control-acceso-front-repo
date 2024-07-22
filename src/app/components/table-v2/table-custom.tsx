@@ -18,6 +18,7 @@ import {
   TableProps,
   Tooltip,
   theme as antdTheme,
+  notification,
 } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import React, {
@@ -157,9 +158,15 @@ const MagicTable = <T, R>({
       onOk: () => {
         !deleteEntry
           ? baseService.put(id, { deleted: true } as any).then(() => {
+              notification.success({
+                message: 'Registro eliminado correctamente',
+              })
               fetchData(tableParams);
             })
           : baseService.delete(id).then(() => {
+              notification.success({
+                message: 'Registro eliminado correctamente',
+              });
               fetchData(tableParams);
             });
       },
