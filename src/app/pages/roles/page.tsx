@@ -44,6 +44,7 @@ const Roles: FC = () => {
         router.push(`roles/form?roleId=${id}`);
       }}
       crud
+      deleteEntry
     />
   );
 };

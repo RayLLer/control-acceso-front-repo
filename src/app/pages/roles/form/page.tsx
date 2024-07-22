@@ -33,7 +33,7 @@ const FormRole = () => {
   const [form] = useForm();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
-  let roleId = searchParams.get('roleId') ?? 0;
+  const roleId = searchParams.get('roleId') ?? 0;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const error = useAppSelector(selectError);
@@ -78,6 +78,20 @@ const FormRole = () => {
     roleId && fetchRole();
   }, []);
 
+  const updatePermissions = async (roleId: number, permissions: number[]) => {
+    try {
+      await rolesService.updatePermissions(
+        sources.ROLE_PERMISSION + '/updateRole',
+        { roleId: +roleId, customPermissionsIds: permissions }
+      );
+    } catch (error) {
+      notification.error({
+        message: 'Error',
+        description: 'Los permisos no fueron actualizados correctamente.',
+      });
+    }
+  };
+
   const onFinish = async (data: any) => {
     try {
       const roleDto: any = {
@@ -87,32 +101,29 @@ const FormRole = () => {
       };
       roleId && (roleDto.id = roleId);
       setLoading(true);
-      if (!roleId) {
-        dispatch(postRoles(roleDto))
-          .unwrap()
-          .then(() => {
-            dispatch(fetchRoles(undefined))
-              .unwrap()
-              .then((res) => {
-                const tempRol = res!.find((r) => r.name === data.name);
-                roleId = tempRol!.id.toString();
-              })
-              .catch((err) => {
-                console.log(err, 'aki');
-              });
-          })
-          .catch((err) => {
-            notification.error({ message: 'Error al guardar el rol' });
+      try {
+        if(!roleId){
+          debugger
+          await rolesService.postRole(roleDto);
+          const response = await rolesService.get() as any;
+          const id  = response.data.roles.find((r: any) => r.name === data.name)!.id;
+          await updatePermissions(id, data.permissions);
+          notification.success({
+            message: 'Rol creado correctamente.',
           });
-      } else {
-        dispatch(patchRoles(roleDto));
+        } else {
+          await rolesService.put(+roleId, roleDto);
+          await updatePermissions(+roleId, data.permissions);
+          notification.success({
+            message: 'Rol actualizado correctamente.',
+          });
+        }
+        router.push('/pages/roles');
+        
+      } catch (error) {
+        console.log(error)  
       }
-      await rolesService.updatePermissions(
-        sources.ROLE_PERMISSION + '/updateRole',
-        { roleId: +roleId, customPermissionsIds: data.permissions }
-      );
-      setLoading(false);
-      router.replace('pages/roles');
+      
     } catch (error) {
       setLoading(false);
       notification.error({

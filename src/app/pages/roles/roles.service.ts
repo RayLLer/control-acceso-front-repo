@@ -40,10 +40,10 @@ export class RolesServices extends BaseApi<IRole, IRole> {
   }
   
   postRole(
-    url: string,
-    payload: IRole
+    payload: IRole,
+    url?: string,
   ) {
-    return axiosInstance.post(url, payload);
+    return axiosInstance.post(url ?? this.url, payload);
   }
 
 }

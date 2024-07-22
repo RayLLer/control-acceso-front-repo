@@ -57,7 +57,9 @@ const FormUser = () => {
 
   const fetchUser = async () => {
     try {
-      let response: any = await usersService.getById(+userId, {populate: 'role'});
+      let response: any = await usersService.getById(+userId, {
+        populate: 'role',
+      });
       if (isUser(response.data)) {
         form.setFieldsValue({
           username: response.data.username,
@@ -128,7 +130,7 @@ const FormUser = () => {
             ? 'Usuario editado correctamente'
             : 'Usuario creado correctamente',
         });
-        router.push('pages/users');
+        router.push('/pages/users');
       })
       .catch((error) => {});
   };
@@ -217,6 +219,7 @@ const FormUser = () => {
           name='name'
           label='Nombre completo'
           rules={[
+            { required: true, message: 'El nombre completo es requerido.' },
             {
               message: 'Introduzca el nombre',
               whitespace: true,
@@ -341,6 +344,19 @@ const FormUser = () => {
               min: 6,
               message: 'La contraseña debe tener al menos 6 caracteres',
             },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!userId) {
+                  const regex = /^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+                  return regex.test(value)
+                    ? Promise.resolve()
+                    : Promise.reject(
+                        'La contraseña debe tener al menos 8 caracteres, una mayúscula y un caracter especial'
+                      );
+                }
+                return Promise.resolve();
+              },
+            }),
           ]}
           hasFeedback
         >

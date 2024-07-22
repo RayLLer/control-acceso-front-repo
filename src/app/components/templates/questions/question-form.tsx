@@ -251,7 +251,7 @@ const QuestionForm = () => {
       <Form.Item
         name='sub_theme'
         label='SubTema'
-        rules={[{ required: true, message: 'Seleccione un subtema.' }]}
+        // rules={[{ required: true, message: 'Seleccione un subtema.' }]}
       >
         <Select options={subThemes} loading={loadingSubThemes} />
       </Form.Item>
@@ -259,7 +259,7 @@ const QuestionForm = () => {
       <Form.Item
         name='block'
         label='Bloque'
-        rules={[{ required: true, message: 'Seleccione un bloque.' }]}
+        // rules={[{ required: true, message: 'Seleccione un bloque.' }]}
       >
         <Select options={blocks} loading={loadingBlocks} />
       </Form.Item>

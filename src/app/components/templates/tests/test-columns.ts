@@ -38,6 +38,13 @@ export const test_columns: ColumnsType<ITestResponse>[] = [
     filterType: 'string',
   },
   {
+    title: 'Subtipo de Test',
+    dataIndex: ['attributes', 'suTestType'],
+    sorter: true,
+    filtrable: true,
+    filterType: 'string',
+  },
+  {
     title: 'Cantidad de preguntas',
     dataIndex: ['attributes', 'test_questions', 'data'],
     render: (data) => data.length,

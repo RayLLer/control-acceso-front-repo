@@ -41,6 +41,14 @@ const RealizedTestsDetails = () => {
           throw new Error('Function not implemented.');
         }}
         defaultParameters={{
+          populate: {
+            test: {
+              populate: 'theme',
+            },
+            users_permissions_user: {
+              fields: 'username',
+            },
+          },
           filters: { users_permissions_user: userId, test: testId },
         }}
       />

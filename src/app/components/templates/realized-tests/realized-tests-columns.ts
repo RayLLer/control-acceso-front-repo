@@ -10,11 +10,17 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
     filterType: 'string',
   },
   {
-    title: 'Test',
-    dataIndex: ['lastTest', 'test', 'name'],
+    title: 'Tema',
+    dataIndex: ['lastTest', 'test', 'theme', 'name'],
     filtrable: true,
     filterType: 'string',
   },
+  // {
+  //   title: 'Test',
+  //   dataIndex: ['lastTest', 'test', 'name'],
+  //   filtrable: true,
+  //   filterType: 'string',
+  // },
   {
     title: 'Cantidad de intentos',
     dataIndex: ['attempts'],

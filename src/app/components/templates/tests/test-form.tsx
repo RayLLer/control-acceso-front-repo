@@ -259,12 +259,20 @@ const TestForm = () => {
       <Form.Item
         label='Fecha de caducidad'
         name='spireDate'
-        // rules={[
-        //   {
-        //     required: true,
-        //     message: 'Por favor, ingrese la fecha de caducidad.',
-        //   },
-        // ]}
+        rules={[
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (value) {
+
+                return getFieldValue('initDate') < value
+                  ? Promise.resolve()
+                  : Promise.reject(
+                      'La fecha de caducidad debe ser mayor a la fecha de entrada en vigor'
+                    );
+              }
+            },
+          }),
+        ]}
       >
         <DatePicker style={{ width: '100%' }} format={dateFormat} />
       </Form.Item>

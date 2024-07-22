@@ -19,6 +19,11 @@ export const details_columns: ColumnsType<IRealizedTestResponse>[] = [
     width: '300px',
   },
   {
+    title: 'Tema',
+    dataIndex: ['attributes', 'test', 'data', 'attributes', 'theme', 'data', 'attributes', 'name'],
+    width: '300px',
+  },
+  {
     title: 'Preguntas Correctas',
     dataIndex: ['attributes', 'correctAnswersQty'],
     align: 'right',
