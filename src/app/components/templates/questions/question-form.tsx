@@ -147,7 +147,7 @@ const QuestionForm = () => {
         name={'image'}
         getValueFromEvent={normFile}
       >
-        <Upload listType='picture-card' maxCount={1} beforeUpload={() => false}>
+        <Upload listType='picture-card' maxCount={1} beforeUpload={() => false} accept='image/*'>
           <button style={{ border: 0, background: 'none' }} type='button'>
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Cargar</div>
