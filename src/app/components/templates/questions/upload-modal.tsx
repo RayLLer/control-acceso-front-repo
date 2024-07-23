@@ -73,6 +73,9 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
           <InboxOutlined />
         </p>
         <p className='ant-upload-text'>Click o arrastrar archivo para subir</p>
+        <p className='ant-upload-hint'>
+          El archivo debe ser en formato excel (.xls).
+        </p>
       </Upload.Dragger>
     </Modal>
   );

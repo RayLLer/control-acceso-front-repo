@@ -147,14 +147,14 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
         <Form.Item
           label='Nombre'
           name='name'
-          rules={[{ required: true, message: 'El nombre es requerido' }]}
+          rules={[{ required: true, message: 'El nombre es obligatorio' }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label='Cuerpo/s'
           name='categories'
-          rules={[{ required: true, message: 'El cuerpo es requerido' }]}
+          rules={[{ required: true, message: 'El cuerpo es obligatorio' }]}
         >
           <Select
             mode='tags'

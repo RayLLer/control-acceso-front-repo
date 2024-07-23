@@ -101,6 +101,8 @@ const FilterComponent: FC<
           type='link'
           size='small'
           onClick={() => {
+            setSearchInput('');
+            setFilterOperator(type === 'string' ? '$containsi' : '$eq');
             handleReset();
           }}
         >

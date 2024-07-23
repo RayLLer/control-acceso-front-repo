@@ -47,6 +47,7 @@ type Props<T, R> = TableProps & {
   url: string;
   onAdd: () => void;
   onEdit: (id: number) => void;
+  onDelete?: (id: number) => void;
   crud?: boolean;
   defaultParameters?: ParametersType;
   refetch?: boolean;
@@ -68,6 +69,7 @@ const MagicTable = <T, R>({
   refetch,
   deleteEntry,
   setRefetch,
+  onDelete,
   ...others
 }: Props<T, R>) => {
   const [data, setData] = useState<T[]>();
@@ -156,6 +158,10 @@ const MagicTable = <T, R>({
     modal.confirm({
       title: '¿Estás seguro de eliminar este registro?',
       onOk: () => {
+        if(onDelete) { 
+          onDelete(id);
+          return;
+        }
         !deleteEntry
           ? baseService.put(id, { deleted: true } as any).then(() => {
               notification.success({

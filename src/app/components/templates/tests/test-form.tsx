@@ -82,10 +82,11 @@ const TestForm = () => {
   }, [id]);
 
   useEffect(() => {
-    if (testType === OFICIAL && subTestType) {
+    console.log('first', testType, subTestType, year);
+    if (testType === OFICIAL && subTestType && year) {
       fetchAsociatedTest();
     }
-  }, [testType, subTestType]);
+  }, [testType, subTestType, year]);
 
   const onFinish = async (values: ITest) => {
     // Submit form
@@ -142,7 +143,7 @@ const TestForm = () => {
       <Form.Item
         label='Nombre'
         name='name'
-        rules={[{ required: true, message: 'El nombre es requerido' }]}
+        rules={[{ required: true, message: 'El nombre es obligatorio' }]}
       >
         <Input />
       </Form.Item>
@@ -150,7 +151,7 @@ const TestForm = () => {
       <Form.Item
         name='category'
         label='Cuerpo'
-        rules={[{ required: true, message: 'El cuerpo es requerido' }]}
+        rules={[{ required: true, message: 'El cuerpo es obligatorio' }]}
       >
         <Select
           options={categories}
@@ -169,7 +170,7 @@ const TestForm = () => {
       <Form.Item
         name='theme'
         label='Tema'
-        rules={[{ required: true, message: 'El tema es requerido' }]}
+        rules={[{ required: true, message: 'El tema es obligatorio' }]}
       >
         <Select options={themes} loading={loadingThemes} allowClear />
       </Form.Item>
@@ -177,7 +178,7 @@ const TestForm = () => {
       <Form.Item
         name='sub_theme'
         label='SubTema'
-        rules={[{ required: true, message: 'El subtema es requerido' }]}
+        rules={[{ required: true, message: 'El subtema es obligatorio' }]}
       >
         <Select options={subThemes} loading={loadingSubThemes} allowClear />
       </Form.Item>
@@ -185,14 +186,32 @@ const TestForm = () => {
       <Form.Item
         label='Tipo de Test'
         name='testType'
-        rules={[{ required: true, message: 'El tipo de test es requerido' }]}
+        rules={[{ required: true, message: 'El tipo de test es obligatorio' }]}
       >
-        <Select options={testTypeOpt} allowClear />
+        <Select
+          options={testTypeOpt}
+          allowClear
+          onChange={(value) => {
+            form.setFieldsValue({
+              year: value === OFICIAL ? new Date().getFullYear() : undefined,
+              suTestType: value === OFICIAL ? 'General' : undefined
+            });
+          }}
+        />
       </Form.Item>
 
       {testType === OFICIAL && (
-        <Form.Item label='SubTipo de Test' name='suTestType'>
-          <Select options={suTestTypeOpt} defaultValue={'General'} allowClear />
+        <Form.Item
+          label='Subtipo de Test'
+          name='suTestType'
+          rules={[
+            {
+              required: testType === OFICIAL,
+              message: 'Subtipo de test es obligatorio.',
+            },
+          ]}
+        >
+          <Select options={suTestTypeOpt} allowClear />
         </Form.Item>
       )}
       {testType === OFICIAL && (
@@ -200,7 +219,10 @@ const TestForm = () => {
           label='Año'
           name='year'
           rules={[
-            { required: testType === OFICIAL, message: 'El año es requerido' },
+            {
+              required: testType === OFICIAL,
+              message: 'El año es obligatorio',
+            },
           ]}
         >
           <Input
@@ -241,7 +263,7 @@ const TestForm = () => {
           },
         ]}
       >
-        <Input type='number' suffix='minutos' min={0} />
+        <Input type='number' suffix='minutos' min={1} />
       </Form.Item>
 
       <Form.Item
@@ -263,7 +285,6 @@ const TestForm = () => {
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (value) {
-
                 return getFieldValue('initDate') < value
                   ? Promise.resolve()
                   : Promise.reject(

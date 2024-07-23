@@ -219,7 +219,7 @@ const FormUser = () => {
           name='name'
           label='Nombre completo'
           rules={[
-            { required: true, message: 'El nombre completo es requerido.' },
+            { required: true, message: 'El nombre completo es obligatorio.' },
             {
               message: 'Introduzca el nombre',
               whitespace: true,

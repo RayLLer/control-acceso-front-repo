@@ -98,14 +98,14 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
         <Form.Item
           label='Nombre'
           name='name'
-          rules={[{ required: true, message: 'El nombre es requerido' }]}
+          rules={[{ required: true, message: 'El nombre es obligatorio' }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label='SubTema'
           name='sub_theme'
-          rules={[{ required: true, message: 'El subtema es requerido' }]}
+          rules={[{ required: true, message: 'El subtema es obligatorio' }]}
         >
           <Select
             options={subThemes}

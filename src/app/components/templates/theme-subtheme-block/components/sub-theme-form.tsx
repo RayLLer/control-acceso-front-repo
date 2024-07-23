@@ -101,14 +101,14 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
         <Form.Item
           label='Nombre'
           name='name'
-          rules={[{ required: true, message: 'El nombre es requerido' }]}
+          rules={[{ required: true, message: 'El nombre es obligatorio' }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label='Tema'
           name='theme'
-          rules={[{ required: true, message: 'El tema es requerido' }]}
+          rules={[{ required: true, message: 'El tema es obligatorio' }]}
         >
           <Select
             options={themes}
