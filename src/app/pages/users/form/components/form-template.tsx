@@ -177,12 +177,27 @@ const FormUser = () => {
         <Form.Item
           name='username'
           label='Usuario'
+          validateTrigger='onBlur'
           rules={[
             {
               required: true,
               message: 'Introduzca el usuario',
               whitespace: true,
             },
+            ({ getFieldValue }) => ({
+              async validator(_, value) {
+                if (!value) return Promise.resolve();
+                const response = (await usersService.get({
+                  filters: { username: value },
+                })) as any;
+                if (response.data.length === 0) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error('El nombre de usuario ya está en uso')
+                );
+              },
+            }),
           ]}
         >
           <Input
@@ -194,14 +209,21 @@ const FormUser = () => {
         <Form.Item
           name='email'
           label='Correo'
+          validateTrigger='onBlur'
           rules={[
             ({ getFieldValue }) => ({
-              validator(_, value) {
+              async validator(_, value) {
                 if (!value) return Promise.resolve();
                 const reEmail =
                   /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/;
-                if (reEmail.test(value)) {
+                const response = (await usersService.get({
+                  filters: { email: value },
+                })) as any;
+                if (reEmail.test(value) && response.data.length === 0) {
                   return Promise.resolve();
+                }
+                if (response.data.length > 0) {
+                  return Promise.reject(new Error('El correo ya está en uso'));
                 }
                 return Promise.reject(new Error('Introduzca un email válido'));
               },
