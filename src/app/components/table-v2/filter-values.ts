@@ -7,10 +7,10 @@ export const selectFilters = [
     label: 'Igual',
     value: '$eqi',
   },
-  {
-    label: 'Distinto',
-    value: '$nei',
-  },
+  // {
+  //   label: 'Distinto',
+  //   value: '$nei',
+  // },
   {
     label: 'Menor que',
     value: '$lt',
@@ -106,10 +106,10 @@ export const filtersSelectNumberOrDate = [
     label: 'Igual',
     value: '$eq',
   },
-  {
-    label: 'Distinto',
-    value: '$nei',
-  },
+  // {
+  //   label: 'Distinto',
+  //   value: '$nei',
+  // },
   {
     label: 'Menor que',
     value: '$lt',

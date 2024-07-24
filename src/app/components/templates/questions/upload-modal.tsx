@@ -5,6 +5,7 @@ import React, { FC, useState } from 'react';
 import { InboxOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload';
 import { uploadQuestions, uploadService } from '@/app/services/upload.service';
+import axios, { AxiosError } from 'axios';
 
 type Props = {
   open: boolean;
@@ -23,10 +24,14 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
       });
       onClose();
     } catch (error) {
-      notification.error({
-        message: 'Error al subir archivo',
-        description: 'Ocurrió un error al subir el archivo',
-      });
+      if (axios.isAxiosError(error)) {
+        notification.error({
+          message: 'Error al subir archivo',
+          description:
+            error.response?.data.message ??
+            'Ocurrió un error al subir el archivo',
+        });
+      }
     }
   };
 
