@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { ISelect } from '@/app/interfaces/basics';
-import {
-  ISubTheme,
-  ISubThemeResponse
-} from '@/app/interfaces/question';
+import { ISubTheme, ISubThemeResponse } from '@/app/interfaces/question';
 import { subThemeService } from '@/app/services/subthemes.service';
 import { themeService } from '@/app/services/themes.service';
 import { App, Form, Input, Modal, Select } from 'antd';
@@ -95,13 +92,30 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
       onCancel={onClose}
       onOk={() => form.submit()}
       confirmLoading={loading}
-
     >
       <Form onFinish={onFinish} form={form}>
         <Form.Item
           label='Nombre'
           name='name'
-          rules={[{ required: true, message: 'El nombre es obligatorio' }]}
+          validateTrigger='onBlur'
+          rules={[
+            { required: true, message: 'El nombre es obligatorio' },
+            ({ getFieldValue }) => ({
+              async validator(_, value) {
+                const themeId = getFieldValue('theme');
+                if (!value || !themeId) return Promise.resolve();
+                const response = await themeService.get({
+                  filters: { id: themeId },
+                });
+                if (response.data.data.length > 0) {
+                  return Promise.reject(
+                    'El nombre ya está en uso para este tema'
+                  );
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
         >
           <Input />
         </Form.Item>
@@ -117,6 +131,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
+            onChange={() => form.validateFields(['name'])}
           />
         </Form.Item>
       </Form>

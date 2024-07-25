@@ -98,7 +98,24 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
         <Form.Item
           label='Nombre'
           name='name'
-          rules={[{ required: true, message: 'El nombre es obligatorio' }]}
+          rules={[
+            { required: true, message: 'El nombre es obligatorio' },
+            ({ getFieldValue }) => ({
+              async validator(_, value) {
+                const subThemeId = getFieldValue('sub_theme');
+                if (!value || !subThemeId) return Promise.resolve();
+                const response = await blockService.get({
+                  filters: { id: subThemeId },
+                });
+                if (response.data.data.length > 0) {
+                  return Promise.reject(
+                    'El nombre ya está en uso para este subtema'
+                  );
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
         >
           <Input />
         </Form.Item>
@@ -114,6 +131,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
+            onChange={() => form.validateFields(['name'])}
           />
         </Form.Item>
       </Form>

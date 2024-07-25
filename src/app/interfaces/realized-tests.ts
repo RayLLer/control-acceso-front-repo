@@ -3,20 +3,18 @@ import { ITestResponse } from './test';
 
 export interface IRealizedTestAttemptsResponse {
   user: User;
-  lastTest: LastTest;
-  attempts: number;
-}
-
-export interface LastTest {
   id: number;
   initDate: Date;
   finishDate: Date;
   evaluationPercent: number;
-  calification: null;
-  combinedCalification: null;
-  completeTest: null;
+  calification: number;
+  combinedCalification: number;
+  completeTest: number;
   test: Test;
+  attempts: number;
 }
+
+export interface LastTest {}
 
 export interface Test {
   id: number;
@@ -66,8 +64,6 @@ export interface IRealizedTest2 {
   users_permissions_user: { data?: { id: number; attributes: IUser } };
   attempts: number;
 }
-
-
 
 export interface IRealizedTest {
   id: number;

@@ -11,7 +11,7 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
   },
   {
     title: 'Tema',
-    dataIndex: ['lastTest', 'test', 'theme', 'name'],
+    dataIndex: ['test', 'theme', 'name'],
     filtrable: true,
     filterType: 'string',
   },
@@ -35,7 +35,7 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
   // },
   {
     title: 'Último resultado',
-    dataIndex: ['lastTest', 'evaluationPercent'],
+    dataIndex: ['evaluationPercent'],
     filtrable: true,
     filterType: 'number',
     render: (value) =>
@@ -46,7 +46,7 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
   },
   {
     title: 'fecha del último intento',
-    dataIndex: ['lastTest', 'finishDate'],
+    dataIndex: ['finishDate'],
     filtrable: true,
     filterType: 'date',
     render: (value) =>
