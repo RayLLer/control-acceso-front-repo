@@ -28,7 +28,7 @@ const RealizedTestsTemplate = () => {
             router.push(
               paths.realized_tests.details(
                 record!.user.id,
-                record!.lastTest.test.id
+                record!.test.id
               )
             );
           },
