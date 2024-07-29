@@ -42,7 +42,7 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
       `${new Intl.NumberFormat('es-Es', {
         style: 'percent',
         minimumFractionDigits: 1,
-      }).format(value / 100)}`,
+      }).format(value)}`,
   },
   {
     title: 'fecha del último intento',

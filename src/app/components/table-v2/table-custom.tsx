@@ -30,6 +30,8 @@ import React, {
 } from 'react';
 import FilterComponent from './filter';
 import { AUTHENTICATED, PUBLIC } from '@/app/pages/roles/roles.reducer';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 type ParametersType = {
   populate?: any;
@@ -72,6 +74,7 @@ const MagicTable = <T, R>({
   onDelete,
   ...others
 }: Props<T, R>) => {
+  const router = useRouter();
   const [data, setData] = useState<T[]>();
   const { modal } = App.useApp();
   const token = antdTheme.useToken().token;
@@ -149,7 +152,12 @@ const MagicTable = <T, R>({
             break;
         }
       })
-      .catch(() => {
+      .catch((error: any) => {
+        if(axios.isAxiosError(error)) {
+          if(error.status === 401) {
+            router.replace('auth/login');
+          }
+        }
         setLoading(false);
       });
   };
