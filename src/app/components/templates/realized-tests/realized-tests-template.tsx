@@ -1,13 +1,12 @@
 'use client'
 import {
-  IRealizedTest,
   IRealizedTestAttemptsResponse
 } from '@/app/interfaces/realized-tests';
-import MagicTable from '../../table-v2/table-custom';
-import { realized_tests_columns } from './realized-tests-columns';
+import { paths } from '@/app/routes/paths';
 import { EyeOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { paths } from '@/app/routes/paths';
+import MagicTable from '../../table-v2/table-custom';
+import { realized_tests_columns } from './realized-tests-columns';
 
 const RealizedTestsTemplate = () => {
   const router = useRouter()

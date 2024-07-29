@@ -17,6 +17,7 @@ export interface ITheme {
   questions: Questions;
   tests: Tests;
   category_themes: {data?: CategoryThemes[]};
+  sub_themes: {data?: SubTheme[]};
   deleted: boolean
 }
 
@@ -75,4 +76,12 @@ interface CategoryThemes {
   attributes: {
     category: {data: ICategoryResponse};
   }
+}
+
+interface SubTheme {
+  id: number;
+  attributes: {
+    name: string;
+    deleted?: boolean
+  };
 }

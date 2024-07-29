@@ -49,7 +49,9 @@ type Props<T, R> = TableProps & {
   url: string;
   onAdd: () => void;
   onEdit: (id: number) => void;
-  onDelete?: (id: number) => void;
+  onDelete?: (
+    id: number
+  ) => Promise<void | boolean | string>;
   crud?: boolean;
   defaultParameters?: ParametersType;
   refetch?: boolean;
@@ -153,8 +155,8 @@ const MagicTable = <T, R>({
         }
       })
       .catch((error: any) => {
-        if(axios.isAxiosError(error)) {
-          if(error.status === 401) {
+        if (axios.isAxiosError(error)) {
+          if (error.status === 401) {
             router.replace('auth/login');
           }
         }
@@ -165,24 +167,43 @@ const MagicTable = <T, R>({
   const handleDelete = (id: number) => {
     modal.confirm({
       title: '¿Estás seguro de eliminar este registro?',
-      onOk: () => {
-        if(onDelete) { 
-          onDelete(id);
-          return;
-        }
-        !deleteEntry
-          ? baseService.put(id, { deleted: true } as any).then(() => {
-              notification.success({
-                message: 'Registro eliminado correctamente',
-              })
-              fetchData(tableParams);
-            })
-          : baseService.delete(id).then(() => {
-              notification.success({
-                message: 'Registro eliminado correctamente',
+      onOk: async () => {
+        try {
+          if (onDelete) {
+            const canDelete = await onDelete(id);
+            if (typeof canDelete === 'string') {
+              notification.error({
+                message: canDelete,
               });
-              fetchData(tableParams);
+              return;
+            }
+            if (!canDelete) {
+              notification.error({
+                message: 'No se puede eliminar el registro',
+              });
+              return;
+            }
+          }
+          !deleteEntry
+            ? baseService.put(id, { deleted: true } as any).then(() => {
+                notification.success({
+                  message: 'Registro eliminado correctamente',
+                });
+                fetchData(tableParams);
+              })
+            : baseService.delete(id).then(() => {
+                notification.success({
+                  message: 'Registro eliminado correctamente',
+                });
+                fetchData(tableParams);
+              });
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            notification.error({
+              message: error.response?.data.message,
             });
+          }
+        }
       },
     });
   };

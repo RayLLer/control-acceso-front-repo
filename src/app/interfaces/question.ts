@@ -78,6 +78,7 @@ export interface ISubThemeResponse {
 export interface ISubTheme {
   name: string;
   theme: { data: IThemeResponse };
+  blocks: { data?: IBlockResponse[] };
   deleted: boolean;
 }
 

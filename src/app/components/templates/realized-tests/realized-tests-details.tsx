@@ -1,18 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import {
-  IRealizedTest,
   IRealizedTest2,
-  IRealizedTestResponse,
+  IRealizedTestResponse
 } from '@/app/interfaces/realized-tests';
-import { realizedTestService } from '@/app/services/realized-test.service';
-import { Button, Col, Flex, List, Pagination } from 'antd';
+import { paths } from '@/app/routes/paths';
+import { ArrowLeftOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import MagicTable from '../../table-v2/table-custom';
 import { details_columns } from './details-columns';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { paths } from '@/app/routes/paths';
 
 const RealizedTestsDetails = () => {
   const { params } = useParams();

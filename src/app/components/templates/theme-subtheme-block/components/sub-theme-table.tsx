@@ -4,6 +4,8 @@ import { subtheme_columns } from './sub-theme-columns';
 import { useState } from 'react';
 import SubThemeForm from './sub-theme-form';
 import { BASE_FILTER } from '@/utils/constants/constants';
+import { subThemeService } from '@/app/services/subthemes.service';
+import axios from 'axios';
 
 const SubThemeTable = () => {
   const [showModal, setShowModal] = useState(false);
@@ -14,6 +16,25 @@ const SubThemeTable = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedSubThemeId(undefined);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await subThemeService.getById(id, {
+        populate: ['blocks'],
+      });
+      const subTheme = response.data.data;
+      debugger
+      const hasActiveBlocks = subTheme.attributes.blocks.data?.some(
+        (block) => !block.attributes.deleted
+      );
+      return !hasActiveBlocks;
+    } catch (error) {
+      console.log(error)
+      return axios.isAxiosError(error)
+        ? error.response?.data.message
+        : 'Ha ocurrido un error';
+    }
   };
 
   return (
@@ -27,6 +48,7 @@ const SubThemeTable = () => {
           handleShowModal();
           setSelectedSubThemeId(id);
         }}
+        onDelete={handleDelete}
         setRefetch={setRefetch}
         refetch={refetch}
         defaultParameters={{
