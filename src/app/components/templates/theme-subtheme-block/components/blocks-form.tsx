@@ -105,7 +105,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
                 const subThemeId = getFieldValue('sub_theme');
                 if (!value || !subThemeId) return Promise.resolve();
                 const response = await blockService.get({
-                  filters: { id: subThemeId },
+                  filters: { $and: [{sub_theme: {id: subThemeId}}, {name: value}] },
                 });
                 if (response.data.data.length > 0) {
                   return Promise.reject(

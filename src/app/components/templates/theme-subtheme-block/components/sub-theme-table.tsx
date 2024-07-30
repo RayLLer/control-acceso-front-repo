@@ -24,7 +24,6 @@ const SubThemeTable = () => {
         populate: ['blocks'],
       });
       const subTheme = response.data.data;
-      debugger
       const hasActiveBlocks = subTheme.attributes.blocks.data?.some(
         (block) => !block.attributes.deleted
       );

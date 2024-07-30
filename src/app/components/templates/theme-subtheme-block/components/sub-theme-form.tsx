@@ -104,8 +104,8 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
               async validator(_, value) {
                 const themeId = getFieldValue('theme');
                 if (!value || !themeId) return Promise.resolve();
-                const response = await themeService.get({
-                  filters: { id: themeId },
+                const response = await subThemeService.get({
+                  filters: { $and: [{theme: {id: themeId}}, {name: value}] },
                 });
                 if (response.data.data.length > 0) {
                   return Promise.reject(

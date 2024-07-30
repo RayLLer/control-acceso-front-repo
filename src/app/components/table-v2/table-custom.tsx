@@ -49,9 +49,7 @@ type Props<T, R> = TableProps & {
   url: string;
   onAdd: () => void;
   onEdit: (id: number) => void;
-  onDelete?: (
-    id: number
-  ) => Promise<void | boolean | string>;
+  onDelete?: (id: number) => Promise<void | boolean | string>;
   crud?: boolean;
   defaultParameters?: ParametersType;
   refetch?: boolean;
