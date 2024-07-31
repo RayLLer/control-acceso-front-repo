@@ -11,6 +11,7 @@ import AddQuestionModal from './add-question-modal';
 import { test_columns } from './test-columns';
 import { nested_columns } from './test-nested-columns';
 import { testQuestionService } from '@/app/services/test-question';
+import { CHALLENGE, OFICIAL } from './test-form';
 
 const TestTemplate = () => {
   const router = useRouter();
@@ -81,24 +82,23 @@ const TestTemplate = () => {
           },
           filters: {
             ...BASE_FILTER,
-            testType: {
-              $ne: 'Personalizado'
-            },
+            // $ne: 'Personalizado'
+            $or: [{ testType: OFICIAL }, { testType: CHALLENGE }],
           },
         }}
         expandable={{
           expandedRowRender: (record: ITestResponse) => {
-            return(
-            <Card style={{ margin: 20 }}>
-              <Table
-                columns={temp_nested_columns}
-                dataSource={record.attributes.test_questions.data}
-                scroll={{ x: 700, y: 400 }}
-                pagination={{pageSize: 5}}
-                
-              />
-            </Card>
-          )},
+            return (
+              <Card style={{ margin: 20 }}>
+                <Table
+                  columns={temp_nested_columns}
+                  dataSource={record.attributes.test_questions.data}
+                  scroll={{ x: 700, y: 400 }}
+                  pagination={{ pageSize: 5 }}
+                />
+              </Card>
+            );
+          },
           rowExpandable: (record: ITestResponse) =>
             record.attributes.test_questions.data.length > 0,
         }}

@@ -13,8 +13,8 @@ import { useHierarchy } from '../questions/use-hierarchy';
 import moment from 'moment';
 import { dateFormat } from '@/utils/constants/constants';
 
-const OFICIAL = 'Oficial';
-const CHALLENGE = 'Reto';
+export const OFICIAL = 'Oficial';
+export const CHALLENGE = 'Reto';
 
 const testTypeOpt = [
   { label: 'Reto', value: CHALLENGE },
