@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { ISelect } from '@/app/interfaces/basics';
-import {
-  ISubTheme,
-  ISubThemeResponse
-} from '@/app/interfaces/question';
+import { ISubTheme, ISubThemeResponse } from '@/app/interfaces/question';
 import { subThemeService } from '@/app/services/subthemes.service';
 import { themeService } from '@/app/services/themes.service';
 import { App, Form, Input, Modal, Select } from 'antd';
@@ -24,12 +21,14 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
   const { notification } = App.useApp();
   const [themes, setThemes] = useState<ISelect[]>([]);
   const [loading, setLoading] = useState(false);
+  const [subTheme, setSubTheme] = useState<ISubThemeResponse>();
 
   const fetchSubTheme = async () => {
     if (editMode) {
       const response = await subThemeService.getById(subThemeId, {
         populate: { theme: { populate: '*' } },
       });
+      setSubTheme(() => response.data.data);
       updateFields(response.data.data);
     }
   };
@@ -95,20 +94,45 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
       onCancel={onClose}
       onOk={() => form.submit()}
       confirmLoading={loading}
-
     >
       <Form onFinish={onFinish} form={form}>
         <Form.Item
           label='Nombre'
           name='name'
-          rules={[{ required: true, message: 'El nombre es requerido' }]}
+          validateTrigger='onBlur'
+          rules={[
+            { required: true, message: 'El nombre es obligatorio' },
+            ({ getFieldValue }) => ({
+              async validator(_, value) {
+                const themeId = getFieldValue('theme');
+                if (
+                  !value ||
+                  !themeId ||
+                  (value === subTheme?.attributes.name &&
+                    themeId === subTheme?.attributes.theme.data.id)
+                )
+                  return Promise.resolve();
+                const response = await subThemeService.get({
+                  filters: {
+                    $and: [{ theme: { id: themeId } }, { name: value }],
+                  },
+                });
+                if (response.data.data.length > 0) {
+                  return Promise.reject(
+                    'El nombre ya está en uso para este tema'
+                  );
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label='Tema'
           name='theme'
-          rules={[{ required: true, message: 'El tema es requerido' }]}
+          rules={[{ required: true, message: 'El tema es obligatorio' }]}
         >
           <Select
             options={themes}
@@ -117,6 +141,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
+            onChange={() => form.validateFields(['name'])}
           />
         </Form.Item>
       </Form>

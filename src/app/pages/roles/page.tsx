@@ -5,6 +5,11 @@ import { IRole } from './roles.interface';
 import MagicTable from '@/app/components/table-v2/table-custom';
 import { ColumnsType } from '@/app/interfaces/strapi';
 import { useRouter } from 'next/navigation';
+import { RolesServices } from './roles.service';
+import { userService } from '../users/users.service';
+import { notification } from 'antd';
+
+const roleServices = new RolesServices();
 
 const Roles: FC = () => {
   const router = useRouter();
@@ -33,6 +38,35 @@ const Roles: FC = () => {
     },
   ];
 
+  const handleDelete = async (id: number) => {
+    try {
+      const usersResponse = (await userService.get({
+        filters: {
+          role: {
+            id: {
+              $eq: id,
+            },
+          },
+        },
+      })) as any;
+      if (usersResponse.data.length > 0) {
+        notification.error({
+          message:
+            'No se puede eliminar el rol porque tiene usuarios asociados.',
+        });
+        return;
+      }
+      await roleServices.delete(id);
+      notification.success({
+        message: 'El registro ha sido eliminado correctamente.',
+      });
+    } catch (error) {
+      notification.error({
+        message: 'Error al eliminar el registro.',
+      });
+    }
+  };
+
   return (
     <MagicTable<IRole, IRole>
       columns={columns}
@@ -43,7 +77,9 @@ const Roles: FC = () => {
       onEdit={function (id: number): void {
         router.push(`roles/form?roleId=${id}`);
       }}
+      onDelete={handleDelete}
       crud
+      deleteEntry
     />
   );
 };

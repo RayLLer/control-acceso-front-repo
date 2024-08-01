@@ -50,8 +50,7 @@ export const postRoles = createAsyncThunk(
   'user/postRoles',
   async (payload: IRole, { rejectWithValue }) => {
     try {
-      debugger
-      let response = await rolesServices.postRole(sources.ROLES, payload);
+      let response = await rolesServices.postRole(payload, sources.ROLES);
       return response.data;
     } catch (error: any) {
       rejectWithValue(error.data.message);

@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { theme_columns } from './theme-columns';
 import ThemeForm from './theme-form';
 import { BASE_FILTER } from '@/utils/constants/constants';
+import { themeService } from '@/app/services/themes.service';
+import axios from 'axios';
 
 const ThemeTable = () => {
   const [showModal, setShowModal] = useState(false);
@@ -15,6 +17,23 @@ const ThemeTable = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedThemeId(undefined);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await themeService.getById(id, {
+        populate: ['sub_themes'],
+      });
+      const theme = response.data.data;
+      const hasActiveSubthemes = theme.attributes.sub_themes.data?.some(
+        (subTheme) => !subTheme.attributes.deleted
+      );
+      return !hasActiveSubthemes;
+    } catch (error) {
+      return axios.isAxiosError(error)
+        ? error.response?.data.message
+        : 'Ha ocurrido un error';
+    }
   };
 
   return (
@@ -28,13 +47,13 @@ const ThemeTable = () => {
           handleShowModal();
           setSelectedThemeId(id);
         }}
+        onDelete={handleDelete}
         defaultParameters={{
           populate: { category_themes: { populate: 'category' } },
-          filters: {...BASE_FILTER}
+          filters: { ...BASE_FILTER },
         }}
         setRefetch={setRefetch}
         refetch={refetch}
-        
       />
       {showModal && (
         <ThemeForm

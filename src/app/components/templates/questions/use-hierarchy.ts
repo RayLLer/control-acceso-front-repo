@@ -4,12 +4,16 @@ import { blockService } from '@/app/services/block.service';
 import { categoryService } from '@/app/services/category.service';
 import { subThemeService } from '@/app/services/subthemes.service';
 import { themeService } from '@/app/services/themes.service';
+import { BASE_FILTER } from '@/utils/constants/constants';
 import { convertForSelect } from '@/utils/select-utils';
 import { message } from 'antd';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 
-export const useHierarchy = (category: number, theme: number, sub_theme?: number) => {
-
+export const useHierarchy = (
+  category: number,
+  theme: number,
+  sub_theme?: number
+) => {
   const [categories, setCategories] = useState<ISelect[]>([]);
   const [themes, setThemes] = useState<ISelect[]>([]);
   const [subThemes, setSubThemes] = useState<ISelect[]>([]);
@@ -40,6 +44,7 @@ export const useHierarchy = (category: number, theme: number, sub_theme?: number
           category_themes: {
             category: { id: { $eq: category } },
           },
+          ...BASE_FILTER
         },
       });
       setThemes(convertForSelect(response.data.data));
@@ -59,6 +64,7 @@ export const useHierarchy = (category: number, theme: number, sub_theme?: number
           theme: {
             id: { $eq: theme },
           },
+          ...BASE_FILTER
         },
       });
       setSubThemes(convertForSelect(response.data.data));
@@ -107,7 +113,14 @@ export const useHierarchy = (category: number, theme: number, sub_theme?: number
     sub_theme && fetchBlock();
   }, [sub_theme]);
 
-
-
-  return {categories, themes, subThemes, blocks, loadingCategories, loadingThemes, loadingSubThemes, loadingBlocks}
-}
+  return {
+    categories,
+    themes,
+    subThemes,
+    blocks,
+    loadingCategories,
+    loadingThemes,
+    loadingSubThemes,
+    loadingBlocks,
+  };
+};

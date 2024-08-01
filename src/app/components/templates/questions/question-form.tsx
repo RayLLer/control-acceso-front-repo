@@ -14,14 +14,23 @@ const QuestionForm = () => {
   const { id } = useParams();
   const { message, notification } = App.useApp();
   const [form] = Form.useForm<IQuestionForm>();
-  
+
   const router = useRouter();
 
   const selectedCategory = Form.useWatch('category', form);
   const selectedTheme = Form.useWatch('theme', form);
   const selectedSubTheme = Form.useWatch('sub_theme', form);
 
-  const {categories, blocks, loadingBlocks, loadingCategories, loadingSubThemes, loadingThemes, subThemes, themes} = useHierarchy(+selectedCategory, selectedTheme, selectedSubTheme);
+  const {
+    categories,
+    blocks,
+    loadingBlocks,
+    loadingCategories,
+    loadingSubThemes,
+    loadingThemes,
+    subThemes,
+    themes,
+  } = useHierarchy(+selectedCategory, selectedTheme, selectedSubTheme);
 
   const updateFields = (question: IQuestionResponse) => {
     form.setFieldsValue(question.attributes as unknown as IQuestionForm);
@@ -65,7 +74,7 @@ const QuestionForm = () => {
     const dataToSend = { ...values };
     delete dataToSend.image;
     try {
-      if(values.image){
+      if (values.image) {
         if (values.image.length && !values.image[0].status) {
           const response = await uploadService(values.image[0].originFileObj);
           dataToSend.image = response?.data[0].id;
@@ -86,7 +95,7 @@ const QuestionForm = () => {
         router.push(paths.questions.edit(response.data.data.id));
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       notification.error({
         message: 'Ha ocurrido un error al guardar la pregunta',
         placement: 'topRight',
@@ -146,8 +155,33 @@ const QuestionForm = () => {
         valuePropName='fileList'
         name={'image'}
         getValueFromEvent={normFile}
+        rules={[
+          () => ({
+            async validator(_, value) {
+              if (!value) return Promise.resolve();
+              const img = new Image();
+              img.src = URL.createObjectURL(value[0].originFileObj);
+              await img.decode();
+              debugger;
+              const diff = Math.abs(img.width - img.height);
+              const average = (img.width + img.height) / 2;
+              const percent = (diff / average) * 100;
+              if (percent > 5) {
+                return Promise.reject(
+                  'La imagen a subir debe de ser cuadrada'
+                );
+              }
+              return Promise.resolve();
+            },
+          }),
+        ]}
       >
-        <Upload listType='picture-card' maxCount={1} beforeUpload={() => false}>
+        <Upload
+          listType='picture-card'
+          maxCount={1}
+          beforeUpload={() => false}
+          accept='image/*'
+        >
           <button style={{ border: 0, background: 'none' }} type='button'>
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Cargar</div>
@@ -251,7 +285,7 @@ const QuestionForm = () => {
       <Form.Item
         name='sub_theme'
         label='SubTema'
-        rules={[{ required: true, message: 'Seleccione un subtema.' }]}
+        // rules={[{ required: true, message: 'Seleccione un subtema.' }]}
       >
         <Select options={subThemes} loading={loadingSubThemes} />
       </Form.Item>
@@ -259,7 +293,7 @@ const QuestionForm = () => {
       <Form.Item
         name='block'
         label='Bloque'
-        rules={[{ required: true, message: 'Seleccione un bloque.' }]}
+        // rules={[{ required: true, message: 'Seleccione un bloque.' }]}
       >
         <Select options={blocks} loading={loadingBlocks} />
       </Form.Item>

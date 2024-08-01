@@ -18,6 +18,7 @@ import {
   TableProps,
   Tooltip,
   theme as antdTheme,
+  notification,
 } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import React, {
@@ -29,6 +30,8 @@ import React, {
 } from 'react';
 import FilterComponent from './filter';
 import { AUTHENTICATED, PUBLIC } from '@/app/pages/roles/roles.reducer';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 type ParametersType = {
   populate?: any;
@@ -46,6 +49,7 @@ type Props<T, R> = TableProps & {
   url: string;
   onAdd: () => void;
   onEdit: (id: number) => void;
+  onDelete?: (id: number) => Promise<void | boolean | string>;
   crud?: boolean;
   defaultParameters?: ParametersType;
   refetch?: boolean;
@@ -67,8 +71,10 @@ const MagicTable = <T, R>({
   refetch,
   deleteEntry,
   setRefetch,
+  onDelete,
   ...others
 }: Props<T, R>) => {
+  const router = useRouter();
   const [data, setData] = useState<T[]>();
   const { modal } = App.useApp();
   const token = antdTheme.useToken().token;
@@ -146,7 +152,7 @@ const MagicTable = <T, R>({
             break;
         }
       })
-      .catch(() => {
+      .catch((error: any) => {
         setLoading(false);
       });
   };
@@ -154,14 +160,43 @@ const MagicTable = <T, R>({
   const handleDelete = (id: number) => {
     modal.confirm({
       title: '¿Estás seguro de eliminar este registro?',
-      onOk: () => {
-        !deleteEntry
-          ? baseService.put(id, { deleted: true } as any).then(() => {
-              fetchData(tableParams);
-            })
-          : baseService.delete(id).then(() => {
-              fetchData(tableParams);
+      onOk: async () => {
+        try {
+          if (onDelete) {
+            const canDelete = await onDelete(id);
+            if (typeof canDelete === 'string') {
+              notification.error({
+                message: canDelete,
+              });
+              return;
+            }
+            if (!canDelete) {
+              notification.error({
+                message: 'No se puede eliminar el registro',
+              });
+              return;
+            }
+          }
+          !deleteEntry
+            ? baseService.put(id, { deleted: true } as any).then(() => {
+                notification.success({
+                  message: 'Registro eliminado correctamente',
+                });
+                fetchData(tableParams);
+              })
+            : baseService.delete(id).then(() => {
+                notification.success({
+                  message: 'Registro eliminado correctamente',
+                });
+                fetchData(tableParams);
+              });
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            notification.error({
+              message: error.response?.data.message,
             });
+          }
+        }
       },
     });
   };

@@ -1,6 +1,8 @@
+import { notification } from 'antd';
 import axios from 'axios';
+import { error } from 'console';
 // import { BASE_URL } from './sources';
-import secureStorage from 'react-secure-storage'
+import secureStorage from 'react-secure-storage';
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -24,6 +26,19 @@ axiosInstance.interceptors.request.use(async (config) => {
   return config;
 });
 
-
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.status === 401) {
+      secureStorage.removeItem('token');
+      secureStorage.removeItem('user');
+      notification.error({
+        message: 'Sesión expirada',
+        description: 'Por favor inicie sesión nuevamente',
+      });
+      window.location.href = '/auth/login';
+    }
+  }
+);
 
 export { axiosInstance, axiosBaseInstance };

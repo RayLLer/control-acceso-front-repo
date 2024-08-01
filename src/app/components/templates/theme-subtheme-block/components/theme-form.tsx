@@ -51,7 +51,6 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   };
 
   const updateFields = (theme: IThemeResponse) => {
-    console.log(theme);
     form.setFieldsValue({
       name: theme.attributes.name,
       tag: theme.attributes.tag,
@@ -147,14 +146,31 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
         <Form.Item
           label='Nombre'
           name='name'
-          rules={[{ required: true, message: 'El nombre es requerido' }]}
+          validateTrigger='onBlur'
+          rules={[
+            { required: true, message: 'El nombre es obligatorio' },
+            ({ getFieldValue }) => ({
+              async validator(_, value) {
+                if (!value || value === theme?.attributes.name) return Promise.resolve();
+                const response = await themeService.get({
+                  filters: { name: value },
+                });
+                if (response.data.data.length > 0) {
+                  return Promise.reject(
+                    'El nombre ya está en uso, debe ser único'
+                  );
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label='Cuerpo/s'
           name='categories'
-          rules={[{ required: true, message: 'El cuerpo es requerido' }]}
+          rules={[{ required: true, message: 'El cuerpo es obligatorio' }]}
         >
           <Select
             mode='tags'

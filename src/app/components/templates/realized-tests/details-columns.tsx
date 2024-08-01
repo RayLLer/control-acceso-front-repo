@@ -1,5 +1,6 @@
 import { IRealizedTestResponse } from '@/app/interfaces/realized-tests';
 import { ColumnsType } from '@/app/interfaces/strapi';
+import { Typography } from 'antd';
 import moment from 'moment';
 
 export const details_columns: ColumnsType<IRealizedTestResponse>[] = [
@@ -16,6 +17,20 @@ export const details_columns: ColumnsType<IRealizedTestResponse>[] = [
   {
     title: 'Test',
     dataIndex: ['attributes', 'test', 'data', 'attributes', 'name'],
+    width: '300px',
+  },
+  {
+    title: 'Tema',
+    dataIndex: [
+      'attributes',
+      'test',
+      'data',
+      'attributes',
+      'theme',
+      'data',
+      'attributes',
+      'name',
+    ],
     width: '300px',
   },
   {
@@ -62,10 +77,13 @@ export const details_columns: ColumnsType<IRealizedTestResponse>[] = [
     title: 'Calificación',
     dataIndex: ['attributes', 'evaluationPercent'],
     align: 'right',
-    render: (value) =>
-      `${new Intl.NumberFormat('es-Es', {
+    render: (value) => (
+      <Typography.Text
+        type={value <= 0.5 ? 'danger' : 'success'}
+      >{`${new Intl.NumberFormat('es-Es', {
         style: 'percent',
-        minimumFractionDigits: 0,
-      }).format(value / 100)}`,
+        minimumFractionDigits: 1,
+      }).format(value)}`}</Typography.Text>
+    ),
   },
 ];
