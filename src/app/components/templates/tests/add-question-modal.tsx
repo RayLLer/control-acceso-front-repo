@@ -20,11 +20,12 @@ const AddQuestionModal: FC<Props> = ({
   testId,
   visible,
   excludedQuestions,
-  refetch
+  refetch,
 }) => {
   const [open] = useState(visible);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [keysss, setKeysss] = useState<Set<React.Key>>();
 
   const handleAddQuestions = () => {
     if (selectedRowKeys.length) {
@@ -92,6 +93,7 @@ const AddQuestionModal: FC<Props> = ({
         }}
         rowSelection={{
           selectedRowKeys,
+          preserveSelectedRowKeys: true,
           onChange: setSelectedRowKeys,
         }}
         scroll={{ x: 700, y: 400 }}
@@ -99,7 +101,7 @@ const AddQuestionModal: FC<Props> = ({
         defaultParameters={{
           filters: {
             id: { $notIn: excludedQuestions },
-            ...BASE_FILTER
+            ...BASE_FILTER,
           },
         }}
       />
