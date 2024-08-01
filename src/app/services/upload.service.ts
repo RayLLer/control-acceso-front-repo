@@ -1,3 +1,4 @@
+import { UploadFile } from 'antd';
 import axios from 'axios';
 import secureStorage from 'react-secure-storage';
 
@@ -16,18 +17,22 @@ export const uploadService = async (file: any) => {
   }
 };
 
-export const uploadQuestions = async (file: any) => {
-  const form = new FormData();
-  form.append('files.file', file);
-  form.append('data', '{}');
-  return axios.post(
-    process.env.NEXT_PUBLIC_API_URL + '/questions/import/',
-    form,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${secureStorage.getItem('token')}`,
-      },
-    }
-  );
+export const uploadQuestions = async (file: UploadFile) => {
+  try {
+    const form = new FormData();
+    form.append('files.file', file.originFileObj as File);
+    form.append('data', '{}');
+    return axios.post(
+      process.env.NEXT_PUBLIC_API_URL + '/questions/import/',
+      form,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${secureStorage.getItem('token')}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error)
+  }
 };

@@ -82,7 +82,6 @@ const TestForm = () => {
   }, [id]);
 
   useEffect(() => {
-    console.log('first', testType, subTestType, year);
     if (testType === OFICIAL && subTestType && year) {
       fetchAsociatedTest();
     }

@@ -95,7 +95,6 @@ const QuestionForm = () => {
         router.push(paths.questions.edit(response.data.data.id));
       }
     } catch (error) {
-      console.log(error);
       notification.error({
         message: 'Ha ocurrido un error al guardar la pregunta',
         placement: 'topRight',

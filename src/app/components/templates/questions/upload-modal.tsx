@@ -3,9 +3,9 @@ import { Button, Modal, notification, Row, Upload } from 'antd';
 import React, { FC, useState } from 'react';
 
 import { InboxOutlined } from '@ant-design/icons';
-import { RcFile } from 'antd/es/upload';
-import { uploadQuestions, uploadService } from '@/app/services/upload.service';
-import axios, { AxiosError } from 'axios';
+import { uploadQuestions } from '@/app/services/upload.service';
+import axios from 'axios';
+import { UploadFile } from 'antd';
 
 type Props = {
   open: boolean;
@@ -13,10 +13,11 @@ type Props = {
 };
 
 const UploadModal: FC<Props> = ({ open, onClose }) => {
-  const [file, setFile] = useState<any>();
+  const [file, setFile] = useState<UploadFile[]>([]);
 
   const handleUpload = async () => {
     try {
+      
       await uploadQuestions(file[0]);
       notification.success({
         message: 'Archivo subido',
@@ -39,7 +40,7 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
     <Row>
       <Button
         type='primary'
-        disabled={!file || !file?.length}
+        disabled={!file.length}
         onClick={handleUpload}
         style={{ marginRight: 10 }}
       >
@@ -56,23 +57,24 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
       destroyOnClose
       // onOk={() => handleUpload(file)}
       onCancel={() => {
-        setFile(undefined);
+        setFile([]);
         onClose();
       }}
       footer={renderFooter}
-      okButtonProps={{ disabled: !file || !file?.length }}
+      okButtonProps={{ disabled: !file.length }}
     >
       <Upload.Dragger
         maxCount={1}
         beforeUpload={() => false}
         accept='.xlsx, .xls'
-        onChange={(e) => {
-          if (Array.isArray(e)) {
-            setFile(e);
-            return;
-          }
-          setFile(() => e?.fileList);
-        }}
+        // onChange={(e) => {
+        //   if (Array.isArray(e)) {
+        //     setFile(e);
+        //     return;
+        //   }
+        //   setFile(() => e?.fileList);
+        // }}
+        onChange={(e)=> setFile(e.fileList)}
       >
         <p className='ant-upload-drag-icon'>
           <InboxOutlined />

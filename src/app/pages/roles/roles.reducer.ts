@@ -28,7 +28,6 @@ export const fetchRoles = createAsyncThunk(
       let response = await rolesServices.getRoles(sources.ROLES, params);
       return response.data.roles;
     } catch (error: any) {
-      console.log(error)
       rejectWithValue(error.data.message);
     }
   }

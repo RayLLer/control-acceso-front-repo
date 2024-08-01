@@ -17,12 +17,16 @@ const TestTemplate = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [testId, setTestId] = useState<number | null>(null);
+  const [themeId, setThemeId] = useState<number>()
+  const [subThemeId, setSubThemeId] = useState<number>()
   const [excludedQuestions, setExcludedQuestions] = useState<number[]>([]);
   const [refetch, setRefetch] = useState(false);
 
   const handleOpen = (record?: ITestResponse) => {
     setOpen(true);
     setTestId(record!.id);
+    setThemeId(record!.attributes.theme?.data?.id)
+    setSubThemeId(record!.attributes.sub_theme?.data?.id)
     setExcludedQuestions(
       record!.attributes.test_questions.data.map((q) => q.attributes.question.data.id),
     );
@@ -72,6 +76,7 @@ const TestTemplate = () => {
             category: true,
             theme: true,
             sub_theme: true,
+            block: true,
             test_questions: {
               populate: {
                 question: {
@@ -115,6 +120,8 @@ const TestTemplate = () => {
           visible={open}
           onClose={handleClose}
           testId={testId}
+          testThemeId={themeId}
+          testSubThemeId={subThemeId}
           excludedQuestions={excludedQuestions}
           refetch={() => {
             setRefetch(true);
