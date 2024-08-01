@@ -1,7 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { ISelect } from '@/app/interfaces/basics';
-import { IBlock, IBlockResponse, ISubTheme, ISubThemeResponse } from '@/app/interfaces/question';
+import {
+  IBlock,
+  IBlockResponse,
+  ISubTheme,
+  ISubThemeResponse,
+} from '@/app/interfaces/question';
 import { blockService } from '@/app/services/block.service';
 import { subThemeService } from '@/app/services/subthemes.service';
 import { themeService } from '@/app/services/themes.service';
@@ -22,12 +27,14 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
   const { notification } = App.useApp();
   const [subThemes, setSubThemes] = useState<ISelect[]>([]);
   const [loading, setLoading] = useState(false);
+  const [block, setBlock] = useState<IBlockResponse>();
 
   const fetchBlock = async () => {
     if (editMode) {
       const response = await blockService.getById(blockId, {
         populate: { sub_theme: { populate: '*' } },
       });
+      setBlock(() => response.data.data);
       updateFields(response.data.data);
     }
   };
@@ -103,9 +110,17 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
             ({ getFieldValue }) => ({
               async validator(_, value) {
                 const subThemeId = getFieldValue('sub_theme');
-                if (!value || !subThemeId) return Promise.resolve();
+                if (
+                  !value ||
+                  !subThemeId ||
+                  (value === block?.attributes.name &&
+                    subThemeId === block?.attributes.sub_theme.data.id)
+                )
+                  return Promise.resolve();
                 const response = await blockService.get({
-                  filters: { $and: [{sub_theme: {id: subThemeId}}, {name: value}] },
+                  filters: {
+                    $and: [{ sub_theme: { id: subThemeId } }, { name: value }],
+                  },
                 });
                 if (response.data.data.length > 0) {
                   return Promise.reject(

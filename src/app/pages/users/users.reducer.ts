@@ -121,7 +121,6 @@ const usersSlice = createSlice({
     });
     builder.addCase(getLoggedUser.rejected, (state, action) => {
       state.error = action.error.message || '';
-      showNotification('error', 'Error', [state.error]);
       state.loadingLoggedUser = false;
     });
 

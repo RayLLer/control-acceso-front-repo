@@ -153,11 +153,6 @@ const MagicTable = <T, R>({
         }
       })
       .catch((error: any) => {
-        if (axios.isAxiosError(error)) {
-          if (error.status === 401) {
-            router.replace('auth/login');
-          }
-        }
         setLoading(false);
       });
   };

@@ -21,12 +21,14 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
   const { notification } = App.useApp();
   const [themes, setThemes] = useState<ISelect[]>([]);
   const [loading, setLoading] = useState(false);
+  const [subTheme, setSubTheme] = useState<ISubThemeResponse>();
 
   const fetchSubTheme = async () => {
     if (editMode) {
       const response = await subThemeService.getById(subThemeId, {
         populate: { theme: { populate: '*' } },
       });
+      setSubTheme(() => response.data.data);
       updateFields(response.data.data);
     }
   };
@@ -103,9 +105,17 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
             ({ getFieldValue }) => ({
               async validator(_, value) {
                 const themeId = getFieldValue('theme');
-                if (!value || !themeId) return Promise.resolve();
+                if (
+                  !value ||
+                  !themeId ||
+                  (value === subTheme?.attributes.name &&
+                    themeId === subTheme?.attributes.theme.data.id)
+                )
+                  return Promise.resolve();
                 const response = await subThemeService.get({
-                  filters: { $and: [{theme: {id: themeId}}, {name: value}] },
+                  filters: {
+                    $and: [{ theme: { id: themeId } }, { name: value }],
+                  },
                 });
                 if (response.data.data.length > 0) {
                   return Promise.reject(

@@ -51,7 +51,6 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   };
 
   const updateFields = (theme: IThemeResponse) => {
-    console.log(theme);
     form.setFieldsValue({
       name: theme.attributes.name,
       tag: theme.attributes.tag,
@@ -152,7 +151,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
             { required: true, message: 'El nombre es obligatorio' },
             ({ getFieldValue }) => ({
               async validator(_, value) {
-                if (!value) return Promise.resolve();
+                if (!value || value === theme?.attributes.name) return Promise.resolve();
                 const response = await themeService.get({
                   filters: { name: value },
                 });
