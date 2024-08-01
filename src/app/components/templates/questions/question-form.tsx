@@ -157,7 +157,7 @@ const QuestionForm = () => {
         rules={[
           () => ({
             async validator(_, value) {
-              if (!value) return Promise.resolve();
+              if (!value || !value.length) return Promise.resolve();
               const img = new Image();
               img.src = URL.createObjectURL(value[0].originFileObj);
               await img.decode();
