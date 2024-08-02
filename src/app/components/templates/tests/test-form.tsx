@@ -100,8 +100,12 @@ const TestForm = () => {
     // Submit form
     try {
       const dataToSend: any = { ...values };
-      dataToSend.initDate = dataToSend.initDate.toISOString();
-      dataToSend.spireDate = dataToSend.spireDate.toISOString();
+      if(dataToSend.initDate) {
+        dataToSend.initDate = dataToSend.initDate.toISOString();
+      }
+      if(dataToSend.spireDate) {
+        dataToSend.spireDate = dataToSend.spireDate.toISOString();
+      }
       dataToSend.timeLimit = +dataToSend.timeLimit;
       dataToSend.oposition = 1;
       if (id) {
@@ -113,6 +117,7 @@ const TestForm = () => {
         router.push(paths.tests.edit(response.data.data.id));
       }
     } catch (error) {
+      console.log(error)
       notification.error({ message: 'Error al guardar el test' });
     }
   };
@@ -292,6 +297,7 @@ const TestForm = () => {
         rules={[
           ({ getFieldValue }) => ({
             validator(_, value) {
+              if(!value) return Promise.resolve();
               if (value) {
                 return getFieldValue('initDate') < value
                   ? Promise.resolve()
@@ -306,7 +312,7 @@ const TestForm = () => {
         <DatePicker style={{ width: '100%' }} format={dateFormat} />
       </Form.Item>
       <Form.Item>
-        <Button type='primary' htmlType='submit'>
+        <Button type='primary' htmlType='submit' onClick={()=> console.log(form.getFieldsValue())}>
           {id ? 'Actualizar' : 'Crear'}
         </Button>
       </Form.Item>

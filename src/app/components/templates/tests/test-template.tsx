@@ -86,9 +86,12 @@ const TestTemplate = () => {
             },
           },
           filters: {
-            ...BASE_FILTER,
             // $ne: 'Personalizado'
-            $or: [{ testType: OFICIAL }, { testType: CHALLENGE }],
+            $and: [
+              {$or: [{ testType: OFICIAL }, { testType: CHALLENGE }]},
+              {...BASE_FILTER},
+
+            ]
           },
         }}
         expandable={{
