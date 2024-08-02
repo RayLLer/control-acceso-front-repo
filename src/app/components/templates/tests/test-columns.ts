@@ -53,6 +53,8 @@ export const test_columns: ColumnsType<ITestResponse>[] = [
     title: 'Fecha de creado',
     dataIndex: ['attributes', 'createdAt'],
     sorter: true,
+    filtrable: true,
+    filterType: 'date',
     render: (data) => (data ? new Date(data).toLocaleDateString() : ''),
   },
 ]; 
