@@ -34,9 +34,12 @@ axiosInstance.interceptors.response.use(
       secureStorage.removeItem('user');
       notification.error({
         message: 'Sesión expirada',
-        description: 'Por favor inicie sesión nuevamente',
+        description:
+          'Por favor inicie sesión nuevamente, redirigiendo a la pantalla de inicio...',
       });
-      window.location.href = '/auth/login';
+      setTimeout(() => {
+        window.location.href = '/auth/login';
+      }, 3000);
     }
   }
 );
