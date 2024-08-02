@@ -64,8 +64,17 @@ const TestForm = () => {
     setAsociatedTests([]);
     const response = await testService.getForSelect('name', {
       filters: {
-        suTestType: { $eq: subTestType === 'General' ? 'Práctico' : 'General' },
-        year: { $eq: form.getFieldValue('year') },
+        $and: [
+          {
+            suTestType: { $eq: subTestType === 'General' ? 'Práctico' : 'General' },
+          },
+          {
+            year: { $eq: form.getFieldValue('year') },
+          },
+          {
+            testType: { $eq: OFICIAL },
+          }
+        ]
       },
     });
     setAsociatedTests(convertForSelect(response.data.data));
