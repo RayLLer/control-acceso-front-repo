@@ -11,7 +11,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useHierarchy } from '../questions/use-hierarchy';
 import moment from 'moment';
-import { dateFormat } from '@/utils/constants/constants';
+import { BASE_FILTER, dateFormat } from '@/utils/constants/constants';
 
 export const OFICIAL = 'Oficial';
 export const CHALLENGE = 'Reto';
@@ -73,8 +73,10 @@ const TestForm = () => {
           },
           {
             testType: { $eq: OFICIAL },
-          }
-        ]
+          },
+          {...BASE_FILTER}
+        ],
+        // ...BASE_FILTER
       },
     });
     setAsociatedTests(convertForSelect(response.data.data));
@@ -224,7 +226,7 @@ const TestForm = () => {
             },
           ]}
         >
-          <Select options={suTestTypeOpt} allowClear />
+          <Select options={suTestTypeOpt} allowClear onChange={()=>form.setFieldValue('test', undefined)} />
         </Form.Item>
       )}
       {testType === OFICIAL && (

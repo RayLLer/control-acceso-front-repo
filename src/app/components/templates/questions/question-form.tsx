@@ -167,7 +167,7 @@ const QuestionForm = () => {
               const percent = (diff / average) * 100;
               if (percent > 5) {
                 return Promise.reject(
-                  'La imagen a subir debe de ser cuadrada'
+                  'Las dimensiones de la imagen (Alto x Ancho) deben ser las mismas.'
                 );
               }
               return Promise.resolve();
