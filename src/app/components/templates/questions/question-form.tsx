@@ -161,7 +161,6 @@ const QuestionForm = () => {
               const img = new Image();
               img.src = URL.createObjectURL(value[0].originFileObj);
               await img.decode();
-              debugger;
               const diff = Math.abs(img.width - img.height);
               const average = (img.width + img.height) / 2;
               const percent = (diff / average) * 100;
