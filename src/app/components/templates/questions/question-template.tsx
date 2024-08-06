@@ -15,10 +15,6 @@ const QuestionTemplate = () => {
   const router = useRouter();
   const [showUploadModal, setShowUploadModal] = useState(false)
 
-  const uploadQuestions = async () => {
-    
-  }
-
   return (
     <>
       <MagicTable<IQuestionResponse, IQuestion>

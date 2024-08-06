@@ -1,4 +1,4 @@
-import { Select, Input, Space, Button } from 'antd';
+import { Select, Input, Space, Button, DatePicker } from 'antd';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import React, { FC, useMemo } from 'react';
 import {
@@ -35,6 +35,7 @@ const FilterComponent: FC<
   type = 'string',
 }) => {
   const [searchInput, setSearchInput] = React.useState<string>('');
+  const [dateValue, setDateValue] = React.useState<Date>();
   const [filterOperator, setFilterOperator] = React.useState<string>(
     type === 'string' ? '$containsi' : '$eq'
   );
@@ -70,18 +71,30 @@ const FilterComponent: FC<
         }}
         defaultValue={'$eq'}
       />
-      <Input
-        // ref={searchInput}
-        placeholder={`${title}`}
-        value={searchInput}
-        onChange={(e) => {
-          setSearchInput(e.target.value);
-        }}
-        onPressEnter={() => {
-          handleSearch(searchInput, confirm, dataIndex, filterOperator);
-        }}
-        style={{ marginBottom: 8, display: 'block' }}
-      />
+      {type !== 'date' ? (
+        <Input
+          // ref={searchInput}
+          placeholder={`${title}`}
+          value={searchInput}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+          }}
+          onPressEnter={() => {
+            handleSearch(searchInput, confirm, dataIndex, filterOperator);
+          }}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+      ) : (
+        <DatePicker
+          value={dateValue}
+          showTime
+          style={{ marginBottom: 8, display: 'block' }}
+          onChange={(date) => {
+            setDateValue(date);
+            setSearchInput(date.toISOString());
+          }}
+        />
+      )}
       <Space>
         <Button
           type='primary'
@@ -103,6 +116,7 @@ const FilterComponent: FC<
           onClick={() => {
             setSearchInput('');
             setFilterOperator(type === 'string' ? '$containsi' : '$eq');
+            setDateValue(undefined);
             handleReset();
           }}
         >

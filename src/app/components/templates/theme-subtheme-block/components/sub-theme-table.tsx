@@ -29,7 +29,6 @@ const SubThemeTable = () => {
       );
       return !hasActiveBlocks;
     } catch (error) {
-      console.log(error)
       return axios.isAxiosError(error)
         ? error.response?.data.message
         : 'Ha ocurrido un error';

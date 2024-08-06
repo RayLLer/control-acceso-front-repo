@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { ColumnsType, TableParams } from '@/app/interfaces/strapi';
+import { AUTHENTICATED, PUBLIC } from '@/app/pages/roles/roles.reducer';
 import { BaseApi } from '@/utils/baseApi';
 import { convertStringToObject } from '@/utils/filter-transformer';
 import {
@@ -21,17 +22,14 @@ import {
   notification,
 } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
+import axios from 'axios';
 import React, {
-  useCallback,
   useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react';
 import FilterComponent from './filter';
-import { AUTHENTICATED, PUBLIC } from '@/app/pages/roles/roles.reducer';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
 
 type ParametersType = {
   populate?: any;
@@ -74,7 +72,6 @@ const MagicTable = <T, R>({
   onDelete,
   ...others
 }: Props<T, R>) => {
-  const router = useRouter();
   const [data, setData] = useState<T[]>();
   const { modal } = App.useApp();
   const token = antdTheme.useToken().token;

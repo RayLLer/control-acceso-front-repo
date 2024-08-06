@@ -95,7 +95,6 @@ const QuestionForm = () => {
         router.push(paths.questions.edit(response.data.data.id));
       }
     } catch (error) {
-      console.log(error);
       notification.error({
         message: 'Ha ocurrido un error al guardar la pregunta',
         placement: 'topRight',
@@ -158,17 +157,16 @@ const QuestionForm = () => {
         rules={[
           () => ({
             async validator(_, value) {
-              if (!value) return Promise.resolve();
+              if (!value || !value.length) return Promise.resolve();
               const img = new Image();
               img.src = URL.createObjectURL(value[0].originFileObj);
               await img.decode();
-              debugger;
               const diff = Math.abs(img.width - img.height);
               const average = (img.width + img.height) / 2;
               const percent = (diff / average) * 100;
               if (percent > 5) {
                 return Promise.reject(
-                  'La imagen a subir debe de ser cuadrada'
+                  'Las dimensiones de la imagen (Alto x Ancho) deben ser las mismas.'
                 );
               }
               return Promise.resolve();

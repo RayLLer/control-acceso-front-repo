@@ -202,7 +202,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                 arrow
               >
                 <Button icon={<UserOutlined />} danger>
-                  {'Develop'}
+                  {loggedUser.username ?? 'Usuario'}
                 </Button>
               </Dropdown>
             </Col>

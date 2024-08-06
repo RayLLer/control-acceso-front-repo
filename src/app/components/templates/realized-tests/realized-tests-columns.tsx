@@ -26,7 +26,7 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
     {
       title: 'Cantidad de intentos',
       dataIndex: ['attempts'],
-      filtrable: true,
+      filtrable: false,
       filterType: 'number',
       render: (value) => `${value ?? 0}`,
     },

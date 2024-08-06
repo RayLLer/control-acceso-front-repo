@@ -40,7 +40,7 @@ const Roles: FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const usersResponse = (await userService.get({
+      const usersResponse = await userService.get({
         filters: {
           role: {
             id: {
@@ -48,18 +48,14 @@ const Roles: FC = () => {
             },
           },
         },
-      })) as any;
+      }) as any;
       if (usersResponse.data.length > 0) {
-        notification.error({
-          message:
-            'No se puede eliminar el rol porque tiene usuarios asociados.',
-        });
-        return;
+        return 'No se puede eliminar el rol porque tiene usuarios asociados.';
       }
-      await roleServices.delete(id);
-      notification.success({
-        message: 'El registro ha sido eliminado correctamente.',
-      });
+      // await roleServices.delete(id);
+      // notification.success({
+      //   message: 'El registro ha sido eliminado correctamente.',
+      // });
     } catch (error) {
       notification.error({
         message: 'Error al eliminar el registro.',

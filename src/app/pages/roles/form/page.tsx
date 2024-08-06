@@ -103,7 +103,6 @@ const FormRole = () => {
       setLoading(true);
       try {
         if(!roleId){
-          debugger
           await rolesService.postRole(roleDto);
           const response = await rolesService.get() as any;
           const id  = response.data.roles.find((r: any) => r.name === data.name)!.id;

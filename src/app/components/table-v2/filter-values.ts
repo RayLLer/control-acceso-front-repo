@@ -115,7 +115,7 @@ export const filtersSelectNumberOrDate = [
     value: '$lt',
   },
   {
-    label: 'Menor o igual',
+    label: 'Menor o igual que',
     value: '$lte',
   },
   {
@@ -123,7 +123,7 @@ export const filtersSelectNumberOrDate = [
     value: '$gt',
   },
   {
-    label: 'Mayor igual que',
+    label: 'Mayor o igual que',
     value: '$gte',
   },
   {

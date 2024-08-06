@@ -29,14 +29,17 @@ axiosInstance.interceptors.request.use(async (config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.status === 401) {
+    if (error.response?.status === 401) {
       secureStorage.removeItem('token');
       secureStorage.removeItem('user');
       notification.error({
         message: 'Sesión expirada',
-        description: 'Por favor inicie sesión nuevamente',
+        description:
+          'Por favor inicie sesión nuevamente, redirigiendo a la pantalla de inicio...',
       });
-      window.location.href = '/auth/login';
+      setTimeout(() => {
+        window.location.href = '/auth/login';
+      }, 3000);
     }
   }
 );

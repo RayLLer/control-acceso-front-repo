@@ -181,7 +181,6 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
               );
             }}
             onChange={(values) => {
-              console.log(values);
               setExcludedCategories(values);
             }}
           />

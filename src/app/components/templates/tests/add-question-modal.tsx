@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Modal, Row } from 'antd';
+import { Button, Modal, Row, theme } from 'antd';
 import React, { FC, useEffect, useState } from 'react';
 import MagicTable from '../../table-v2/table-custom';
 import { IQuestion, IQuestionResponse } from '@/app/interfaces/question';
@@ -13,6 +13,8 @@ type Props = {
   testId: number;
   excludedQuestions: number[];
   refetch: () => void;
+  testThemeId?: number;
+  testSubThemeId?: number;
 };
 
 const AddQuestionModal: FC<Props> = ({
@@ -20,7 +22,9 @@ const AddQuestionModal: FC<Props> = ({
   testId,
   visible,
   excludedQuestions,
-  refetch
+  refetch,
+  testSubThemeId,
+  testThemeId,
 }) => {
   const [open] = useState(visible);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -92,14 +96,19 @@ const AddQuestionModal: FC<Props> = ({
         }}
         rowSelection={{
           selectedRowKeys,
+          preserveSelectedRowKeys: true,
           onChange: setSelectedRowKeys,
         }}
         scroll={{ x: 700, y: 400 }}
         style={{ marginTop: 30 }}
         defaultParameters={{
           filters: {
-            id: { $notIn: excludedQuestions },
-            ...BASE_FILTER
+            $and: [
+              { id: { $notIn: excludedQuestions } },
+              { theme: { id: {$eq :testThemeId} } },
+              { sub_theme: { id: {$eq: testSubThemeId} } },
+            ],
+            ...BASE_FILTER,
           },
         }}
       />

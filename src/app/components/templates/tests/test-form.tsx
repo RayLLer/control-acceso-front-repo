@@ -11,7 +11,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useHierarchy } from '../questions/use-hierarchy';
 import moment from 'moment';
-import { dateFormat } from '@/utils/constants/constants';
+import { BASE_FILTER, dateFormat } from '@/utils/constants/constants';
 
 export const OFICIAL = 'Oficial';
 export const CHALLENGE = 'Reto';
@@ -64,8 +64,19 @@ const TestForm = () => {
     setAsociatedTests([]);
     const response = await testService.getForSelect('name', {
       filters: {
-        suTestType: { $eq: subTestType === 'General' ? 'Práctico' : 'General' },
-        year: { $eq: form.getFieldValue('year') },
+        $and: [
+          {
+            suTestType: { $eq: subTestType === 'General' ? 'Práctico' : 'General' },
+          },
+          {
+            year: { $eq: form.getFieldValue('year') },
+          },
+          {
+            testType: { $eq: OFICIAL },
+          },
+          {...BASE_FILTER}
+        ],
+        // ...BASE_FILTER
       },
     });
     setAsociatedTests(convertForSelect(response.data.data));
@@ -82,7 +93,6 @@ const TestForm = () => {
   }, [id]);
 
   useEffect(() => {
-    console.log('first', testType, subTestType, year);
     if (testType === OFICIAL && subTestType && year) {
       fetchAsociatedTest();
     }
@@ -92,8 +102,12 @@ const TestForm = () => {
     // Submit form
     try {
       const dataToSend: any = { ...values };
-      dataToSend.initDate = dataToSend.initDate.toISOString();
-      dataToSend.spireDate = dataToSend.spireDate.toISOString();
+      if(dataToSend.initDate) {
+        dataToSend.initDate = dataToSend.initDate.toISOString();
+      }
+      if(dataToSend.spireDate) {
+        dataToSend.spireDate = dataToSend.spireDate.toISOString();
+      }
       dataToSend.timeLimit = +dataToSend.timeLimit;
       dataToSend.oposition = 1;
       if (id) {
@@ -105,6 +119,7 @@ const TestForm = () => {
         router.push(paths.tests.edit(response.data.data.id));
       }
     } catch (error) {
+      console.log(error)
       notification.error({ message: 'Error al guardar el test' });
     }
   };
@@ -211,7 +226,7 @@ const TestForm = () => {
             },
           ]}
         >
-          <Select options={suTestTypeOpt} allowClear />
+          <Select options={suTestTypeOpt} allowClear onChange={()=>form.setFieldValue('test', undefined)} />
         </Form.Item>
       )}
       {testType === OFICIAL && (
@@ -284,6 +299,7 @@ const TestForm = () => {
         rules={[
           ({ getFieldValue }) => ({
             validator(_, value) {
+              if(!value) return Promise.resolve();
               if (value) {
                 return getFieldValue('initDate') < value
                   ? Promise.resolve()
@@ -298,7 +314,7 @@ const TestForm = () => {
         <DatePicker style={{ width: '100%' }} format={dateFormat} />
       </Form.Item>
       <Form.Item>
-        <Button type='primary' htmlType='submit'>
+        <Button type='primary' htmlType='submit' onClick={()=> console.log(form.getFieldsValue())}>
           {id ? 'Actualizar' : 'Crear'}
         </Button>
       </Form.Item>

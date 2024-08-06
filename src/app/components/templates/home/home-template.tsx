@@ -57,7 +57,6 @@ const HomeTemplate = () => {
     filters,
     sorter
   ) => {
-    console.log(convertSortOptions(sorter));
     setTableParams({
       pagination,
       filters,
