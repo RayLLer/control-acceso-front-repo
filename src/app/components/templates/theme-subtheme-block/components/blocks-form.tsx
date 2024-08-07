@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
+import useSubmitable from '@/app/hooks/use-submitable';
 import { ISelect } from '@/app/interfaces/basics';
 import {
   IBlock,
@@ -28,6 +29,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
   const [subThemes, setSubThemes] = useState<ISelect[]>([]);
   const [loading, setLoading] = useState(false);
   const [block, setBlock] = useState<IBlockResponse>();
+  const { submittable, setSubmittable } = useSubmitable({ form });
 
   const fetchBlock = async () => {
     if (editMode) {
@@ -71,6 +73,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
           message: 'Bloque actualizado',
           description: 'El Bloque ha sido actualizado correctamente',
         });
+        setSubmittable(false);
       } else {
         await blockService.post(dataTosend as IBlock);
         notification.success({
@@ -99,6 +102,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
       title={editMode ? 'Editar Bloque' : 'Agregar Bloque'}
       onCancel={onClose}
       onOk={() => form.submit()}
+      okButtonProps={{ disabled: !submittable }}
       confirmLoading={loading}
     >
       <Form onFinish={onFinish} form={form}>

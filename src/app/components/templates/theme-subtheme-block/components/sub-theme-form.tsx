@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
+import useSubmitable from '@/app/hooks/use-submitable';
 import { ISelect } from '@/app/interfaces/basics';
 import { ISubTheme, ISubThemeResponse } from '@/app/interfaces/question';
 import { subThemeService } from '@/app/services/subthemes.service';
@@ -22,6 +23,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
   const [themes, setThemes] = useState<ISelect[]>([]);
   const [loading, setLoading] = useState(false);
   const [subTheme, setSubTheme] = useState<ISubThemeResponse>();
+  const { submittable, setSubmittable } = useSubmitable({ form });
 
   const fetchSubTheme = async () => {
     if (editMode) {
@@ -65,6 +67,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
           message: 'SubTema actualizado',
           description: 'El subtema ha sido actualizado correctamente',
         });
+        setSubmittable(false);
       } else {
         await subThemeService.post(dataTosend as ISubTheme);
         notification.success({
@@ -93,6 +96,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
       title={editMode ? 'Editar SubTema' : 'Agregar SubTema'}
       onCancel={onClose}
       onOk={() => form.submit()}
+      okButtonProps={{ disabled: !submittable }}
       confirmLoading={loading}
     >
       <Form onFinish={onFinish} form={form}>

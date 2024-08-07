@@ -10,6 +10,8 @@ import { App, Form, Input, Modal, Select } from 'antd';
 import { isAxiosError } from 'axios';
 import { FC, useEffect, useMemo, useState } from 'react';
 import './style.css';
+import useSubmitable from '@/app/hooks/use-submitable';
+import { changeUndefinedToNull } from '@/utils/utils';
 
 type Props = {
   open: boolean;
@@ -28,6 +30,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const [categories, setCategories] = useState<ISelect[]>([]);
   const [excludedCategories, setExcludedCategories] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const { submittable, setSubmittable } = useSubmitable({ form });
 
   const fetchTheme = async () => {
     if (editMode) {
@@ -76,7 +79,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   // }, [excludedCategories]);
 
   const onFinish = async (values: any) => {
-    const dataTosend = { ...values };
+    const dataToSend = { ...changeUndefinedToNull(values) };
     setLoading(true);
     try {
       if (editMode && theme) {
@@ -84,7 +87,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
         theme?.attributes.category_themes.data?.forEach((catId) => {
           promises.push(categoryThemeService.delete(catId.id));
         });
-        dataTosend.categories.forEach((catId: number) => {
+        dataToSend.categories.forEach((catId: number) => {
           promises.push(
             categoryThemeService.post({
               category: catId,
@@ -92,18 +95,19 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
             })
           );
         });
-        delete dataTosend.categories;
-        await themeService.put(themeId, dataTosend as ITheme);
+        delete dataToSend.categories;
+        await themeService.put(themeId, dataToSend as ITheme);
         await Promise.all(promises);
         notification.success({
           type: 'success',
           message: 'Guardado',
           description: 'Tema actualizado correctamente.',
         });
+        setSubmittable(false)
       } else {
         const promises: any[] = [];
-        const response = await themeService.post(dataTosend as ITheme);
-        dataTosend.categories.forEach((catId: number) => {
+        const response = await themeService.post(dataToSend as ITheme);
+        dataToSend.categories.forEach((catId: number) => {
           promises.push(
             categoryThemeService.post({
               category: catId,
@@ -140,6 +144,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
       onCancel={onClose}
       onOk={() => form.submit()}
       confirmLoading={loading}
+      okButtonProps={{ disabled: !submittable }}
       className='my-custom-class'
     >
       <Form onFinish={onFinish} form={form}>

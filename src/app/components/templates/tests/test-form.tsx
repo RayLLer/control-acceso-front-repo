@@ -8,10 +8,12 @@ import { convertForSelect } from '@/utils/select-utils';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { App, Button, DatePicker, Form, Input, Select } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useHierarchy } from '../questions/use-hierarchy';
 import moment from 'moment';
 import { BASE_FILTER, dateFormat } from '@/utils/constants/constants';
+import useSubmitable from '@/app/hooks/use-submitable';
+import { changeUndefinedToNull } from '@/utils/utils';
 
 export const OFICIAL = 'Oficial';
 export const CHALLENGE = 'Reto';
@@ -38,6 +40,7 @@ const TestForm = () => {
   const selectedCategory = Form.useWatch('category', form);
   const selectedTheme = Form.useWatch('theme', form);
   const year = Form.useWatch('year', form);
+  const { submittable, setSubmittable } = useSubmitable({ form });
 
   const {
     categories,
@@ -55,8 +58,14 @@ const TestForm = () => {
     form.setFieldValue('theme', test.attributes.theme.data?.id);
     form.setFieldValue('sub_theme', test.attributes.sub_theme.data?.id);
     form.setFieldValue('test', test.attributes.test.data?.id);
-    form.setFieldValue('initDate', moment(test.attributes.initDate));
-    form.setFieldValue('spireDate', moment(test.attributes.spireDate));
+    form.setFieldValue(
+      'initDate',
+      test.attributes.initDate ? moment(test.attributes.initDate) : undefined
+    );
+    form.setFieldValue(
+      'spireDate',
+      test.attributes.spireDate ? moment(test.attributes.spireDate) : undefined
+    );
   };
 
   const fetchAsociatedTest = async () => {
@@ -66,7 +75,9 @@ const TestForm = () => {
       filters: {
         $and: [
           {
-            suTestType: { $eq: subTestType === 'General' ? 'Práctico' : 'General' },
+            suTestType: {
+              $eq: subTestType === 'General' ? 'Práctico' : 'General',
+            },
           },
           {
             year: { $eq: form.getFieldValue('year') },
@@ -74,7 +85,7 @@ const TestForm = () => {
           {
             testType: { $eq: OFICIAL },
           },
-          {...BASE_FILTER}
+          { ...BASE_FILTER },
         ],
         // ...BASE_FILTER
       },
@@ -101,17 +112,18 @@ const TestForm = () => {
   const onFinish = async (values: ITest) => {
     // Submit form
     try {
-      const dataToSend: any = { ...values };
-      if(dataToSend.initDate) {
+      const dataToSend = { ...changeUndefinedToNull(values) };
+      if (dataToSend.initDate) {
         dataToSend.initDate = dataToSend.initDate.toISOString();
       }
-      if(dataToSend.spireDate) {
+      if (dataToSend.spireDate) {
         dataToSend.spireDate = dataToSend.spireDate.toISOString();
       }
       dataToSend.timeLimit = +dataToSend.timeLimit;
       dataToSend.oposition = 1;
       if (id) {
         await testService.put(+id, dataToSend);
+        setSubmittable(false);
         notification.success({ message: 'Test actualizado correctamente' });
       } else {
         const response = await testService.post(dataToSend);
@@ -119,7 +131,7 @@ const TestForm = () => {
         router.push(paths.tests.edit(response.data.data.id));
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       notification.error({ message: 'Error al guardar el test' });
     }
   };
@@ -134,6 +146,10 @@ const TestForm = () => {
       </Form.Item>
     );
   };
+
+  const valid = useMemo(() => {
+    return form.validateFields();
+  }, []);
 
   return (
     <Form
@@ -209,7 +225,7 @@ const TestForm = () => {
           onChange={(value) => {
             form.setFieldsValue({
               year: value === OFICIAL ? new Date().getFullYear() : undefined,
-              suTestType: value === OFICIAL ? 'General' : undefined
+              suTestType: value === OFICIAL ? 'General' : undefined,
             });
           }}
         />
@@ -226,7 +242,11 @@ const TestForm = () => {
             },
           ]}
         >
-          <Select options={suTestTypeOpt} allowClear onChange={()=>form.setFieldValue('test', undefined)} />
+          <Select
+            options={suTestTypeOpt}
+            allowClear
+            onChange={() => form.setFieldValue('test', undefined)}
+          />
         </Form.Item>
       )}
       {testType === OFICIAL && (
@@ -247,6 +267,7 @@ const TestForm = () => {
               !form.getFieldValue('year') &&
                 form.setFieldValue('year', new Date().getFullYear());
             }}
+            onChange={() => form.setFieldValue('test', undefined)}
           />
         </Form.Item>
       )}
@@ -273,6 +294,7 @@ const TestForm = () => {
         name='timeLimit'
         rules={[
           {
+            type: 'number',
             min: 0,
             message: 'No debe admitir valores negativos',
           },
@@ -299,7 +321,7 @@ const TestForm = () => {
         rules={[
           ({ getFieldValue }) => ({
             validator(_, value) {
-              if(!value) return Promise.resolve();
+              if (!value) return Promise.resolve();
               if (value) {
                 return getFieldValue('initDate') < value
                   ? Promise.resolve()
@@ -314,7 +336,12 @@ const TestForm = () => {
         <DatePicker style={{ width: '100%' }} format={dateFormat} />
       </Form.Item>
       <Form.Item>
-        <Button type='primary' htmlType='submit' onClick={()=> console.log(form.getFieldsValue())}>
+        <Button
+          type='primary'
+          htmlType='submit'
+          onClick={() => console.log(form.getFieldsValue())}
+          disabled={!submittable}
+        >
           {id ? 'Actualizar' : 'Crear'}
         </Button>
       </Form.Item>
