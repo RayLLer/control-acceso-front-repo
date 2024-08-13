@@ -1,8 +1,8 @@
-import { IUser } from '../pages/users/users.interface';
-import { ITestResponse } from './test';
+import { IUser } from "../pages/users/users.interface";
+import { ITestResponse } from "./test";
 
 export interface IRealizedTestAttemptsResponse {
-  user: User;
+  users_permissions_user: User;
   id: number;
   initDate: Date;
   finishDate: Date;

@@ -1,21 +1,21 @@
-import { IRealizedTestAttemptsResponse } from '@/app/interfaces/realized-tests';
-import { ColumnsType } from '@/app/interfaces/strapi';
-import { Typography } from 'antd';
-import moment from 'moment';
+import { IRealizedTestAttemptsResponse } from "@/app/interfaces/realized-tests";
+import { ColumnsType } from "@/app/interfaces/strapi";
+import { Typography } from "antd";
+import moment from "moment";
 
 export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[] =
   [
     {
-      title: 'Usuario',
-      dataIndex: ['user', 'username'],
+      title: "Usuario",
+      dataIndex: ["users_permissions_user", "username"],
       filtrable: true,
-      filterType: 'string',
+      filterType: "string",
     },
     {
-      title: 'Tema',
-      dataIndex: ['test', 'theme', 'name'],
+      title: "Tema",
+      dataIndex: ["test", "theme", "name"],
       filtrable: true,
-      filterType: 'string',
+      filterType: "string",
     },
     // {
     //   title: 'Test',
@@ -24,10 +24,10 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
     //   filterType: 'string',
     // },
     {
-      title: 'Cantidad de intentos',
-      dataIndex: ['attempts'],
+      title: "Cantidad de intentos",
+      dataIndex: ["attempts"],
       filtrable: false,
-      filterType: 'number',
+      filterType: "number",
       render: (value) => `${value ?? 0}`,
     },
     // {
@@ -36,25 +36,25 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
     //   // render: (value) => (value ? `${value}` : 'No calificado'),
     // },
     {
-      title: 'Último resultado',
-      dataIndex: ['evaluationPercent'],
+      title: "Último resultado",
+      dataIndex: ["evaluationPercent"],
       filtrable: true,
-      filterType: 'number',
+      filterType: "number",
       render: (value) => (
         <Typography.Text
-          type={value <= 0.5 ? 'danger' : 'success'}
-        >{`${new Intl.NumberFormat('es-Es', {
-          style: 'percent',
+          type={value <= 0.5 ? "danger" : "success"}
+        >{`${new Intl.NumberFormat("es-Es", {
+          style: "percent",
           minimumFractionDigits: 1,
         }).format(value)}`}</Typography.Text>
       ),
     },
     {
-      title: 'fecha del último intento',
-      dataIndex: ['finishDate'],
+      title: "fecha del último intento",
+      dataIndex: ["finishDate"],
       filtrable: true,
-      filterType: 'date',
+      filterType: "date",
       render: (value) =>
-        value ? moment(value).format('DD/MM/YYYY HH:mm:ss') : '',
+        value ? moment(value).format("DD/MM/YYYY HH:mm:ss") : "",
     },
   ];
