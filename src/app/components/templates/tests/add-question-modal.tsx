@@ -105,8 +105,10 @@ const AddQuestionModal: FC<Props> = ({
           filters: {
             $and: [
               { id: { $notIn: excludedQuestions } },
-              { theme: { id: {$eq :testThemeId} } },
-              { sub_theme: { id: {$eq: testSubThemeId} } },
+              { theme: { id: { $eq: testThemeId } } },
+              testSubThemeId
+                ? { sub_theme: { id: { $eq: testSubThemeId } } }
+                : {},
             ],
             ...BASE_FILTER,
           },

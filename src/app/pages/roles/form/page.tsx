@@ -9,15 +9,12 @@ import { Suspense, useEffect, useState } from 'react';
 import {
   SelectAllRoles,
   fetchPermissions,
-  fetchRoles,
-  patchRoles,
-  postRoles,
   selectError,
-  selectPermissions,
-  selectRoleByID,
+  selectPermissions
 } from '../roles.reducer';
 import { RolesServices } from '../roles.service';
 import PermissionsCheckBox from './permissionsCheckBox';
+import useSubmitable from '@/app/hooks/use-submitable';
 
 const rolesService = new RolesServices();
 
@@ -36,11 +33,10 @@ const FormRole = () => {
   const roleId = searchParams.get('roleId') ?? 0;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const error = useAppSelector(selectError);
   const permissions = useAppSelector(selectPermissions);
-  const roles = useAppSelector(SelectAllRoles);
   const [rolePermissions, setRolePermissions] = useState();
   const [loadingGeneral, setLoadingGeneral] = useState(false);
+  const {setSubmittable, submittable} = useSubmitable({ form });
 
   const fetchRole = async () => {
     try {
@@ -107,12 +103,14 @@ const FormRole = () => {
           const response = await rolesService.get() as any;
           const id  = response.data.roles.find((r: any) => r.name === data.name)!.id;
           await updatePermissions(id, data.permissions);
+          setSubmittable(false);
           notification.success({
             message: 'Rol creado correctamente.',
           });
         } else {
           await rolesService.put(+roleId, roleDto);
           await updatePermissions(+roleId, data.permissions);
+          setSubmittable(false);
           notification.success({
             message: 'Rol actualizado correctamente.',
           });
@@ -242,6 +240,7 @@ const FormRole = () => {
             // icon={roleId ? <EditOutlined /> : <PlusOutlined />}
             style={{ marginRight: 15 }}
             loading={loading}
+            disabled={!submittable}
           >
             Aceptar
           </Button>

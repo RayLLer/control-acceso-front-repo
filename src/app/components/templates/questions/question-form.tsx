@@ -9,11 +9,14 @@ import { App, Button, Form, Input, Select, Upload, UploadFile } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useHierarchy } from './use-hierarchy';
+import useSubmitable from '@/app/hooks/use-submitable';
+import { changeUndefinedToNull } from '@/utils/utils';
 
 const QuestionForm = () => {
   const { id } = useParams();
-  const { message, notification } = App.useApp();
-  const [form] = Form.useForm<IQuestionForm>();
+  const { notification } = App.useApp();
+  const [form] = Form.useForm();
+  const { submittable, setSubmittable } = useSubmitable({ form });
 
   const router = useRouter();
 
@@ -71,7 +74,7 @@ const QuestionForm = () => {
   }, []);
 
   const onFinish = async (values: any) => {
-    const dataToSend = { ...values };
+    const dataToSend = { ...changeUndefinedToNull(values) };
     delete dataToSend.image;
     try {
       if (values.image) {
@@ -86,6 +89,7 @@ const QuestionForm = () => {
           message: 'Pregunta actualizada correctamente',
           placement: 'topRight',
         });
+        setSubmittable(false);
       } else {
         const response = await questionService.post(dataToSend);
         notification.success({
@@ -277,7 +281,16 @@ const QuestionForm = () => {
         label='Tema'
         rules={[{ required: true, message: 'Seleccione un tema.' }]}
       >
-        <Select options={themes} loading={loadingThemes} />
+        <Select
+          options={themes}
+          loading={loadingThemes}
+          onChange={() => {
+            form.setFieldsValue({
+              sub_theme: undefined,
+              block: undefined,
+            });
+          }}
+        />
       </Form.Item>
 
       <Form.Item
@@ -285,7 +298,16 @@ const QuestionForm = () => {
         label='SubTema'
         // rules={[{ required: true, message: 'Seleccione un subtema.' }]}
       >
-        <Select options={subThemes} loading={loadingSubThemes} />
+        <Select
+          options={subThemes}
+          loading={loadingSubThemes}
+          allowClear
+          onChange={() => {
+            form.setFieldsValue({
+              block: null,
+            });
+          }}
+        />
       </Form.Item>
 
       <Form.Item
@@ -293,11 +315,11 @@ const QuestionForm = () => {
         label='Bloque'
         // rules={[{ required: true, message: 'Seleccione un bloque.' }]}
       >
-        <Select options={blocks} loading={loadingBlocks} />
+        <Select options={blocks} loading={loadingBlocks} allowClear />
       </Form.Item>
 
       <Form.Item>
-        <Button type='primary' htmlType='submit'>
+        <Button type='primary' htmlType='submit' disabled={!submittable}>
           {id ? 'Actualizar' : 'Crear'}
         </Button>
       </Form.Item>

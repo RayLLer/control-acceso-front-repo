@@ -12,3 +12,12 @@ export async function urlToFile(url: string, filename: string, mimeType: any) {
   const file = new File([blob], filename, { type: mimeType });
   return file;
 }
+
+export const changeUndefinedToNull = (value: any) => {
+  for (const key in value) {
+    if (value[key] === undefined) {
+      value[key] = null;
+    }
+  }
+  return value;
+}

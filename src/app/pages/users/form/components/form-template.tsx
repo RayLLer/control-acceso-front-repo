@@ -23,6 +23,7 @@ import {
   selectUserByID,
 } from '../../users.reducer';
 import { UsersService } from '../../users.service';
+import useSubmitable from '@/app/hooks/use-submitable';
 
 const { Title } = Typography;
 
@@ -54,6 +55,7 @@ const FormUser = () => {
   const [officialRole, setOfficialRole] = useState<IRole>();
   const [disabled, setDisabled] = useState(false);
   const [disabledPosition, setDisabledPosition] = useState(true);
+  const { submittable, setSubmittable } = useSubmitable({ form });
 
   const fetchUser = async () => {
     try {
@@ -130,6 +132,7 @@ const FormUser = () => {
             ? 'Usuario editado correctamente'
             : 'Usuario creado correctamente',
         });
+        setSubmittable(false)
         router.push('/pages/users');
       })
       .catch((error) => {});
@@ -186,7 +189,7 @@ const FormUser = () => {
             },
             ({ getFieldValue }) => ({
               async validator(_, value) {
-                if (!value) return Promise.resolve();
+                if (!value || value === getFieldValue('username')) return Promise.resolve();
                 const response = (await usersService.get({
                   filters: { username: value },
                 })) as any;
@@ -213,7 +216,7 @@ const FormUser = () => {
           rules={[
             ({ getFieldValue }) => ({
               async validator(_, value) {
-                if (!value) return Promise.resolve();
+                if (!value || value === getFieldValue('email')) return Promise.resolve();
                 const reEmail =
                   /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/;
                 const response = (await usersService.get({
@@ -417,6 +420,7 @@ const FormUser = () => {
             // icon={userId ? <EditOutlined /> : <PlusOutlined />}
             style={{ marginRight: 15 }}
             loading={loading}
+            disabled={!submittable}
           >
             Aceptar
           </Button>
