@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
-import { ColumnsType, TableParams } from '@/app/interfaces/strapi';
-import { AUTHENTICATED, PUBLIC } from '@/app/pages/roles/roles.reducer';
-import { BaseApi } from '@/utils/baseApi';
-import { convertStringToObject } from '@/utils/filter-transformer';
+"use client";
+import { ColumnsType, TableParams } from "@/app/interfaces/strapi";
+import { AUTHENTICATED, PUBLIC } from "@/app/pages/roles/roles.reducer";
+import { BaseApi } from "@/utils/baseApi";
+import { convertStringToObject } from "@/utils/filter-transformer";
 import {
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 import {
   App,
   Button,
@@ -20,16 +20,11 @@ import {
   Tooltip,
   theme as antdTheme,
   notification,
-} from 'antd';
-import type { FilterDropdownProps } from 'antd/es/table/interface';
-import axios from 'axios';
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import FilterComponent from './filter';
+} from "antd";
+import type { FilterDropdownProps } from "antd/es/table/interface";
+import axios from "axios";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import FilterComponent from "./filter";
 
 type ParametersType = {
   populate?: any;
@@ -117,10 +112,10 @@ const MagicTable = <T, R>({
       .then((res: any) => {
         setLoading(false);
         switch (url) {
-          case 'users':
+          case "users":
             setData(res.data as any);
             break;
-          case 'users-permissions/roles':
+          case "users-permissions/roles":
             setData(
               res.data.roles.filter(
                 (rol: any) => rol.type !== AUTHENTICATED && rol.type !== PUBLIC
@@ -156,12 +151,12 @@ const MagicTable = <T, R>({
 
   const handleDelete = (id: number) => {
     modal.confirm({
-      title: '¿Estás seguro de eliminar este registro?',
+      title: "¿Estás seguro de eliminar este registro?",
       onOk: async () => {
         try {
           if (onDelete) {
             const canDelete = await onDelete(id);
-            if (typeof canDelete === 'string') {
+            if (typeof canDelete === "string") {
               notification.error({
                 message: canDelete,
               });
@@ -169,7 +164,7 @@ const MagicTable = <T, R>({
             }
             if (!canDelete) {
               notification.error({
-                message: 'No se puede eliminar el registro',
+                message: "No se puede eliminar el registro",
               });
               return;
             }
@@ -177,13 +172,13 @@ const MagicTable = <T, R>({
           !deleteEntry
             ? baseService.put(id, { deleted: true } as any).then(() => {
                 notification.success({
-                  message: 'Registro eliminado correctamente',
+                  message: "Registro eliminado correctamente",
                 });
                 fetchData(tableParams);
               })
             : baseService.delete(id).then(() => {
                 notification.success({
-                  message: 'Registro eliminado correctamente',
+                  message: "Registro eliminado correctamente",
                 });
                 fetchData(tableParams);
               });
@@ -212,15 +207,15 @@ const MagicTable = <T, R>({
   const convertSortOptions = (sorter: any) => {
     if (!sorter.order) return {};
     const field = sorter.field
-      .filter((f: string) => f !== 'attributes' && f !== 'data')
-      .join('.');
+      .filter((f: string) => f !== "attributes" && f !== "data")
+      .join(".");
     return {
       sortField: field,
-      sortOrder: sorter.order === 'ascend' ? 'asc' : 'desc',
+      sortOrder: sorter.order === "ascend" ? "asc" : "desc",
     };
   };
 
-  const handleTableChange: TableProps['onChange'] = (
+  const handleTableChange: TableProps["onChange"] = (
     pagination,
     filters,
     sorter
@@ -240,13 +235,13 @@ const MagicTable = <T, R>({
 
   const handleSearch = (
     selectedKeys: string,
-    confirm: FilterDropdownProps['confirm'],
+    confirm: FilterDropdownProps["confirm"],
     dataIndex: string,
     filterOperator: string
   ) => {
     addItemsToFilter(dataIndex);
     const filter = convertStringToObject(
-      dataIndex + '.' + filterOperator,
+      dataIndex + "." + filterOperator,
       selectedKeys
     );
     const newTableParams = { ...tableParamsRef.current };
@@ -268,7 +263,7 @@ const MagicTable = <T, R>({
     } else {
       newTableParams.filters = {
         ...tableParams.filters,
-        [index.split('.')[0] as any]: undefined,
+        [index.split(".")[0] as any]: undefined,
       };
       removeItemsFromFilter(index);
     }
@@ -279,7 +274,7 @@ const MagicTable = <T, R>({
   const getColumnSearchProps = (
     dataIndex: string,
     title: string,
-    filterType: 'string' | 'number' | 'date' | 'boolean'
+    filterType: "string" | "number" | "date" | "boolean"
   ): TableColumnType<T> => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -295,7 +290,7 @@ const MagicTable = <T, R>({
         setSelectedKeys={setSelectedKeys}
         clearFilters={clearFilters}
         visible={true}
-        prefixCls='ant-table-filter-dropdown'
+        prefixCls="ant-table-filter-dropdown"
         dataIndex={dataIndex}
         title={title}
         handleSearch={handleSearch}
@@ -320,8 +315,8 @@ const MagicTable = <T, R>({
               ...column,
               ...getColumnSearchProps(
                 column.dataIndex
-                  .filter((f: string) => f !== 'attributes' && f !== 'data')
-                  .join('.'),
+                  .filter((f: string) => f !== "attributes" && f !== "data")
+                  .join("."),
                 column.title,
                 column.filterType
               ),
@@ -330,40 +325,40 @@ const MagicTable = <T, R>({
       }) ?? [];
     if (crud) {
       newColumns.push({
-        title: 'Acciones',
-        key: 'action',
+        title: "Acciones",
+        key: "action",
         render: (record: T) => {
           const more = moreActions?.map((action, index) => {
             return (
               <Tooltip title={action.tooltip} key={`index-${index}`}>
                 <Button
                   key={`index-${index}`}
-                  type='text'
-                  shape='circle'
+                  type="text"
+                  shape="circle"
                   icon={action.icon}
-                  size='large'
+                  size="middle"
                   onClick={() => action.onClick(record)}
                 />
               </Tooltip>
             );
           });
           return (
-            <Space size='small'>
-              <Tooltip title='Editar'>
+            <Space size="small">
+              <Tooltip title="Editar">
                 <Button
-                  type='text'
-                  shape='circle'
+                  type="text"
+                  shape="circle"
                   icon={<EditOutlined style={{ fontSize: 20 }} />}
-                  size='large'
+                  size="middle"
                   onClick={() => onEdit((record as any).id as number)}
                 />
               </Tooltip>
-              <Tooltip title='Eliminar'>
+              <Tooltip title="Eliminar">
                 <Button
-                  type='text'
+                  type="text"
                   danger
-                  size='large'
-                  shape='circle'
+                  size="middle"
+                  shape="circle"
                   icon={<DeleteOutlined style={{ fontSize: 20 }} />}
                   onClick={() => handleDelete((record as any).id as number)}
                 />
@@ -376,24 +371,24 @@ const MagicTable = <T, R>({
     } else {
       if (moreActions) {
         newColumns.push({
-          title: 'Acciones',
-          key: 'action',
+          title: "Acciones",
+          key: "action",
           render: (record: T) => {
             const more = moreActions?.map((action, index) => {
               return (
                 <Tooltip title={action.tooltip} key={`index-${index}`}>
                   <Button
                     key={`index-${index}`}
-                    type='text'
-                    shape='circle'
+                    type="text"
+                    shape="circle"
                     icon={action.icon}
-                    size='large'
+                    size="large"
                     onClick={() => action.onClick(record)}
                   />
                 </Tooltip>
               );
             });
-            return <Space size='small'>{more}</Space>;
+            return <Space size="small">{more}</Space>;
           },
         });
       }
@@ -405,8 +400,8 @@ const MagicTable = <T, R>({
   return (
     <>
       {crud && (
-        <Row justify='end' style={{ marginBottom: 16 }}>
-          <Button type='primary' onClick={onAdd} style={{ marginBottom: 16 }}>
+        <Row justify="end" style={{ marginBottom: 16 }}>
+          <Button type="primary" onClick={onAdd} style={{ marginBottom: 16 }}>
             Agregar
           </Button>
           {topActions?.map((action, index) => {
@@ -414,7 +409,7 @@ const MagicTable = <T, R>({
               <Tooltip title={action.tooltip} key={`index-${index}`}>
                 <Button
                   key={`index-${index}`}
-                  type='primary'
+                  type="primary"
                   // icon={action.icon}
                   onClick={() => action.onClick()}
                   style={{ marginLeft: 8, marginBottom: 16 }}
@@ -434,7 +429,7 @@ const MagicTable = <T, R>({
         loading={loading}
         onChange={handleTableChange}
         bordered
-        style={{ height: '100%' }}
+        style={{ height: "100%" }}
         scroll={{ x: 700 }}
         {...others}
       />

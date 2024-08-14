@@ -37,7 +37,3 @@ const RealizedTestsTemplate = () => {
 };
 
 export default RealizedTestsTemplate;
-
-// "https://testopo.countigodev.store:6060/api/realized-tests/last-grouped-by-user?pagination[page]=1&pagination[pageSize]=10&filters[users_permissions_user][name][%24containsi]=Daniel";
-
-// "https://testopo.countigodev.store:6060/api/realized-tests/last-grouped-by-user?populate=*&sort[0][createdAt]=desc&pagination[page]=1&pagination[pageSize]=10&filters[user][username][$startsWithi]=Daniel"

@@ -1,31 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
-import { ISelect } from '@/app/interfaces/basics';
-import { ITest, ITestResponse } from '@/app/interfaces/test';
-import { paths } from '@/app/routes/paths';
-import { testService } from '@/app/services/test.service';
-import { convertForSelect } from '@/utils/select-utils';
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { App, Button, DatePicker, Form, Input, Select } from 'antd';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
-import { useHierarchy } from '../questions/use-hierarchy';
-import moment from 'moment';
-import { BASE_FILTER, dateFormat } from '@/utils/constants/constants';
-import useSubmitable from '@/app/hooks/use-submitable';
-import { changeUndefinedToNull } from '@/utils/utils';
+"use client";
+import { ISelect } from "@/app/interfaces/basics";
+import { ITest, ITestResponse } from "@/app/interfaces/test";
+import { paths } from "@/app/routes/paths";
+import { testService } from "@/app/services/test.service";
+import { convertForSelect } from "@/utils/select-utils";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import { App, Button, DatePicker, Form, Input, Select } from "antd";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useHierarchy } from "../questions/use-hierarchy";
+import moment from "moment";
+import { BASE_FILTER, dateFormat } from "@/utils/constants/constants";
+import useSubmitable from "@/app/hooks/use-submitable";
+import { changeUndefinedToNull } from "@/utils/utils";
 
-export const OFICIAL = 'Oficial';
-export const CHALLENGE = 'Reto';
+export const OFICIAL = "Oficial";
+export const CHALLENGE = "Reto";
 
 const testTypeOpt = [
-  { label: 'Reto', value: CHALLENGE },
-  { label: 'Oficial', value: OFICIAL },
+  { label: "Reto", value: CHALLENGE },
+  { label: "Oficial", value: OFICIAL },
 ];
 
 const suTestTypeOpt = [
-  { label: 'General', value: 'General' },
-  { label: 'Práctico', value: 'Práctico' },
+  { label: "General", value: "General" },
+  { label: "Práctico", value: "Práctico" },
 ];
 
 const TestForm = () => {
@@ -35,11 +35,11 @@ const TestForm = () => {
   const router = useRouter();
   const [asociatedTests, setAsociatedTests] = useState<ISelect[]>([]);
 
-  const testType = Form.useWatch('testType', form);
-  const subTestType = Form.useWatch('suTestType', form);
-  const selectedCategory = Form.useWatch('category', form);
-  const selectedTheme = Form.useWatch('theme', form);
-  const year = Form.useWatch('year', form);
+  const testType = Form.useWatch("testType", form);
+  const subTestType = Form.useWatch("suTestType", form);
+  const selectedCategory = Form.useWatch("category", form);
+  const selectedTheme = Form.useWatch("theme", form);
+  const year = Form.useWatch("year", form);
   const { submittable, setSubmittable } = useSubmitable({ form });
 
   const {
@@ -54,16 +54,16 @@ const TestForm = () => {
   const updateFields = (test: ITestResponse) => {
     // Update form fields
     form.setFieldsValue(test.attributes);
-    form.setFieldValue('category', test.attributes.category.data?.id);
-    form.setFieldValue('theme', test.attributes.theme.data?.id);
-    form.setFieldValue('sub_theme', test.attributes.sub_theme.data?.id);
-    form.setFieldValue('test', test.attributes.test.data?.id);
+    form.setFieldValue("category", test.attributes.category.data?.id);
+    form.setFieldValue("theme", test.attributes.theme.data?.id);
+    form.setFieldValue("sub_theme", test.attributes.sub_theme.data?.id);
+    form.setFieldValue("test", test.attributes.test.data?.id);
     form.setFieldValue(
-      'initDate',
+      "initDate",
       test.attributes.initDate ? moment(test.attributes.initDate) : undefined
     );
     form.setFieldValue(
-      'spireDate',
+      "spireDate",
       test.attributes.spireDate ? moment(test.attributes.spireDate) : undefined
     );
   };
@@ -71,16 +71,16 @@ const TestForm = () => {
   const fetchAsociatedTest = async () => {
     // Fetch associated test
     setAsociatedTests([]);
-    const response = await testService.getForSelect('name', {
+    const response = await testService.getForSelect("name", {
       filters: {
         $and: [
           {
             suTestType: {
-              $eq: subTestType === 'General' ? 'Práctico' : 'General',
+              $eq: subTestType === "General" ? "Práctico" : "General",
             },
           },
           {
-            year: { $eq: form.getFieldValue('year') },
+            year: { $eq: form.getFieldValue("year") },
           },
           {
             testType: { $eq: OFICIAL },
@@ -124,15 +124,15 @@ const TestForm = () => {
       if (id) {
         await testService.put(+id, dataToSend);
         setSubmittable(false);
-        notification.success({ message: 'Test actualizado correctamente' });
+        notification.success({ message: "Test actualizado correctamente" });
       } else {
         const response = await testService.post(dataToSend);
-        notification.success({ message: 'Test creado correctamente' });
+        notification.success({ message: "Test creado correctamente" });
         router.push(paths.tests.edit(response.data.data.id));
       }
     } catch (error) {
       console.log(error);
-      notification.error({ message: 'Error al guardar el test' });
+      notification.error({ message: "Error al guardar el test" });
     }
   };
 
@@ -141,7 +141,7 @@ const TestForm = () => {
     if (testType !== OFICIAL || !suTestTypeOpt || !year) return null;
 
     return (
-      <Form.Item label='Test vinculado' name='test'>
+      <Form.Item label="Test vinculado" name="test">
         <Select options={asociatedTests} allowClear />
       </Form.Item>
     );
@@ -154,16 +154,16 @@ const TestForm = () => {
   return (
     <Form
       form={form}
-      name='questionForm'
-      layout='horizontal'
+      name="questionForm"
+      layout="horizontal"
       onFinish={onFinish}
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 16 }}
       labelWrap
     >
       <Button
-        type='link'
-        color='primary'
+        type="link"
+        color="primary"
         icon={<ArrowLeftOutlined />}
         style={{ marginBottom: 10 }}
         onClick={() => router.push(paths.tests.root)}
@@ -172,17 +172,17 @@ const TestForm = () => {
       </Button>
       {/* Form fields */}
       <Form.Item
-        label='Nombre'
-        name='name'
-        rules={[{ required: true, message: 'El nombre es obligatorio' }]}
+        label="Nombre"
+        name="name"
+        rules={[{ required: true, message: "El nombre es obligatorio" }]}
       >
         <Input />
       </Form.Item>
 
       <Form.Item
-        name='category'
-        label='Cuerpo'
-        rules={[{ required: true, message: 'El cuerpo es obligatorio' }]}
+        name="category"
+        label="Cuerpo"
+        rules={[{ required: true, message: "El cuerpo es obligatorio" }]}
       >
         <Select
           options={categories}
@@ -199,25 +199,9 @@ const TestForm = () => {
       </Form.Item>
 
       <Form.Item
-        name='theme'
-        label='Tema'
-        rules={[{ required: true, message: 'El tema es obligatorio' }]}
-      >
-        <Select options={themes} loading={loadingThemes} allowClear />
-      </Form.Item>
-
-      <Form.Item
-        name='sub_theme'
-        label='SubTema'
-        rules={[{ required: true, message: 'El subtema es obligatorio' }]}
-      >
-        <Select options={subThemes} loading={loadingSubThemes} allowClear />
-      </Form.Item>
-
-      <Form.Item
-        label='Tipo de Test'
-        name='testType'
-        rules={[{ required: true, message: 'El tipo de test es obligatorio' }]}
+        label="Tipo de Test"
+        name="testType"
+        rules={[{ required: true, message: "El tipo de test es obligatorio" }]}
       >
         <Select
           options={testTypeOpt}
@@ -225,63 +209,87 @@ const TestForm = () => {
           onChange={(value) => {
             form.setFieldsValue({
               year: value === OFICIAL ? new Date().getFullYear() : undefined,
-              suTestType: value === OFICIAL ? 'General' : undefined,
+              suTestType: value === OFICIAL ? "General" : undefined,
             });
           }}
         />
       </Form.Item>
 
+      <Form.Item
+        name="theme"
+        label="Tema"
+        rules={
+          testType === OFICIAL
+            ? []
+            : [{ required: true, message: "El tema es obligatorio" }]
+        }
+      >
+        <Select options={themes} loading={loadingThemes} allowClear />
+      </Form.Item>
+
+      <Form.Item
+        name="sub_theme"
+        label="SubTema"
+        rules={
+          testType === OFICIAL
+            ? []
+            : [{ required: true, message: "El subtema es obligatorio" }]
+        }
+      >
+        <Select options={subThemes} loading={loadingSubThemes} allowClear />
+      </Form.Item>
+
       {testType === OFICIAL && (
         <Form.Item
-          label='Subtipo de Test'
-          name='suTestType'
+          label="Subtipo de Test"
+          name="suTestType"
           rules={[
             {
               required: testType === OFICIAL,
-              message: 'Subtipo de test es obligatorio.',
+              message: "Subtipo de test es obligatorio.",
             },
           ]}
         >
           <Select
             options={suTestTypeOpt}
             allowClear
-            onChange={() => form.setFieldValue('test', undefined)}
+            onChange={() => form.setFieldValue("test", undefined)}
           />
         </Form.Item>
       )}
       {testType === OFICIAL && (
         <Form.Item
-          label='Año'
-          name='year'
+          label="Año"
+          name="year"
           rules={[
             {
               required: testType === OFICIAL,
-              message: 'El año es obligatorio',
+              message: "El año es obligatorio",
             },
           ]}
         >
           <Input
-            type='number'
+            type="number"
             min={1900}
             onFocus={() => {
-              !form.getFieldValue('year') &&
-                form.setFieldValue('year', new Date().getFullYear());
+              !form.getFieldValue("year") &&
+                form.setFieldValue("year", new Date().getFullYear());
             }}
-            onChange={() => form.setFieldValue('test', undefined)}
+            onChange={() => form.setFieldValue("test", undefined)}
           />
         </Form.Item>
       )}
 
       {renderLinkedTest()}
 
-      {subTestType === 'Práctico' && (
+      {subTestType === "Práctico" && (
         <Form.Item
-          label='Descripción del caso práctico'
-          name='practicCaseText'
+          label="Descripción del caso práctico"
+          name="practicCaseText"
           rules={[
             {
-              required: subTestType === 'Práctico',
-              message: 'La descripción del caso práctico es requerida',
+              required: subTestType === "Práctico",
+              message: "La descripción del caso práctico es requerida",
             },
           ]}
         >
@@ -290,22 +298,23 @@ const TestForm = () => {
       )}
 
       <Form.Item
-        label='Tiempo límite'
-        name='timeLimit'
-        rules={[
-          {
-            type: 'number',
-            min: 0,
-            message: 'No debe admitir valores negativos',
-          },
-        ]}
+        label="Tiempo límite"
+        name="timeLimit"
+        // rules={[
+        //   {
+        //     // type: 'number',
+        //     // min: 0,
+        //     required: true,
+        //     message: "No debe admitir valores negativos",
+        //   },
+        // ]}
       >
-        <Input type='number' suffix='minutos' min={1} />
+        <Input type="number" suffix="minutos" min={0} />
       </Form.Item>
 
       <Form.Item
-        label='Fecha de entrada en vigor'
-        name='initDate'
+        label="Fecha de entrada en vigor"
+        name="initDate"
         // rules={[
         //   {
         //     required: true,
@@ -313,36 +322,36 @@ const TestForm = () => {
         //   },
         // ]}
       >
-        <DatePicker style={{ width: '100%' }} format={dateFormat} />
+        <DatePicker style={{ width: "100%" }} format={dateFormat} />
       </Form.Item>
       <Form.Item
-        label='Fecha de caducidad'
-        name='spireDate'
+        label="Fecha de caducidad"
+        name="spireDate"
         rules={[
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (!value) return Promise.resolve();
               if (value) {
-                return getFieldValue('initDate') < value
+                return getFieldValue("initDate") < value
                   ? Promise.resolve()
                   : Promise.reject(
-                      'La fecha de caducidad debe ser mayor a la fecha de entrada en vigor'
+                      "La fecha de caducidad debe ser mayor a la fecha de entrada en vigor"
                     );
               }
             },
           }),
         ]}
       >
-        <DatePicker style={{ width: '100%' }} format={dateFormat} />
+        <DatePicker style={{ width: "100%" }} format={dateFormat} />
       </Form.Item>
       <Form.Item>
         <Button
-          type='primary'
-          htmlType='submit'
+          type="primary"
+          htmlType="submit"
           onClick={() => console.log(form.getFieldsValue())}
-          disabled={!submittable}
+          // disabled={!submittable}
         >
-          {id ? 'Actualizar' : 'Crear'}
+          {id ? "Actualizar" : "Crear"}
         </Button>
       </Form.Item>
     </Form>
