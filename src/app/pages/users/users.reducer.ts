@@ -1,15 +1,14 @@
-import { RootState } from '@/app/store/store';
-import { sources } from '@/utils/sources';
+import { RootState } from "@/app/store/store";
+import { sources } from "@/utils/sources";
 import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
-} from '@reduxjs/toolkit';
-import { IUser } from './users.interface';
-import { UsersService } from './users.service';
-import { RolesServices } from '../roles/roles.service';
-import { groupBy, transformPermissions } from '@/utils/permissions-transformer';
-import showNotification from '@/utils/message';
+} from "@reduxjs/toolkit";
+import { IUser } from "./users.interface";
+import { UsersService } from "./users.service";
+import { RolesServices } from "../roles/roles.service";
+import showNotification from "@/utils/message";
 
 const usersAdapter = createEntityAdapter<IUser>({
   sortComparer: (a, b) => (a.createdAt < b.createdAt ? 1 : -1),
@@ -18,7 +17,7 @@ const usersService = new UsersService();
 const rolesServices = new RolesServices();
 
 export const getUsers = createAsyncThunk(
-  'user/getUsers',
+  "user/getUsers",
   async (params: any | undefined, { rejectWithValue }) => {
     try {
       let response = await usersService.getUsers(sources.USERS, params);
@@ -30,12 +29,12 @@ export const getUsers = createAsyncThunk(
 );
 
 export const getLoggedUser = createAsyncThunk(
-  'user/LoggedUserInfo',
+  "user/LoggedUserInfo",
   async (params: any | undefined, { rejectWithValue }) => {
     try {
-      const response = await usersService.getLoggedUser(sources.USERS + '/me');
+      const response = await usersService.getLoggedUser(sources.USERS + "/me");
       let permissionsResponse = await rolesServices.getPermissionsByRoleID(
-        sources.ROLE_PERMISSION + '/getCustomPermissionsByRoleId',
+        sources.ROLE_PERMISSION + "/getCustomPermissionsByRoleId",
         response.data.role.id
       );
       response.data.role.permissions =
@@ -47,24 +46,49 @@ export const getLoggedUser = createAsyncThunk(
   }
 );
 
+// export const postUsers = createAsyncThunk(
+//   "user/postUsers",
+//   async (payload: IUser, { rejectWithValue }) => {
+//     try {
+//       const response = await usersService.postUser(payload);
+//       return response.data;
+//     } catch (error: any) {
+//       throw error.response.data.error;
+//     }
+//   }
+// );
+
 export const postUsers = createAsyncThunk(
-  'user/postUsers',
+  "user/postUsers",
   async (payload: IUser, { rejectWithValue }) => {
     try {
       const response = await usersService.postUser(payload);
+
+      if (!response || !response.data) {
+        throw new Error(
+          "No se pudo crear el usuario, verifique si ya esta en uso el correo o el usuario seleccionado"
+        );
+      }
+
       return response.data;
     } catch (error: any) {
-      throw error.response.data.error;
+      if (error.response && error.response.status === 404) {
+        throw new Error(
+          "No se pudo crear el usuario, verifique si ya esta en uso el correo o el usuario seleccionado"
+        );
+      }
+
+      throw error;
     }
   }
 );
 
 export const patchUsers = createAsyncThunk(
-  'user/patchUsers',
+  "user/patchUsers",
   async (payload: IUser, { rejectWithValue }) => {
     try {
       let response = await usersService.putUser(payload.id, payload);
-      return {...response.data, id: payload.id};
+      return { ...response.data, id: payload.id };
     } catch (error: any) {
       throw error.response.data.error;
     }
@@ -72,11 +96,11 @@ export const patchUsers = createAsyncThunk(
 );
 
 export const deleteUser = createAsyncThunk(
-  'user/deleteUser',
+  "user/deleteUser",
   async (id: number, { rejectWithValue }) => {
     try {
       let response = await usersService.delete(id);
-      return {...response.data, id};
+      return { ...response.data, id };
     } catch (error: any) {
       throw error.response.data.error;
     }
@@ -84,7 +108,7 @@ export const deleteUser = createAsyncThunk(
 );
 
 const usersSlice = createSlice({
-  name: 'users',
+  name: "users",
   initialState: usersAdapter.getInitialState({
     error: undefined as string | undefined,
     loading: false,
@@ -106,7 +130,7 @@ const usersSlice = createSlice({
       state.error = undefined;
     });
     builder.addCase(getUsers.rejected, (state, action) => {
-      state.error = action.error.message || '';
+      state.error = action.error.message || "";
       state.loading = false;
     });
 
@@ -120,7 +144,7 @@ const usersSlice = createSlice({
       state.error = undefined;
     });
     builder.addCase(getLoggedUser.rejected, (state, action) => {
-      state.error = action.error.message || '';
+      state.error = action.error.message || "";
       state.loadingLoggedUser = false;
     });
 
@@ -134,15 +158,15 @@ const usersSlice = createSlice({
       state.error = undefined;
     });
     builder.addCase(postUsers.rejected, (state, action) => {
-      state.error = action.error.message || 'Error';
+      state.error = action.error.message || "Error";
       let message = state.error;
-      if (state.error.includes('must be unique')) {
-        message = 'El usuario ya está en uso';
+      if (state.error.includes("must be unique")) {
+        message = "El usuario ya está en uso";
       }
-      if (state.error.includes('already taken')) {
-        message = 'El correo ya esta en uso';
+      if (state.error.includes("already taken")) {
+        message = "El correo ya esta en uso";
       }
-      showNotification('error', 'Error', [message]);
+      showNotification("error", "Error", [message]);
       state.loading = false;
     });
 
@@ -159,8 +183,8 @@ const usersSlice = createSlice({
       state.error = undefined;
     });
     builder.addCase(patchUsers.rejected, (state, action) => {
-      state.error = action.error.message || '';
-      showNotification('error', 'Error', [state.error]);
+      state.error = action.error.message || "";
+      showNotification("error", "Error", [state.error]);
       state.loading = false;
     });
 
@@ -175,8 +199,8 @@ const usersSlice = createSlice({
     });
 
     builder.addCase(deleteUser.rejected, (state, action) => {
-      state.error = action.error.message || '';
-      showNotification('error', 'Error', [state.error]);
+      state.error = action.error.message || "";
+      showNotification("error", "Error", [state.error]);
       state.loading = false;
     });
   },
