@@ -45,7 +45,6 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
           type={value <= 0.5 ? "danger" : "success"}
         >{`${new Intl.NumberFormat("es-Es", {
           style: "percent",
-          minimumFractionDigits: 1,
         }).format(value)}`}</Typography.Text>
       ),
     },
