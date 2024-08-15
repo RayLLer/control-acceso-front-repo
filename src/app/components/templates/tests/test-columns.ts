@@ -1,60 +1,53 @@
-import { ColumnsType } from '@/app/interfaces/strapi';
-import { ITestResponse } from '@/app/interfaces/test';
+import { ColumnsType } from "@/app/interfaces/strapi";
+import { ITestResponse } from "@/app/interfaces/test";
 
 export const test_columns: ColumnsType<ITestResponse>[] = [
   {
-    title: 'Nombre',
-    dataIndex: ['attributes', 'name'],
+    title: "Nombre",
+    dataIndex: ["attributes", "name"],
     sorter: true,
     filtrable: true,
-    filterType: 'string',
+    filterType: "string",
   },
   {
-    title: 'Cuerpo',
-    dataIndex: ['attributes', 'category', 'data', 'attributes', 'name'],
+    title: "Cuerpo",
+    dataIndex: ["attributes", "category", "data", "attributes", "name"],
     sorter: true,
     filtrable: true,
-    filterType: 'string',
+    filterType: "string",
   },
   {
-    title: 'Tema',
-    dataIndex: ['attributes', 'theme', 'data', 'attributes', 'name'],
+    title: "Tema",
+    dataIndex: ["attributes", "theme", "data", "attributes", "name"],
     sorter: true,
     filtrable: true,
-    filterType: 'string',
+    filterType: "string",
   },
   {
-    title: 'SubTema',
-    dataIndex: ['attributes', 'sub_theme', 'data', 'attributes', 'name'],
+    title: "SubTema",
+    dataIndex: ["attributes", "sub_theme", "data", "attributes", "name"],
     sorter: true,
     filtrable: true,
-    filterType: 'string',
+    filterType: "string",
   },
   {
-    title: 'Tipo de Test',
-    dataIndex: ['attributes', 'testType'],
+    title: "Tipo de Test",
+    dataIndex: ["attributes", "testType"],
     sorter: true,
     filtrable: true,
-    filterType: 'string',
+    filterType: "string",
   },
   {
-    title: 'Subtipo de Test',
-    dataIndex: ['attributes', 'suTestType'],
-    sorter: true,
-    filtrable: true,
-    filterType: 'string',
-  },
-  {
-    title: 'Cantidad de preguntas',
-    dataIndex: ['attributes', 'test_questions', 'data'],
+    title: "Cantidad de preguntas",
+    dataIndex: ["attributes", "test_questions", "data"],
     render: (data) => data.length,
   },
   {
-    title: 'Fecha de creado',
-    dataIndex: ['attributes', 'createdAt'],
+    title: "Fecha de creado",
+    dataIndex: ["attributes", "createdAt"],
     sorter: true,
     filtrable: true,
-    filterType: 'date',
-    render: (data) => (data ? new Date(data).toLocaleDateString() : ''),
+    filterType: "date",
+    render: (data) => (data ? new Date(data).toLocaleDateString() : ""),
   },
-]; 
+];

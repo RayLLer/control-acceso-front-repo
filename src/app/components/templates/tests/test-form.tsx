@@ -215,30 +215,6 @@ const TestForm = () => {
         />
       </Form.Item>
 
-      <Form.Item
-        name="theme"
-        label="Tema"
-        rules={
-          testType === OFICIAL
-            ? []
-            : [{ required: true, message: "El tema es obligatorio" }]
-        }
-      >
-        <Select options={themes} loading={loadingThemes} allowClear />
-      </Form.Item>
-
-      <Form.Item
-        name="sub_theme"
-        label="SubTema"
-        rules={
-          testType === OFICIAL
-            ? []
-            : [{ required: true, message: "El subtema es obligatorio" }]
-        }
-      >
-        <Select options={subThemes} loading={loadingSubThemes} allowClear />
-      </Form.Item>
-
       {testType === OFICIAL && (
         <Form.Item
           label="Subtipo de Test"
@@ -257,6 +233,31 @@ const TestForm = () => {
           />
         </Form.Item>
       )}
+
+      <Form.Item
+        name="theme"
+        label="Tema"
+        rules={
+          testType === OFICIAL && subTestType === "Práctico"
+            ? [{ required: true, message: "El tema es obligatorio" }]
+            : []
+        }
+      >
+        <Select options={themes} loading={loadingThemes} allowClear />
+      </Form.Item>
+
+      <Form.Item
+        name="sub_theme"
+        label="SubTema"
+        rules={
+          testType === OFICIAL && subTestType === "Práctico"
+            ? [{ required: true, message: "El subtema es obligatorio" }]
+            : []
+        }
+      >
+        <Select options={subThemes} loading={loadingSubThemes} allowClear />
+      </Form.Item>
+
       {testType === OFICIAL && (
         <Form.Item
           label="Año"
