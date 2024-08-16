@@ -1,20 +1,20 @@
-'use client';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { sources } from '@/utils/sources';
-import { Button, Form, Input, Space, Spin, notification } from 'antd';
-import { useForm } from 'antd/es/form/Form';
-import Title from 'antd/es/typography/Title';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
+"use client";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { sources } from "@/utils/sources";
+import { Button, Form, Input, Space, Spin, notification } from "antd";
+import { useForm } from "antd/es/form/Form";
+import Title from "antd/es/typography/Title";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import {
   SelectAllRoles,
   fetchPermissions,
   selectError,
-  selectPermissions
-} from '../roles.reducer';
-import { RolesServices } from '../roles.service';
-import PermissionsCheckBox from './permissionsCheckBox';
-import useSubmitable from '@/app/hooks/use-submitable';
+  selectPermissions,
+} from "../roles.reducer";
+import { RolesServices } from "../roles.service";
+import PermissionsCheckBox from "./permissionsCheckBox";
+import useSubmitable from "@/app/hooks/use-submitable";
 
 const rolesService = new RolesServices();
 
@@ -30,13 +30,13 @@ const FormRole = () => {
   const [form] = useForm();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
-  const roleId = searchParams.get('roleId') ?? 0;
+  const roleId = searchParams.get("roleId") ?? 0;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const permissions = useAppSelector(selectPermissions);
   const [rolePermissions, setRolePermissions] = useState();
   const [loadingGeneral, setLoadingGeneral] = useState(false);
-  const {setSubmittable, submittable} = useSubmitable({ form });
+  const { setSubmittable, submittable } = useSubmitable({ form });
 
   const fetchRole = async () => {
     try {
@@ -44,7 +44,7 @@ const FormRole = () => {
       let response = await rolesService.getRoleById(sources.ROLES, +roleId);
 
       let rolePermissionsResponse = await rolesService.getPermissionsByRoleID(
-        sources.ROLE_PERMISSION + '/getCustomPermissionsByRoleId',
+        sources.ROLE_PERMISSION + "/getCustomPermissionsByRoleId",
         +roleId
       );
 
@@ -64,7 +64,7 @@ const FormRole = () => {
     } catch (error: any) {
       setLoadingGeneral(false);
       notification.error({
-        message: error.message ?? 'Error al obtener los permisos del rol',
+        message: error.message ?? "Error al obtener los permisos del rol",
       });
     }
   };
@@ -77,13 +77,13 @@ const FormRole = () => {
   const updatePermissions = async (roleId: number, permissions: number[]) => {
     try {
       await rolesService.updatePermissions(
-        sources.ROLE_PERMISSION + '/updateRole',
+        sources.ROLE_PERMISSION + "/updateRole",
         { roleId: +roleId, customPermissionsIds: permissions }
       );
     } catch (error) {
       notification.error({
-        message: 'Error',
-        description: 'Los permisos no fueron actualizados correctamente.',
+        message: "Error",
+        description: "Los permisos no fueron actualizados correctamente.",
       });
     }
   };
@@ -98,34 +98,36 @@ const FormRole = () => {
       roleId && (roleDto.id = roleId);
       setLoading(true);
       try {
-        if(!roleId){
+        if (!roleId) {
           await rolesService.postRole(roleDto);
-          const response = await rolesService.get() as any;
-          const id  = response.data.roles.find((r: any) => r.name === data.name)!.id;
+          const response = (await rolesService.get()) as any;
+          const id = response.data.roles.find(
+            (r: any) => r.name === data.name
+          )!.id;
           await updatePermissions(id, data.permissions);
           setSubmittable(false);
           notification.success({
-            message: 'Rol creado correctamente.',
+            message: "Rol creado correctamente.",
           });
         } else {
           await rolesService.put(+roleId, roleDto);
           await updatePermissions(+roleId, data.permissions);
           setSubmittable(false);
           notification.success({
-            message: 'Rol actualizado correctamente.',
+            message: "Rol actualizado correctamente.",
           });
         }
-        router.push('/pages/roles');
-        
+        router.push("/pages/roles");
       } catch (error) {
-        console.log(error)  
+        console.log(error);
       }
-      
     } catch (error) {
       setLoading(false);
       notification.error({
-        message: 'Error al guardar el rol',
+        message: "Error al guardar el rol",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -155,32 +157,32 @@ const FormRole = () => {
 
   return loadingGeneral ? (
     <Space
-      size='middle'
-      style={{ minHeight: '50vh', width: '70vw', justifyContent: 'center' }}
+      size="middle"
+      style={{ minHeight: "50vh", width: "70vw", justifyContent: "center" }}
     >
-      <Spin size='large' />
+      <Spin size="large" />
     </Space>
   ) : (
     <>
-      <Title level={2}>{roleId ? 'Editar rol' : 'Crear rol'}</Title>
+      <Title level={2}>{roleId ? "Editar rol" : "Crear rol"}</Title>
       <Form
         {...formItemLayout}
         form={form}
-        name='crear/editar'
+        name="crear/editar"
         onFinish={onFinish}
         style={{
-          maxWidth: '70%',
+          maxWidth: "70%",
         }}
         scrollToFirstError
         labelWrap
       >
         <Form.Item
-          name='name'
-          label='Nombre'
+          name="name"
+          label="Nombre"
           rules={[
             {
               required: true,
-              message: 'Introduzca el nombre',
+              message: "Introduzca el nombre",
               whitespace: true,
             },
           ]}
@@ -189,11 +191,11 @@ const FormRole = () => {
         </Form.Item>
 
         <Form.Item
-          name='description'
-          label='Descripción'
+          name="description"
+          label="Descripción"
           rules={[
             {
-              message: 'Introduzca la descripción',
+              message: "Introduzca la descripción",
               whitespace: true,
             },
           ]}
@@ -214,12 +216,12 @@ const FormRole = () => {
         </Form.Item> */}
 
         <Form.Item
-          name='permissions'
-          label='Permisos'
+          name="permissions"
+          label="Permisos"
           rules={[
             {
               required: true,
-              type: 'array',
+              type: "array",
               min: 1,
             },
           ]}
@@ -228,15 +230,15 @@ const FormRole = () => {
             permissions={permissions}
             userPermissions={rolePermissions}
             onValueChange={(values) => {
-              form.setFieldValue('permissions', values);
+              form.setFieldValue("permissions", values);
             }}
           />
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>
           <Button
-            type='primary'
-            htmlType='submit'
+            type="primary"
+            htmlType="submit"
             // icon={roleId ? <EditOutlined /> : <PlusOutlined />}
             style={{ marginRight: 15 }}
             loading={loading}
@@ -244,7 +246,7 @@ const FormRole = () => {
           >
             Aceptar
           </Button>
-          <Button onClick={() => router.push('/pages/roles')}>Cancelar</Button>
+          <Button onClick={() => router.push("/pages/roles")}>Cancelar</Button>
         </Form.Item>
       </Form>
     </>

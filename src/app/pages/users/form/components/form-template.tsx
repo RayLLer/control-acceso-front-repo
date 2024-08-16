@@ -1,6 +1,6 @@
-'use client';
-import { IRole } from '@/app/interfaces/role';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+"use client";
+import { IRole } from "@/app/interfaces/role";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import {
   Button,
   Form,
@@ -9,21 +9,21 @@ import {
   Spin,
   Typography,
   notification,
-} from 'antd';
-import { MaskedInput } from 'antd-mask-input';
-import { useForm } from 'antd/es/form/Form';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
-import { fetchRoles, SelectAllRoles } from '../../../roles/roles.reducer';
-import { IUser } from '../../users.interface';
+} from "antd";
+import { MaskedInput } from "antd-mask-input";
+import { useForm } from "antd/es/form/Form";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { fetchRoles, SelectAllRoles } from "../../../roles/roles.reducer";
+import { IUser } from "../../users.interface";
 import {
   patchUsers,
   postUsers,
   selectLoading,
   selectUserByID,
-} from '../../users.reducer';
-import { UsersService } from '../../users.service';
-import useSubmitable from '@/app/hooks/use-submitable';
+} from "../../users.reducer";
+import { UsersService } from "../../users.service";
+import useSubmitable from "@/app/hooks/use-submitable";
 
 const { Title } = Typography;
 
@@ -32,7 +32,7 @@ const usersService = new UsersService();
 const { Option } = Select;
 
 const isUser = (data: any): data is IUser => {
-  return 'username' in data;
+  return "username" in data;
 };
 
 const SuspenseForm = () => {
@@ -60,23 +60,23 @@ const FormUser = () => {
   const fetchUser = async () => {
     try {
       let response: any = await usersService.getById(+userId, {
-        populate: 'role',
+        populate: "role",
       });
       if (isUser(response.data)) {
         form.setFieldsValue({
           username: response.data.username,
           email: response.data.email,
-          name: response.data.name ?? '',
+          name: response.data.name ?? "",
           phone: response.data.phone,
           role: response.data.role.id,
           blocked: response.data.blocked,
-          positionHeld: response.data?.official?.positionHeld ?? '',
+          positionHeld: response.data?.official?.positionHeld ?? "",
         });
       }
     } catch (error) {
       notification.error({
-        message: 'Error de usuario',
-        description: 'Ha ocurrido un error obteniendo los datos del usuario.',
+        message: "Error de usuario",
+        description: "Ha ocurrido un error obteniendo los datos del usuario.",
       });
     }
   };
@@ -86,7 +86,7 @@ const FormUser = () => {
   }, [roles]);
 
   useEffect(() => {
-    form.setFieldValue('blocked', false);
+    form.setFieldValue("blocked", false);
     dispatch(fetchRoles(undefined))
       .unwrap()
       .then((result) => {
@@ -96,7 +96,7 @@ const FormUser = () => {
 
   const onFinish = async (data: any) => {
     let phone: string = data.phone;
-    phone = phone.replace(/\D/g, '');
+    phone = phone.replace(/\D/g, "");
 
     const userDto: any = {
       username: data.username,
@@ -116,7 +116,7 @@ const FormUser = () => {
       .unwrap()
       .then((result: any) => {
         const funcDto = {
-          fullName: userDto.name + ' ' + userDto.lastName,
+          fullName: userDto.name + " " + userDto.lastName,
           phoneNumber: userDto.phone,
           email: userDto.email,
           user: result.id,
@@ -129,11 +129,11 @@ const FormUser = () => {
         // }
         notification.success({
           message: userId
-            ? 'Usuario editado correctamente'
-            : 'Usuario creado correctamente',
+            ? "Usuario editado correctamente"
+            : "Usuario creado correctamente",
         });
-        setSubmittable(false)
-        router.push('/pages/users');
+        setSubmittable(false);
+        router.push("/pages/users");
       })
       .catch((error) => {});
   };
@@ -164,11 +164,11 @@ const FormUser = () => {
 
   return (
     <>
-      <Title level={2}>{userId ? 'Editar usuario' : 'Crear usuario'}</Title>
+      <Title level={2}>{userId ? "Editar usuario" : "Crear usuario"}</Title>
       <Form
         {...formItemLayout}
         form={form}
-        name='crear/editar'
+        name="crear/editar"
         onFinish={onFinish}
         // initialValues={{
         //   prefix: '+34',
@@ -178,18 +178,19 @@ const FormUser = () => {
         labelWrap
       >
         <Form.Item
-          name='username'
-          label='Usuario'
-          validateTrigger='onBlur'
+          name="username"
+          label="Usuario"
+          validateTrigger="onBlur"
           rules={[
             {
               required: true,
-              message: 'Introduzca el usuario',
+              message: "Introduzca el usuario",
               whitespace: true,
             },
             ({ getFieldValue }) => ({
               async validator(_, value) {
-                if (!value || value === getFieldValue('username')) return Promise.resolve();
+                if (!value || value === getFieldValue("username"))
+                  return Promise.resolve();
                 const response = (await usersService.get({
                   filters: { username: value },
                 })) as any;
@@ -197,7 +198,7 @@ const FormUser = () => {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error('El nombre de usuario ya está en uso')
+                  new Error("El nombre de usuario ya está en uso")
                 );
               },
             }),
@@ -205,18 +206,19 @@ const FormUser = () => {
         >
           <Input
             disabled={!!userId || disabled}
-            prefix={loadingUsername && <Spin size='small' />}
+            prefix={loadingUsername && <Spin size="small" />}
           />
         </Form.Item>
 
         <Form.Item
-          name='email'
-          label='Correo'
-          validateTrigger='onBlur'
+          name="email"
+          label="Correo"
+          validateTrigger="onBlur"
           rules={[
             ({ getFieldValue }) => ({
               async validator(_, value) {
-                if (!value || value === getFieldValue('email')) return Promise.resolve();
+                if (!value || value === getFieldValue("email"))
+                  return Promise.resolve();
                 const reEmail =
                   /^(([^<>()\[\]\\.,;:\s@”]+(\.[^<>()\[\]\\.,;:\s@”]+)*)|(“.+”))@((\[[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}\.[0–9]{1,3}])|(([a-zA-Z\-0–9]+\.)+[a-zA-Z]{2,}))$/;
                 const response = (await usersService.get({
@@ -226,14 +228,14 @@ const FormUser = () => {
                   return Promise.resolve();
                 }
                 if (response.data.length > 0) {
-                  return Promise.reject(new Error('El correo ya está en uso'));
+                  return Promise.reject(new Error("El correo ya está en uso"));
                 }
-                return Promise.reject(new Error('Introduzca un email válido'));
+                return Promise.reject(new Error("Introduzca un email válido"));
               },
             }),
             {
               required: true,
-              message: 'Introduzca un correo válido',
+              message: "Introduzca un correo válido",
             },
           ]}
         >
@@ -241,12 +243,12 @@ const FormUser = () => {
         </Form.Item>
 
         <Form.Item
-          name='name'
-          label='Nombre completo'
+          name="name"
+          label="Nombre completo"
           rules={[
-            { required: true, message: 'El nombre completo es obligatorio.' },
+            { required: true, message: "El nombre completo es obligatorio." },
             {
-              message: 'Introduzca el nombre',
+              message: "Introduzca el nombre",
               whitespace: true,
             },
           ]}
@@ -268,62 +270,62 @@ const FormUser = () => {
         </Form.Item> */}
 
         <Form.Item
-          name='phone'
-          label='Teléfono'
+          name="phone"
+          label="Teléfono"
           rules={[
-            { required: true, message: 'Introduzca el número de teléfono' },
+            { required: true, message: "Introduzca el número de teléfono" },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value) {
                   return Promise.reject();
                 }
-                value = value.replace(/\D/g, '');
+                value = value.replace(/\D/g, "");
                 if (value.length > 0) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error('Introduzca el número de teléfono')
+                  new Error("Introduzca el número de teléfono")
                 );
               },
             }),
           ]}
         >
           <MaskedInput
-            mask='+(00) 00000000'
+            mask="+(00) 00000000"
             maskOptions={{
               lazy: false,
             }}
-            value={form.getFieldValue('phone')}
+            value={form.getFieldValue("phone")}
             disabled={disabled}
           />
         </Form.Item>
 
         <Form.Item
-          name='role'
-          label='Rol'
+          name="role"
+          label="Rol"
           rules={[
             {
               required: true,
-              message: 'Debe seleccionar un rol para el usuario',
+              message: "Debe seleccionar un rol para el usuario",
             },
           ]}
         >
           <Select
-            placeholder='Selecciona un rol'
+            placeholder="Selecciona un rol"
             options={roles}
-            fieldNames={{ value: 'id', label: 'name' }}
+            fieldNames={{ value: "id", label: "name" }}
             disabled={disabled}
           ></Select>
         </Form.Item>
 
         {!disabledPosition && (
           <Form.Item
-            name='positionHeld'
-            label='Cargo'
+            name="positionHeld"
+            label="Cargo"
             rules={[
               {
                 required: !disabledPosition,
-                message: 'Introduzca el cargo del usuario',
+                message: "Introduzca el cargo del usuario",
               },
             ]}
           >
@@ -332,42 +334,42 @@ const FormUser = () => {
         )}
 
         <Form.Item
-          name='blocked'
-          label='Bloqueado'
+          name="blocked"
+          label="Bloqueado"
           rules={[
             {
               required: true,
-              message: 'Debe indicar si el usuario está bloqueado o no',
+              message: "Debe indicar si el usuario está bloqueado o no",
             },
           ]}
         >
           <Select
             options={[
               {
-                label: 'Si',
+                label: "Si",
                 value: true,
               },
               {
-                label: 'No',
+                label: "No",
                 value: false,
               },
             ]}
-            defaultValue={[{ label: 'No', value: false }]}
+            defaultValue={[{ label: "No", value: false }]}
             disabled={disabled}
           />
         </Form.Item>
 
         <Form.Item
-          name='password'
-          label='Contraseña'
+          name="password"
+          label="Contraseña"
           rules={[
             {
               required: !userId,
-              message: 'Introduzca la contraseña',
+              message: "Introduzca la contraseña",
             },
             {
               min: 6,
-              message: 'La contraseña debe tener al menos 6 caracteres',
+              message: "La contraseña debe tener al menos 6 caracteres",
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
@@ -376,7 +378,7 @@ const FormUser = () => {
                   return regex.test(value)
                     ? Promise.resolve()
                     : Promise.reject(
-                        'La contraseña debe tener al menos 8 caracteres, una mayúscula y un caracter especial'
+                        "La contraseña debe tener al menos 8 caracteres, una mayúscula y un caracter especial"
                       );
                 }
                 return Promise.resolve();
@@ -385,38 +387,38 @@ const FormUser = () => {
           ]}
           hasFeedback
         >
-          <Input.Password placeholder={userId ? '••••••••' : ''} />
+          <Input.Password placeholder={userId ? "••••••••" : ""} />
         </Form.Item>
 
         <Form.Item
-          name='confirm'
-          label='Confirmar Contraseña'
-          dependencies={['password']}
+          name="confirm"
+          label="Confirmar Contraseña"
+          dependencies={["password"]}
           hasFeedback
           rules={[
             {
               required: !userId,
-              message: 'Confirme su contraseña',
+              message: "Confirme su contraseña",
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
-                if (!value || getFieldValue('password') === value) {
+                if (!value || getFieldValue("password") === value) {
                   return Promise.resolve();
                 }
                 return Promise.reject(
-                  new Error('Las contraseñas no coinciden')
+                  new Error("Las contraseñas no coinciden")
                 );
               },
             }),
           ]}
         >
-          <Input.Password placeholder={userId ? '••••••••' : ''} />
+          <Input.Password placeholder={userId ? "••••••••" : ""} />
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>
           <Button
-            type='primary'
-            htmlType='submit'
+            type="primary"
+            htmlType="submit"
             // icon={userId ? <EditOutlined /> : <PlusOutlined />}
             style={{ marginRight: 15 }}
             loading={loading}
@@ -424,7 +426,7 @@ const FormUser = () => {
           >
             Aceptar
           </Button>
-          <Button onClick={() => router.push('/pages/users')}>Cancelar</Button>
+          <Button onClick={() => router.push("/pages/users")}>Cancelar</Button>
         </Form.Item>
       </Form>
     </>
