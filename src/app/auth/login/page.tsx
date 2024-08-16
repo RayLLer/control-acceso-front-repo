@@ -43,7 +43,11 @@ const Login: React.FC = () => {
         process.env.NEXT_PUBLIC_API_URL + "/" + AUTH,
         payload
       );
-
+      if (response === undefined) {
+        notification.error({
+          message: "Credenciales inválidas o usuario no activo",
+        });
+      }
       const user = response.data.user;
       secureStorage.setItem("user", JSON.stringify(user));
       secureStorage.setItem("token", response.data.jwt);
@@ -60,13 +64,13 @@ const Login: React.FC = () => {
       setLoading(false);
       router.push(paths.tests.root);
     } catch (error: any) {
-      console.log("aki");
-      setLoading(false);
       if (isAxiosError(error)) {
         notification.error({
           message: "Identificador o Contraseña incorrectos",
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
