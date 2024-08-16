@@ -291,11 +291,18 @@ const FormUser = () => {
           ]}
         >
           <MaskedInput
-            mask="+(00) 00000000"
+            mask={(value: any) => {
+              if (value.startsWith("+53")) {
+                return "+(53)#######";
+              } else if (value.startsWith("+34")) {
+                return "+(34)#########";
+              } else {
+                return "+(00)000000000";
+              }
+            }}
             maskOptions={{
               lazy: false,
             }}
-            value={form.getFieldValue("phone")}
             disabled={disabled}
           />
         </Form.Item>
@@ -374,11 +381,12 @@ const FormUser = () => {
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!userId) {
-                  const regex = /^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+                  const regex =
+                    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,}$/;
                   return regex.test(value)
                     ? Promise.resolve()
                     : Promise.reject(
-                        "La contraseña debe tener al menos 8 caracteres, una mayúscula y un caracter especial"
+                        "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minuscula y un caracter especial"
                       );
                 }
                 return Promise.resolve();
