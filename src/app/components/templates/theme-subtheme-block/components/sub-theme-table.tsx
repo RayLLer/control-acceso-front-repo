@@ -23,7 +23,6 @@ const SubThemeTable = () => {
   };
 
   const handleDelete = async (id: number) => {
-    console.log("aki");
     try {
       const responseTest = await testService.get({
         filters: {
@@ -47,8 +46,6 @@ const SubThemeTable = () => {
         },
         fields: "id",
       });
-      // console.log(responseTest.data.data);
-      // return JSON.stringify(responseTest.data.data).toString();
       if (
         responseTest.data.data.length > 0 ||
         responseQuestion.data.data.length > 0

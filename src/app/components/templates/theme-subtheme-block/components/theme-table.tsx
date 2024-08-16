@@ -1,12 +1,14 @@
-'use client';
-import MagicTable from '@/app/components/table-v2/table-custom';
-import { ITheme, IThemeResponse } from '@/app/interfaces/theme';
-import React, { useState } from 'react';
-import { theme_columns } from './theme-columns';
-import ThemeForm from './theme-form';
-import { BASE_FILTER } from '@/utils/constants/constants';
-import { themeService } from '@/app/services/themes.service';
-import axios from 'axios';
+"use client";
+import MagicTable from "@/app/components/table-v2/table-custom";
+import { ITheme, IThemeResponse } from "@/app/interfaces/theme";
+import React, { useState } from "react";
+import { theme_columns } from "./theme-columns";
+import ThemeForm from "./theme-form";
+import { BASE_FILTER } from "@/utils/constants/constants";
+import { themeService } from "@/app/services/themes.service";
+import axios from "axios";
+import { testService } from "@/app/services/test.service";
+import { questionService } from "@/app/services/question.service";
 
 const ThemeTable = () => {
   const [showModal, setShowModal] = useState(false);
@@ -21,18 +23,48 @@ const ThemeTable = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await themeService.getById(id, {
-        populate: ['sub_themes'],
+      const responseTest = await testService.get({
+        filters: {
+          $and: [
+            { theme: { id: id } },
+            {
+              deleted: { $eq: false },
+            },
+          ],
+        },
+        fields: "id",
       });
-      const theme = response.data.data;
-      const hasActiveSubthemes = theme.attributes.sub_themes.data?.some(
-        (subTheme) => !subTheme.attributes.deleted
-      );
-      return !hasActiveSubthemes;
+      const responseQuestion = await questionService.get({
+        filters: {
+          $and: [
+            { theme: { id: id } },
+            {
+              deleted: { $eq: false },
+            },
+          ],
+        },
+        fields: "id",
+      });
+
+      if (
+        responseTest.data.data.length > 0 ||
+        responseQuestion.data.data.length > 0
+      ) {
+        return "No se puede eliminar. Existen test o preguntas asociadas";
+      } else {
+        const response = await themeService.getById(id, {
+          populate: ["sub_themes"],
+        });
+        const theme = response.data.data;
+        const hasActiveSubthemes = theme.attributes.sub_themes.data?.some(
+          (subTheme) => !subTheme.attributes.deleted
+        );
+        return !hasActiveSubthemes;
+      }
     } catch (error) {
       return axios.isAxiosError(error)
         ? error.response?.data.message
-        : 'Ha ocurrido un error';
+        : "Ha ocurrido un error";
     }
   };
 
@@ -40,7 +72,7 @@ const ThemeTable = () => {
     <>
       <MagicTable<IThemeResponse, ITheme>
         columns={theme_columns}
-        url={'themes'}
+        url={"themes"}
         crud
         onAdd={handleShowModal}
         onEdit={(id: number): void => {
@@ -49,7 +81,7 @@ const ThemeTable = () => {
         }}
         onDelete={handleDelete}
         defaultParameters={{
-          populate: { category_themes: { populate: 'category' } },
+          populate: { category_themes: { populate: "category" } },
           filters: { ...BASE_FILTER },
         }}
         setRefetch={setRefetch}
