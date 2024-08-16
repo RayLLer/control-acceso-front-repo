@@ -243,7 +243,16 @@ const TestForm = () => {
             : []
         }
       >
-        <Select options={themes} loading={loadingThemes} allowClear />
+        <Select
+          options={themes}
+          loading={loadingThemes}
+          allowClear
+          onChange={() => {
+            form.setFieldsValue({
+              sub_theme: undefined,
+            });
+          }}
+        />
       </Form.Item>
 
       <Form.Item
