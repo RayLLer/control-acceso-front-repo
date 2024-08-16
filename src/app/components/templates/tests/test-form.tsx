@@ -31,6 +31,8 @@ const suTestTypeOpt = [
 const TestForm = () => {
   const [loading, setLoading] = useState(false);
 
+  const [testQuestionLength, setTestQuestionLength] = useState<any>();
+
   const { id } = useParams();
   const { notification } = App.useApp();
   const [form] = Form.useForm();
@@ -98,6 +100,9 @@ const TestForm = () => {
   const fetchTest = async () => {
     // Fetch test by id
     const response = await testService.getById(+id);
+    setTestQuestionLength(
+      response.data.data.attributes.test_questions.data.length
+    );
     updateFields(response.data.data);
   };
 
@@ -251,8 +256,17 @@ const TestForm = () => {
         <Select
           options={themes}
           loading={loadingThemes}
+          disabled={testQuestionLength > 0}
           allowClear
-          onChange={() => {
+          onClick={() => {
+            if (testQuestionLength > 0) {
+              notification.error({
+                message:
+                  "Este test tiene preguntas asociadas a este tema, para cambiarlo elimine la relación que tiene con las preguntas primero.",
+              });
+            }
+          }}
+          onChange={(e) => {
             form.setFieldsValue({
               sub_theme: undefined,
             });
@@ -324,7 +338,14 @@ const TestForm = () => {
         //   },
         // ]}
       >
-        <Input type="number" suffix="minutos" min={0} />
+        <Input
+          type="number"
+          suffix="minutos"
+          min={0}
+          onChange={() => {
+            console.log(testQuestionLength);
+          }}
+        />
       </Form.Item>
 
       <Form.Item
