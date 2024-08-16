@@ -1,5 +1,7 @@
 import { RootState } from "@/app/store/store";
 import { sources } from "@/utils/sources";
+import secureStorage from "react-secure-storage";
+
 import {
   createAsyncThunk,
   createEntityAdapter,
@@ -37,6 +39,12 @@ export const getLoggedUser = createAsyncThunk(
         sources.ROLE_PERMISSION + "/getCustomPermissionsByRoleId",
         response.data.role.id
       );
+
+      if (response.data.role.name == "Alumno") {
+        secureStorage.clear();
+        window.location.reload();
+        throw new Error("No tiene permisos para acceder");
+      }
       response.data.role.permissions =
         permissionsResponse.data[0]?.custom_permissions ?? [];
       return response.data;
