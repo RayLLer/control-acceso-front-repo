@@ -29,6 +29,8 @@ const suTestTypeOpt = [
 ];
 
 const TestForm = () => {
+  const [loading, setLoading] = useState(false);
+
   const { id } = useParams();
   const { notification } = App.useApp();
   const [form] = Form.useForm();
@@ -111,6 +113,7 @@ const TestForm = () => {
 
   const onFinish = async (values: ITest) => {
     // Submit form
+    setLoading(true);
     try {
       const dataToSend = { ...changeUndefinedToNull(values) };
       if (dataToSend.initDate) {
@@ -133,6 +136,8 @@ const TestForm = () => {
     } catch (error) {
       console.log(error);
       notification.error({ message: "Error al guardar el test" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -356,6 +361,7 @@ const TestForm = () => {
       </Form.Item>
       <Form.Item>
         <Button
+          loading={loading}
           type="primary"
           htmlType="submit"
           onClick={() => console.log(form.getFieldsValue())}
