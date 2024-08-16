@@ -1,18 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
-import { IQuestionForm, IQuestionResponse } from '@/app/interfaces/question';
-import { paths } from '@/app/routes/paths';
-import { questionService } from '@/app/services/question.service';
-import { uploadService } from '@/app/services/upload.service';
-import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
-import { App, Button, Form, Input, Select, Upload, UploadFile } from 'antd';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useHierarchy } from './use-hierarchy';
-import useSubmitable from '@/app/hooks/use-submitable';
-import { changeUndefinedToNull } from '@/utils/utils';
+"use client";
+import { IQuestionForm, IQuestionResponse } from "@/app/interfaces/question";
+import { paths } from "@/app/routes/paths";
+import { questionService } from "@/app/services/question.service";
+import { uploadService } from "@/app/services/upload.service";
+import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
+import { App, Button, Form, Input, Select, Upload, UploadFile } from "antd";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useHierarchy } from "./use-hierarchy";
+import useSubmitable from "@/app/hooks/use-submitable";
+import { changeUndefinedToNull } from "@/utils/utils";
 
 const QuestionForm = () => {
+  const [loading, setLoading] = useState(false);
+
   const { id } = useParams();
   const { notification } = App.useApp();
   const [form] = Form.useForm();
@@ -20,9 +22,9 @@ const QuestionForm = () => {
 
   const router = useRouter();
 
-  const selectedCategory = Form.useWatch('category', form);
-  const selectedTheme = Form.useWatch('theme', form);
-  const selectedSubTheme = Form.useWatch('sub_theme', form);
+  const selectedCategory = Form.useWatch("category", form);
+  const selectedTheme = Form.useWatch("theme", form);
+  const selectedSubTheme = Form.useWatch("sub_theme", form);
 
   const {
     categories,
@@ -37,22 +39,22 @@ const QuestionForm = () => {
 
   const updateFields = (question: IQuestionResponse) => {
     form.setFieldsValue(question.attributes as unknown as IQuestionForm);
-    form.setFieldValue('category', question.attributes.category.data?.id);
-    form.setFieldValue('theme', question.attributes.theme.data?.id);
-    form.setFieldValue('sub_theme', question.attributes.sub_theme.data?.id);
-    form.setFieldValue('block', question.attributes.block.data?.id);
-    form.setFieldValue('image', []);
+    form.setFieldValue("category", question.attributes.category.data?.id);
+    form.setFieldValue("theme", question.attributes.theme.data?.id);
+    form.setFieldValue("sub_theme", question.attributes.sub_theme.data?.id);
+    form.setFieldValue("block", question.attributes.block.data?.id);
+    form.setFieldValue("image", []);
 
     if (question.attributes.image.data) {
       const file: UploadFile = {
         name: question.attributes.image.data.attributes.name,
         uid: question.attributes.image.data.id,
-        status: 'done',
+        status: "done",
         url:
           process.env.NEXT_PUBLIC_BASE_URL +
           question.attributes.image.data.attributes.url,
       };
-      form.setFieldValue('image', [file]);
+      form.setFieldValue("image", [file]);
     }
 
     // form.setFieldValue('image', question.attributes.image.url);
@@ -74,6 +76,7 @@ const QuestionForm = () => {
   }, []);
 
   const onFinish = async (values: any) => {
+    setLoading(true);
     const dataToSend = { ...changeUndefinedToNull(values) };
     delete dataToSend.image;
     try {
@@ -86,23 +89,25 @@ const QuestionForm = () => {
       if (id) {
         await questionService.put(+id, dataToSend);
         notification.success({
-          message: 'Pregunta actualizada correctamente',
-          placement: 'topRight',
+          message: "Pregunta actualizada correctamente",
+          placement: "topRight",
         });
         setSubmittable(false);
       } else {
         const response = await questionService.post(dataToSend);
         notification.success({
-          message: 'Pregunta creada correctamente',
-          placement: 'topRight',
+          message: "Pregunta creada correctamente",
+          placement: "topRight",
         });
         router.push(paths.questions.edit(response.data.data.id));
       }
     } catch (error) {
       notification.error({
-        message: 'Ha ocurrido un error al guardar la pregunta',
-        placement: 'topRight',
+        message: "Ha ocurrido un error al guardar la pregunta",
+        placement: "topRight",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,16 +121,16 @@ const QuestionForm = () => {
   return (
     <Form
       form={form}
-      name='questionForm'
-      layout='horizontal'
+      name="questionForm"
+      layout="horizontal"
       onFinish={onFinish}
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 14 }}
       labelWrap
     >
       <Button
-        type='link'
-        color='primary'
+        type="link"
+        color="primary"
         icon={<ArrowLeftOutlined />}
         style={{ marginBottom: 10 }}
         onClick={() => router.push(paths.questions.root)}
@@ -133,20 +138,20 @@ const QuestionForm = () => {
         VOLVER
       </Button>
       <Form.Item
-        label='Pregunta'
-        name='questionText'
-        rules={[{ required: true, message: 'Por favor, ingrese su pregunta.' }]}
+        label="Pregunta"
+        name="questionText"
+        rules={[{ required: true, message: "Por favor, ingrese su pregunta." }]}
       >
         <Input.TextArea rows={5} />
       </Form.Item>
 
       <Form.Item
-        label='Respuesta correcta'
-        name='correctAnswer'
+        label="Respuesta correcta"
+        name="correctAnswer"
         rules={[
           {
             required: true,
-            message: 'Por favor, ingrese la respuesta correcta.',
+            message: "Por favor, ingrese la respuesta correcta.",
           },
         ]}
       >
@@ -154,9 +159,9 @@ const QuestionForm = () => {
       </Form.Item>
 
       <Form.Item
-        label='Imagen'
-        valuePropName='fileList'
-        name={'image'}
+        label="Imagen"
+        valuePropName="fileList"
+        name={"image"}
         getValueFromEvent={normFile}
         rules={[
           () => ({
@@ -170,7 +175,7 @@ const QuestionForm = () => {
               const percent = (diff / average) * 100;
               if (percent > 5) {
                 return Promise.reject(
-                  'Las dimensiones de la imagen (Alto x Ancho) deben ser las mismas.'
+                  "Las dimensiones de la imagen (Alto x Ancho) deben ser las mismas."
                 );
               }
               return Promise.resolve();
@@ -179,12 +184,12 @@ const QuestionForm = () => {
         ]}
       >
         <Upload
-          listType='picture-card'
+          listType="picture-card"
           maxCount={1}
           beforeUpload={() => false}
-          accept='image/*'
+          accept="image/*"
         >
-          <button style={{ border: 0, background: 'none' }} type='button'>
+          <button style={{ border: 0, background: "none" }} type="button">
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Cargar</div>
           </button>
@@ -192,12 +197,12 @@ const QuestionForm = () => {
       </Form.Item>
 
       <Form.Item
-        label='Respuesta incorrecta 1'
-        name='incorrectAnswer1'
+        label="Respuesta incorrecta 1"
+        name="incorrectAnswer1"
         rules={[
           {
             required: true,
-            message: 'Por favor, ingrese una respuesta incorrecta.',
+            message: "Por favor, ingrese una respuesta incorrecta.",
           },
         ]}
       >
@@ -205,12 +210,12 @@ const QuestionForm = () => {
       </Form.Item>
 
       <Form.Item
-        label='Respuesta incorrecta 2'
-        name='incorrectAnswer2'
+        label="Respuesta incorrecta 2"
+        name="incorrectAnswer2"
         rules={[
           {
             required: true,
-            message: 'Por favor, ingrese una respuesta incorrecta.',
+            message: "Por favor, ingrese una respuesta incorrecta.",
           },
         ]}
       >
@@ -218,12 +223,12 @@ const QuestionForm = () => {
       </Form.Item>
 
       <Form.Item
-        label='Respuesta incorrecta 3'
-        name='incorrectAnswer3'
+        label="Respuesta incorrecta 3"
+        name="incorrectAnswer3"
         rules={[
           {
             required: true,
-            message: 'Por favor, ingrese una respuesta incorrecta.',
+            message: "Por favor, ingrese una respuesta incorrecta.",
           },
         ]}
       >
@@ -231,37 +236,37 @@ const QuestionForm = () => {
       </Form.Item>
 
       <Form.Item
-        label='Texto de la justificación'
-        name='justificationText'
+        label="Texto de la justificación"
+        name="justificationText"
         rules={[
-          { required: true, message: 'Por favor, ingrese la justificación.' },
+          { required: true, message: "Por favor, ingrese la justificación." },
         ]}
       >
         <Input.TextArea rows={3} />
       </Form.Item>
 
       <Form.Item
-        label='Referencia'
-        name='referencia'
+        label="Referencia"
+        name="referencia"
         rules={[
-          { required: true, message: 'Por favor, ingrese la referencia.' },
+          { required: true, message: "Por favor, ingrese la referencia." },
         ]}
       >
         <Input.TextArea rows={3} />
       </Form.Item>
 
       <Form.Item
-        label='Texto de la pista'
-        name='clueText'
-        rules={[{ required: true, message: 'Por favor, ingrese la pista.' }]}
+        label="Texto de la pista"
+        name="clueText"
+        rules={[{ required: true, message: "Por favor, ingrese la pista." }]}
       >
         <Input.TextArea rows={3} />
       </Form.Item>
 
       <Form.Item
-        name='category'
-        label='Cuerpo'
-        rules={[{ required: true, message: 'Seleccione un cuerpo.' }]}
+        name="category"
+        label="Cuerpo"
+        rules={[{ required: true, message: "Seleccione un cuerpo." }]}
       >
         <Select
           options={categories}
@@ -277,9 +282,9 @@ const QuestionForm = () => {
       </Form.Item>
 
       <Form.Item
-        name='theme'
-        label='Tema'
-        rules={[{ required: true, message: 'Seleccione un tema.' }]}
+        name="theme"
+        label="Tema"
+        rules={[{ required: true, message: "Seleccione un tema." }]}
       >
         <Select
           options={themes}
@@ -294,8 +299,8 @@ const QuestionForm = () => {
       </Form.Item>
 
       <Form.Item
-        name='sub_theme'
-        label='SubTema'
+        name="sub_theme"
+        label="SubTema"
         // rules={[{ required: true, message: 'Seleccione un subtema.' }]}
       >
         <Select
@@ -311,16 +316,21 @@ const QuestionForm = () => {
       </Form.Item>
 
       <Form.Item
-        name='block'
-        label='Bloque'
+        name="block"
+        label="Bloque"
         // rules={[{ required: true, message: 'Seleccione un bloque.' }]}
       >
         <Select options={blocks} loading={loadingBlocks} allowClear />
       </Form.Item>
 
       <Form.Item>
-        <Button type='primary' htmlType='submit' disabled={!submittable}>
-          {id ? 'Actualizar' : 'Crear'}
+        <Button
+          type="primary"
+          htmlType="submit"
+          disabled={!submittable}
+          loading={loading}
+        >
+          {id ? "Actualizar" : "Crear"}
         </Button>
       </Form.Item>
     </Form>

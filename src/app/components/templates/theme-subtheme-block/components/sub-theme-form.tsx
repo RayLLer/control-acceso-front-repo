@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
-import useSubmitable from '@/app/hooks/use-submitable';
-import { ISelect } from '@/app/interfaces/basics';
-import { ISubTheme, ISubThemeResponse } from '@/app/interfaces/question';
-import { subThemeService } from '@/app/services/subthemes.service';
-import { themeService } from '@/app/services/themes.service';
-import { App, Form, Input, Modal, Select } from 'antd';
-import { isAxiosError } from 'axios';
-import { FC, useEffect, useState } from 'react';
+"use client";
+import useSubmitable from "@/app/hooks/use-submitable";
+import { ISelect } from "@/app/interfaces/basics";
+import { ISubTheme, ISubThemeResponse } from "@/app/interfaces/question";
+import { subThemeService } from "@/app/services/subthemes.service";
+import { themeService } from "@/app/services/themes.service";
+import { App, Form, Input, Modal, Select } from "antd";
+import { isAxiosError } from "axios";
+import { FC, useEffect, useState } from "react";
 
 type Props = {
   open: boolean;
@@ -28,7 +28,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
   const fetchSubTheme = async () => {
     if (editMode) {
       const response = await subThemeService.getById(subThemeId, {
-        populate: { theme: { populate: '*' } },
+        populate: { theme: { populate: "*" } },
       });
       setSubTheme(() => response.data.data);
       updateFields(response.data.data);
@@ -36,7 +36,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
   };
 
   const fetchThemes = async () => {
-    const response = await themeService.getForSelect('name');
+    const response = await themeService.getForSelect("name");
     setThemes(() =>
       response.data.data.map((theme) => ({
         label: theme.attributes.name,
@@ -64,36 +64,37 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
       if (editMode) {
         await subThemeService.put(subThemeId, dataTosend as ISubTheme);
         notification.success({
-          message: 'SubTema actualizado',
-          description: 'El subtema ha sido actualizado correctamente',
+          message: "SubTema actualizado",
+          description: "El subtema ha sido actualizado correctamente",
         });
         setSubmittable(false);
       } else {
         await subThemeService.post(dataTosend as ISubTheme);
         notification.success({
-          message: 'SubTema creado',
-          description: 'El subtema ha sido creado correctamente',
+          message: "SubTema creado",
+          description: "El subtema ha sido creado correctamente",
         });
       }
       onSaved();
     } catch (error: any) {
       if (isAxiosError(error)) {
         notification.error({
-          type: 'error',
-          message: 'Error',
+          type: "error",
+          message: "Error",
           description:
             error.response?.data?.error.message ??
-            'Ha ocurrido un error al guardar el tema.',
+            "Ha ocurrido un error al guardar el tema.",
         });
       }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
     <Modal
       open={open}
-      title={editMode ? 'Editar SubTema' : 'Agregar SubTema'}
+      title={editMode ? "Editar SubTema" : "Agregar SubTema"}
       onCancel={onClose}
       onOk={() => form.submit()}
       okButtonProps={{ disabled: !submittable }}
@@ -101,14 +102,14 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
     >
       <Form onFinish={onFinish} form={form}>
         <Form.Item
-          label='Nombre'
-          name='name'
-          validateTrigger='onBlur'
+          label="Nombre"
+          name="name"
+          validateTrigger="onBlur"
           rules={[
-            { required: true, message: 'El nombre es obligatorio' },
+            { required: true, message: "El nombre es obligatorio" },
             ({ getFieldValue }) => ({
               async validator(_, value) {
-                const themeId = getFieldValue('theme');
+                const themeId = getFieldValue("theme");
                 if (
                   !value ||
                   !themeId ||
@@ -123,7 +124,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
                 });
                 if (response.data.data.length > 0) {
                   return Promise.reject(
-                    'El nombre ya está en uso para este tema'
+                    "El nombre ya está en uso para este tema"
                   );
                 }
                 return Promise.resolve();
@@ -134,9 +135,9 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          label='Tema'
-          name='theme'
-          rules={[{ required: true, message: 'El tema es obligatorio' }]}
+          label="Tema"
+          name="theme"
+          rules={[{ required: true, message: "El tema es obligatorio" }]}
         >
           <Select
             options={themes}
@@ -145,7 +146,7 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
-            onChange={() => form.validateFields(['name'])}
+            onChange={() => form.validateFields(["name"])}
           />
         </Form.Item>
       </Form>

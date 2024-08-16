@@ -1,11 +1,10 @@
-'use client';
-import { Button, Modal, notification, Row, Upload } from 'antd';
-import React, { FC, useState } from 'react';
+"use client";
+import { Button, Modal, notification, Row, Upload, UploadFile } from "antd";
+import React, { FC, useState } from "react";
 
-import { InboxOutlined } from '@ant-design/icons';
-import { uploadQuestions } from '@/app/services/upload.service';
-import axios from 'axios';
-import { UploadFile } from 'antd';
+import { InboxOutlined } from "@ant-design/icons";
+import { uploadQuestions } from "@/app/services/upload.service";
+import axios from "axios";
 
 type Props = {
   open: boolean;
@@ -17,20 +16,20 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
 
   const handleUpload = async () => {
     try {
-      
       await uploadQuestions(file[0]);
       notification.success({
-        message: 'Archivo subido',
-        description: 'El archivo fue subido correctamente',
+        message: "Archivo subido",
+        description: "El archivo fue subido correctamente",
       });
       onClose();
+      window.location.reload();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         notification.error({
-          message: 'Error al subir archivo',
+          message: "Error al subir archivo",
           description:
             error.response?.data.message ??
-            'Ocurrió un error al subir el archivo',
+            "Ocurrió un error al subir el archivo",
         });
       }
     }
@@ -39,7 +38,7 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
   const renderFooter = (
     <Row>
       <Button
-        type='primary'
+        type="primary"
         disabled={!file.length}
         onClick={handleUpload}
         style={{ marginRight: 10 }}
@@ -52,7 +51,7 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
 
   return (
     <Modal
-      title='Subir preguntas'
+      title="Subir preguntas"
       open={open}
       destroyOnClose
       // onOk={() => handleUpload(file)}
@@ -66,7 +65,7 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
       <Upload.Dragger
         maxCount={1}
         beforeUpload={() => false}
-        accept='.xlsx, .xls'
+        accept=".xlsx, .xls"
         // onChange={(e) => {
         //   if (Array.isArray(e)) {
         //     setFile(e);
@@ -74,13 +73,13 @@ const UploadModal: FC<Props> = ({ open, onClose }) => {
         //   }
         //   setFile(() => e?.fileList);
         // }}
-        onChange={(e)=> setFile(e.fileList)}
+        onChange={(e) => setFile(e.fileList)}
       >
-        <p className='ant-upload-drag-icon'>
+        <p className="ant-upload-drag-icon">
           <InboxOutlined />
         </p>
-        <p className='ant-upload-text'>Click o arrastrar archivo para subir</p>
-        <p className='ant-upload-hint'>
+        <p className="ant-upload-text">Click o arrastrar archivo para subir</p>
+        <p className="ant-upload-hint">
           El archivo debe ser en formato excel (.xls).
         </p>
       </Upload.Dragger>

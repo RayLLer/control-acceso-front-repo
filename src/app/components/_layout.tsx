@@ -1,17 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
+"use client";
 import {
   BugOutlined,
   FileDoneOutlined,
   IdcardOutlined,
   LogoutOutlined,
-  MoonOutlined,
   QuestionCircleOutlined,
   SafetyCertificateOutlined,
-  SunOutlined,
   UnorderedListOutlined,
   UserOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 import {
   Button,
   Card,
@@ -22,25 +20,23 @@ import {
   Menu,
   MenuProps,
   Row,
-  Switch,
-  Typography,
   theme as antdTheme,
-} from 'antd';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
-import { paths } from '../routes/paths';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { setTheme } from '../store/settings/settingsSlice';
-import { PermissionsEnum, validatePermissionName } from '@/utils/permissions';
-import { getLoggedUser } from '../pages/users/users.reducer';
-import useValidatePermissions from '@/utils/hooks/use-validate-permissions';
-import secureStorage from 'react-secure-storage'
+} from "antd";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { paths } from "../routes/paths";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setTheme } from "../store/settings/settingsSlice";
+import { PermissionsEnum } from "@/utils/permissions";
+import { getLoggedUser } from "../pages/users/users.reducer";
+import useValidatePermissions from "@/utils/hooks/use-validate-permissions";
+import secureStorage from "react-secure-storage";
 
 const { Sider, Content, Footer, Header } = Layout;
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<MenuProps>["items"][number];
 
 const userMenuItems: MenuItem[] = [
-  getItem('Salir', '/auth/login', true, <LogoutOutlined />),
+  getItem("Salir", "/auth/login", true, <LogoutOutlined />),
 ];
 
 function getItem(
@@ -78,44 +74,44 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       ? []
       : [
           getItem(
-            'Gestión de Test',
+            "Gestión de Test",
             paths.tests.root,
             validate(PermissionsEnum.GestionarTest),
             <IdcardOutlined style={{ fontSize: FONT_SIZE }} />
           ),
           getItem(
-            'Gestión de Categorías',
+            "Gestión de Categorías",
             paths.theme_subtheme_block.root,
             validate(PermissionsEnum.GestionarCategorias),
             <UnorderedListOutlined style={{ fontSize: FONT_SIZE }} />
           ),
           getItem(
-            'Gestión de Preguntas',
+            "Gestión de Preguntas",
             paths.questions.root,
             validate(PermissionsEnum.GestionarPreguntas),
             <QuestionCircleOutlined style={{ fontSize: FONT_SIZE }} />
           ),
           getItem(
-            'Tests Realizados',
+            "Tests Realizados",
             paths.realized_tests.root,
             validate(PermissionsEnum.VerTestsRealizados),
             <FileDoneOutlined style={{ fontSize: FONT_SIZE }} />
           ),
           getItem(
-            'Quejas y Errores',
+            "Quejas y Errores",
             paths.error_reports.root,
             validate(PermissionsEnum.VerReporteDeQuejasYErrores),
             <BugOutlined style={{ fontSize: FONT_SIZE }} />
           ),
           getItem(
-            'Gestión de Usuarios',
-            '/pages/users',
+            "Gestión de Usuarios",
+            "/pages/users",
             validate(PermissionsEnum.GestionarUsuarios),
             <UserOutlined />
           ),
           getItem(
-            'Roles y permisos',
-            '/pages/roles',
+            "Roles y permisos",
+            "/pages/roles",
             validate(PermissionsEnum.GestionarRolesPermisos),
             <SafetyCertificateOutlined style={{ fontSize: FONT_SIZE }} />
           ),
@@ -126,12 +122,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     dispatch(getLoggedUser(undefined));
   }, []);
 
-  const onClick: MenuProps['onClick'] = (e) => {
-    if (e.key == '/auth/login') {
-      const keepSign = secureStorage.getItem('keepSign');
-      if(keepSign){
-        secureStorage.removeItem('user');
-        secureStorage.removeItem('token');
+  const onClick: MenuProps["onClick"] = (e) => {
+    if (e.key == "/auth/login") {
+      const keepSign = secureStorage.getItem("keepSign");
+      if (keepSign) {
+        secureStorage.removeItem("user");
+        secureStorage.removeItem("token");
       } else {
         secureStorage.clear();
       }
@@ -140,11 +136,11 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const changeTheme = (value: boolean) => {
-    dispatch(setTheme(value ? 'dark' : 'light'));
+    dispatch(setTheme(value ? "dark" : "light"));
   };
 
   return (
-    <Layout style={{ minHeight: '100vh', backgroundColor: token.colorPrimary }}>
+    <Layout style={{ minHeight: "100vh", backgroundColor: token.colorPrimary }}>
       <Sider
         collapsible
         style={{ marginTop: 20 }}
@@ -154,17 +150,17 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       >
         {!collapsed ? (
           <Image
-            alt='Logo'
-            src='/img/logo.png'
+            alt="Logo"
+            src="/img/logo.png"
             height={70}
-            width={'80%'}
+            width={"80%"}
             style={{ marginLeft: 20 }}
             preview={false}
           />
         ) : (
           <Image
-            alt='Logo'
-            src='/img/logo-collapsed.png'
+            alt="Logo"
+            src="/img/logo-collapsed.png"
             height={30}
             style={{ marginLeft: 5 }}
             preview={false}
@@ -172,20 +168,21 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         )}
 
         <Menu
-          mode='inline'
+          defaultSelectedKeys={[path]}
+          mode="inline"
           items={items}
           style={{ marginTop: 20, fontWeight: 700 }}
           onClick={onClick}
           defaultActiveFirst
         />
       </Sider>
-      <Layout className='site-layout'>
+      <Layout className="site-layout">
         <Header
           style={{
             padding: 0,
           }}
         >
-          <Row justify={'end'} gutter={8}>
+          <Row justify={"end"} gutter={8}>
             {/* <Col>
               <Switch
                 value={theme === 'dark'}
@@ -198,20 +195,20 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             <Col style={{ marginRight: 20 }}>
               <Dropdown
                 menu={{ items: userMenuItems, onClick }}
-                placement='bottomRight'
+                placement="bottomRight"
                 arrow
               >
                 <Button icon={<UserOutlined />} danger>
-                  {loggedUser.username ?? 'Usuario'}
+                  {loggedUser.username ?? "Usuario"}
                 </Button>
               </Dropdown>
             </Col>
           </Row>
         </Header>
-        <Content style={{ margin: '0 16px' }}>
-          <Card style={{ marginTop: 10, minHeight: '80vh' }}>{children}</Card>
+        <Content style={{ margin: "0 16px" }}>
+          <Card style={{ marginTop: 10, minHeight: "80vh" }}>{children}</Card>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
+        <Footer style={{ textAlign: "center" }}>
           TestOpo©{new Date().getFullYear()}
         </Footer>
       </Layout>

@@ -1,19 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-'use client';
-import useSubmitable from '@/app/hooks/use-submitable';
-import { ISelect } from '@/app/interfaces/basics';
+"use client";
+import useSubmitable from "@/app/hooks/use-submitable";
+import { ISelect } from "@/app/interfaces/basics";
 import {
   IBlock,
   IBlockResponse,
   ISubTheme,
   ISubThemeResponse,
-} from '@/app/interfaces/question';
-import { blockService } from '@/app/services/block.service';
-import { subThemeService } from '@/app/services/subthemes.service';
-import { themeService } from '@/app/services/themes.service';
-import { App, Form, Input, Modal, Select } from 'antd';
-import { isAxiosError } from 'axios';
-import { FC, useEffect, useState } from 'react';
+} from "@/app/interfaces/question";
+import { blockService } from "@/app/services/block.service";
+import { subThemeService } from "@/app/services/subthemes.service";
+import { themeService } from "@/app/services/themes.service";
+import { App, Form, Input, Modal, Select } from "antd";
+import { isAxiosError } from "axios";
+import { FC, useEffect, useState } from "react";
 
 type Props = {
   open: boolean;
@@ -34,7 +34,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
   const fetchBlock = async () => {
     if (editMode) {
       const response = await blockService.getById(blockId, {
-        populate: { sub_theme: { populate: '*' } },
+        populate: { sub_theme: { populate: "*" } },
       });
       setBlock(() => response.data.data);
       updateFields(response.data.data);
@@ -42,7 +42,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
   };
 
   const fetchSubThemes = async () => {
-    const response = await subThemeService.getForSelect('name');
+    const response = await subThemeService.getForSelect("name");
     setSubThemes(() =>
       response.data.data.map((theme) => ({
         label: theme.attributes.name,
@@ -70,36 +70,37 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
       if (editMode) {
         await blockService.put(blockId, dataTosend as IBlock);
         notification.success({
-          message: 'Bloque actualizado',
-          description: 'El Bloque ha sido actualizado correctamente',
+          message: "Bloque actualizado",
+          description: "El Bloque ha sido actualizado correctamente",
         });
         setSubmittable(false);
       } else {
         await blockService.post(dataTosend as IBlock);
         notification.success({
-          message: 'Bloque creado',
-          description: 'El Bloque ha sido creado correctamente',
+          message: "Bloque creado",
+          description: "El Bloque ha sido creado correctamente",
         });
       }
       onSaved();
     } catch (error: any) {
       if (isAxiosError(error)) {
         notification.error({
-          type: 'error',
-          message: 'Error',
+          type: "error",
+          message: "Error",
           description:
             error.response?.data?.error.message ??
-            'Ha ocurrido un error al guardar el bloque.',
+            "Ha ocurrido un error al guardar el bloque.",
         });
       }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
     <Modal
       open={open}
-      title={editMode ? 'Editar Bloque' : 'Agregar Bloque'}
+      title={editMode ? "Editar Bloque" : "Agregar Bloque"}
       onCancel={onClose}
       onOk={() => form.submit()}
       okButtonProps={{ disabled: !submittable }}
@@ -107,13 +108,13 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
     >
       <Form onFinish={onFinish} form={form}>
         <Form.Item
-          label='Nombre'
-          name='name'
+          label="Nombre"
+          name="name"
           rules={[
-            { required: true, message: 'El nombre es obligatorio' },
+            { required: true, message: "El nombre es obligatorio" },
             ({ getFieldValue }) => ({
               async validator(_, value) {
-                const subThemeId = getFieldValue('sub_theme');
+                const subThemeId = getFieldValue("sub_theme");
                 if (
                   !value ||
                   !subThemeId ||
@@ -128,7 +129,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
                 });
                 if (response.data.data.length > 0) {
                   return Promise.reject(
-                    'El nombre ya está en uso para este subtema'
+                    "El nombre ya está en uso para este subtema"
                   );
                 }
                 return Promise.resolve();
@@ -139,9 +140,9 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
           <Input />
         </Form.Item>
         <Form.Item
-          label='SubTema'
-          name='sub_theme'
-          rules={[{ required: true, message: 'El subtema es obligatorio' }]}
+          label="SubTema"
+          name="sub_theme"
+          rules={[{ required: true, message: "El subtema es obligatorio" }]}
         >
           <Select
             options={subThemes}
@@ -150,7 +151,7 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
-            onChange={() => form.validateFields(['name'])}
+            onChange={() => form.validateFields(["name"])}
           />
         </Form.Item>
       </Form>
