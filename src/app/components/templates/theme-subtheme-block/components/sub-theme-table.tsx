@@ -50,7 +50,7 @@ const SubThemeTable = () => {
         responseTest.data.data.length > 0 ||
         responseQuestion.data.data.length > 0
       ) {
-        return "No se puede eliminar. Existen test o preguntas asociadas";
+        return "No se puede eliminar. Existen tests o preguntas asociadas";
       } else {
         const response = await subThemeService.getById(id, {
           populate: ["blocks"],

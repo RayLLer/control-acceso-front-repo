@@ -18,6 +18,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import secureStorage from "react-secure-storage";
+import { getLoggedUser } from "@/app/pages/users/users.reducer";
+import { useAppDispatch } from "@/app/store/hooks";
 
 interface ILogin {
   identifier: string;
@@ -27,6 +29,7 @@ interface ILogin {
 
 const Login: React.FC = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [keepSign, setKeepSign] = useState(false);
 
@@ -62,7 +65,9 @@ const Login: React.FC = () => {
 
       // const responseFcm = await userService.putUser(user.id, user);
       setLoading(false);
-      router.push(paths.tests.root);
+      dispatch(getLoggedUser(true));
+
+      // router.push(paths.tests.root);
     } catch (error: any) {
       if (isAxiosError(error)) {
         notification.error({

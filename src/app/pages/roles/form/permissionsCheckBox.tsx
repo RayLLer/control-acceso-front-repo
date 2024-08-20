@@ -1,6 +1,6 @@
-import { Checkbox, Col } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
-import { IPermissions } from '../roles.interface';
+import { Checkbox, Col } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { IPermissions } from "../roles.interface";
 
 interface IProps {
   permissions: IPermissions[];
@@ -57,14 +57,14 @@ const PermissionsCheckBox = ({
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'baseline',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "baseline",
         marginTop: 10,
       }}
     >
       {permissions.map((p, index) => {
-        return (
+        return p.attributes.name != "Básico" ? (
           <Checkbox
             key={index}
             value={p.id}
@@ -73,6 +73,8 @@ const PermissionsCheckBox = ({
           >
             {p.attributes.name}
           </Checkbox>
+        ) : (
+          <></>
         );
       })}
     </div>
