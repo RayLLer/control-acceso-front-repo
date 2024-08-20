@@ -11,6 +11,8 @@ import { IUser } from "./users.interface";
 import { UsersService } from "./users.service";
 import { RolesServices } from "../roles/roles.service";
 import showNotification from "@/utils/message";
+import { paths } from "@/app/routes/paths";
+import { PermissionsEnum } from "@/utils/permissions";
 
 const usersAdapter = createEntityAdapter<IUser>({
   sortComparer: (a, b) => (a.createdAt < b.createdAt ? 1 : -1),
@@ -39,12 +41,43 @@ export const getLoggedUser = createAsyncThunk(
         sources.ROLE_PERMISSION + "/getCustomPermissionsByRoleId",
         response.data.role.id
       );
-
-      if (response.data.role.name == "Alumno") {
+      console.log("aki");
+      console.log(permissionsResponse.data[0].custom_permissions[0].name);
+      if (response.data.role.name === "Alumno") {
         secureStorage.clear();
-        window.location.reload();
+        window.location.href = "/login"; // Redirige a la página de login
         throw new Error("No tiene permisos para acceder");
       }
+
+      if (params) {
+        switch (permissionsResponse.data[0].custom_permissions[0].name) {
+          case PermissionsEnum.GestionarTest:
+            window.location.href = paths.tests.root;
+            break;
+          case PermissionsEnum.GestionarCategorias:
+            window.location.href = paths.theme_subtheme_block.root;
+            break;
+          case PermissionsEnum.GestionarPreguntas:
+            window.location.href = paths.questions.root;
+            break;
+          case PermissionsEnum.VerTestsRealizados:
+            window.location.href = paths.realized_tests.root;
+            break;
+          case PermissionsEnum.VerReporteDeQuejasYErrores:
+            window.location.href = paths.error_reports.root;
+            break;
+          case PermissionsEnum.GestionarUsuarios:
+            window.location.href = "/pages/users";
+            break;
+          case PermissionsEnum.GestionarRolesPermisos:
+            window.location.href = "/pages/roles";
+            break;
+          default:
+            window.location.href = paths.tests.root;
+            break;
+        }
+      }
+
       response.data.role.permissions =
         permissionsResponse.data[0]?.custom_permissions ?? [];
       return response.data;
@@ -74,7 +107,7 @@ export const postUsers = createAsyncThunk(
 
       if (!response || !response.data) {
         throw new Error(
-          "No se pudo crear el usuario, verifique si ya esta en uso el correo o el usuario seleccionado"
+          "No se pudo crear el usuario, verifique si ya está en uso el correo o el usuario seleccionado"
         );
       }
 
@@ -82,7 +115,7 @@ export const postUsers = createAsyncThunk(
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
         throw new Error(
-          "No se pudo crear el usuario, verifique si ya esta en uso el correo o el usuario seleccionado"
+          "No se pudo crear el usuario, verifique si ya está en uso el correo o el usuario seleccionado"
         );
       }
 
@@ -173,7 +206,7 @@ const usersSlice = createSlice({
         message = "El usuario ya está en uso";
       }
       if (state.error.includes("already taken")) {
-        message = "El correo ya esta en uso";
+        message = "El correo ya está en uso";
       }
       showNotification("error", "Error", [message]);
       state.loading = false;

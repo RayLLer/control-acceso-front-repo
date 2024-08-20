@@ -15,6 +15,7 @@ import {
 import { RolesServices } from "../roles.service";
 import PermissionsCheckBox from "./permissionsCheckBox";
 import useSubmitable from "@/app/hooks/use-submitable";
+import { IPermissions } from "@/app/interfaces/role";
 
 const rolesService = new RolesServices();
 
@@ -95,6 +96,19 @@ const FormRole = () => {
         description: data.description,
         // type: data.type,
       };
+      try {
+        data.permissions = [
+          ...data.permissions,
+          permissions.find(
+            (rol: IPermissions) => rol.attributes.name === "Básico"
+          )?.id,
+        ];
+        console.log(data.permissions);
+      } catch (error) {
+        console.log(error);
+      }
+
+      console.log(data.permissions);
       roleId && (roleDto.id = roleId);
       setLoading(true);
       try {
