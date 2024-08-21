@@ -14,6 +14,7 @@ import moment from "moment";
 import { BASE_FILTER, dateFormat } from "@/utils/constants/constants";
 import useSubmitable from "@/app/hooks/use-submitable";
 import { changeUndefinedToNull } from "@/utils/utils";
+import MyDatePicker from "./MyDatePicker";
 
 export const OFICIAL = "Oficial";
 export const CHALLENGE = "Reto";
@@ -358,7 +359,7 @@ const TestForm = () => {
         //   },
         // ]}
       >
-        <DatePicker style={{ width: "100%" }} format={dateFormat} />
+        <MyDatePicker style={{ width: "100%" }} format={dateFormat} />
       </Form.Item>
       <Form.Item
         label="Fecha de caducidad"
@@ -378,7 +379,7 @@ const TestForm = () => {
           }),
         ]}
       >
-        <DatePicker style={{ width: "100%" }} format={dateFormat} />
+        <MyDatePicker style={{ width: "100%" }} format={dateFormat} />
       </Form.Item>
       <Form.Item>
         <Button
