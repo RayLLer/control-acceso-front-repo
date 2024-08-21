@@ -41,8 +41,6 @@ export const getLoggedUser = createAsyncThunk(
         sources.ROLE_PERMISSION + "/getCustomPermissionsByRoleId",
         response.data.role.id
       );
-      console.log("aki");
-      console.log(permissionsResponse.data[0].custom_permissions[0].name);
       if (response.data.role.name === "Alumno") {
         secureStorage.clear();
         window.location.href = "/login"; // Redirige a la página de login
