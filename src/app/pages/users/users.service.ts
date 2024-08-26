@@ -1,25 +1,25 @@
-import { BaseApi } from '@/utils/baseApi';
-import { IUser } from './users.interface';
-import { axiosInstance } from '@/utils/axios';
+import { BaseApi } from "@/utils/baseApi";
+import { IUser } from "./users.interface";
+import { axiosInstance } from "@/utils/axios";
 
 export class UsersService extends BaseApi<IUser, IUser> {
   constructor() {
-    super('/users');
+    super("/users");
   }
   getUsers(url: string, params: { [key: string]: any }) {
     return axiosInstance.get<IUser[]>(url, {
-      params: { ...params, populate: '*' },
+      params: { ...params, populate: "*" },
     });
   }
   getUserById(url: string, params: { [key: string]: any }) {
     return axiosInstance.get<IUser[]>(url, {
-      params: { ...params, populate: '*' },
+      params: { ...params, populate: "*" },
     });
   }
 
   getLoggedUser(url: string) {
     return axiosInstance.get<IUser>(url, {
-      params: { populate: 'role' },
+      params: { populate: "role" },
     });
   }
   putLoggedUser(url: string, body: IUser) {
@@ -31,6 +31,11 @@ export class UsersService extends BaseApi<IUser, IUser> {
   postUser(body: IUser) {
     return axiosInstance.post<IUser>(this.url, body);
   }
+  deleteUser(id: number) {
+    return axiosInstance.post<any>(`/realized-tests/deleteUserRecords`, {
+      userId: id,
+    });
+  }
 }
 
-export const userService = new UsersService()
+export const userService = new UsersService();
