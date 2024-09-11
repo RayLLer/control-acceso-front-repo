@@ -1,13 +1,13 @@
-'use client';
-import { FC } from 'react';
-import { IRole } from './roles.interface';
+"use client";
+import { FC } from "react";
+import { IRole } from "./roles.interface";
 
-import MagicTable from '@/app/components/table-v2/table-custom';
-import { ColumnsType } from '@/app/interfaces/strapi';
-import { useRouter } from 'next/navigation';
-import { RolesServices } from './roles.service';
-import { userService } from '../users/users.service';
-import { notification } from 'antd';
+import MagicTable from "@/app/components/table-v2/table-custom";
+import { ColumnsType } from "@/app/interfaces/strapi";
+import { useRouter } from "next/navigation";
+import { RolesServices } from "./roles.service";
+import { userService } from "../users/users.service";
+import { notification } from "antd";
 
 const roleServices = new RolesServices();
 
@@ -16,31 +16,31 @@ const Roles: FC = () => {
 
   const columns: ColumnsType<IRole>[] = [
     {
-      title: 'Nombre',
-      dataIndex: ['name'],
-      key: 'name',
+      title: "Nombre",
+      dataIndex: ["name"],
+      key: "name",
       // filtrable: true,
-      filterType: 'string',
+      filterType: "string",
     },
     {
-      title: 'Descripción',
-      dataIndex: ['description'],
-      key: 'description',
+      title: "Descripción",
+      dataIndex: ["description"],
+      key: "description",
       // filtrable: true,
-      filterType: 'string',
+      filterType: "string",
     },
     {
-      title: 'Tipo',
-      dataIndex: ['type'],
-      key: 'type',
+      title: "Tipo",
+      dataIndex: ["type"],
+      key: "type",
       // filtrable: true,
-      filterType: 'string',
+      filterType: "string",
     },
   ];
 
   const handleDelete = async (id: number) => {
     try {
-      const usersResponse = await userService.get({
+      const usersResponse = (await userService.get({
         filters: {
           role: {
             id: {
@@ -48,9 +48,11 @@ const Roles: FC = () => {
             },
           },
         },
-      }) as any;
+      })) as any;
       if (usersResponse.data.length > 0) {
-        return 'No se puede eliminar el rol porque tiene usuarios asociados.';
+        return "No se puede eliminar el rol porque tiene usuarios asociados.";
+      } else {
+        return true;
       }
       // await roleServices.delete(id);
       // notification.success({
@@ -58,7 +60,7 @@ const Roles: FC = () => {
       // });
     } catch (error) {
       notification.error({
-        message: 'Error al eliminar el registro.',
+        message: "Error al eliminar el registro.",
       });
     }
   };
@@ -66,9 +68,9 @@ const Roles: FC = () => {
   return (
     <MagicTable<IRole, IRole>
       columns={columns}
-      url={'users-permissions/roles'}
+      url={"users-permissions/roles"}
       onAdd={function (): void {
-        router.push('roles/form');
+        router.push("roles/form");
       }}
       onEdit={function (id: number): void {
         router.push(`roles/form?roleId=${id}`);
