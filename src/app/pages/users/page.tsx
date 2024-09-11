@@ -5,9 +5,27 @@ import MagicTable from "@/app/components/table-v2/table-custom";
 import { ColumnsType } from "@/app/interfaces/strapi";
 import { useRouter } from "next/navigation";
 import { IUser } from "./users.interface";
+import { userService } from "./users.service";
+import axios from "axios";
 
 const User: FC = (): ReactElement => {
   const router = useRouter();
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await userService.deleteUser(id);
+      console.log(response);
+      if (response.data === "OK") {
+        return true;
+      } else {
+        return "No se puede eliminar el usuario";
+      }
+    } catch (error) {
+      return axios.isAxiosError(error)
+        ? error.response?.data.message
+        : "Ha ocurrido un error";
+    }
+  };
 
   const columns: ColumnsType<IUser>[] = [
     {
@@ -53,6 +71,7 @@ const User: FC = (): ReactElement => {
       onAdd={() => router.push("users/form")}
       onEdit={(id) => router.push(`users/form/${id}`)}
       deleteEntry
+      onDelete={handleDelete}
       crud
     />
   );
