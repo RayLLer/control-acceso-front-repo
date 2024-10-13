@@ -238,9 +238,7 @@ const QuestionForm = () => {
       <Form.Item
         label="Texto de la justificación"
         name="justificationText"
-        rules={[
-          { required: true, message: "Por favor, ingrese la justificación." },
-        ]}
+        // rules={[{ required: true, message: "Por favor, ingrese la justificación." },]}
       >
         <Input.TextArea rows={3} />
       </Form.Item>
@@ -258,7 +256,7 @@ const QuestionForm = () => {
       <Form.Item
         label="Texto de la pista"
         name="clueText"
-        rules={[{ required: true, message: "Por favor, ingrese la pista." }]}
+        // rules={[{ required: true, message: "Por favor, ingrese la pista." }]}
       >
         <Input.TextArea rows={3} />
       </Form.Item>
