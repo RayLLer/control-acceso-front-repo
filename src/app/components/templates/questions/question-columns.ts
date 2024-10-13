@@ -31,7 +31,7 @@ export const question_columns: ColumnsType<IQuestionResponse>[] = [
     filterType: 'string',
   },
   {
-    title: 'Ley y Artículo',
+    title: 'Referencia',//'Ley y Artículo',
     dataIndex: ['attributes', 'referencia'],
     sorter: true,
     filtrable: true,
