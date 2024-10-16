@@ -10,7 +10,7 @@ class GeneralConfigServices extends BaseApi<IGeneralConfigResponse, IGeneralConf
         return axiosInstance.get<{ data: IGeneralConfigResponse }>(this.url);
     }
     patchGeneralData(body: IGeneralConfig) {
-        return axiosInstance.patch<{ data: IGeneralConfigResponse }>(this.url, { data: body });
+        return axiosInstance.put<{ data: IGeneralConfigResponse }>(this.url, { data: body });
     }
 }
 
