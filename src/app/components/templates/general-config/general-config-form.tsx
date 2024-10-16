@@ -66,9 +66,9 @@ const GeneralDataForm = () => {
 
   return (
     <>
-      <Title level={2} style={{ marginBottom: 30 }}>
+      {/* <Title level={2} style={{ marginBottom: 30 }}>
         Datos generales
-      </Title>
+      </Title> */}
       <Form
         {...formItemLayout}
         form={form}
