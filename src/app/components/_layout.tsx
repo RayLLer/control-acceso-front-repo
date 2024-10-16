@@ -9,7 +9,7 @@ import {
   SafetyCertificateOutlined,
   UnorderedListOutlined,
   UserOutlined,
-  SettingOutlined,
+  SolutionOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -117,10 +117,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             <SafetyCertificateOutlined style={{ fontSize: FONT_SIZE }} />
           ),
           getItem(
-            "Configuración general",
+            "Gestión de Calificación",
             "/pages/general-config",
             validate(PermissionsEnum.GestionarConfiguracion),
-            <SettingOutlined style={{ fontSize: FONT_SIZE }} />
+            <SolutionOutlined style={{ fontSize: FONT_SIZE }} />
           ),
         ];
   }, [loggedUser]);

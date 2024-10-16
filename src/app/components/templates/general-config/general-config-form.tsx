@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
+import useSubmitable from "@/app/hooks/use-submitable";
 
 const { Title } = Typography;
 
@@ -20,6 +21,8 @@ const GeneralDataForm = () => {
 
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
+  const { submittable, setSubmittable } = useSubmitable({ form });
+
 
   const getGeneralData = async () => {
     try {
@@ -50,6 +53,7 @@ const GeneralDataForm = () => {
       notification.success({
         message: 'Datos generales actualizados',
       });
+      setSubmittable(false);
     } catch (error) {
       setLoading(false);
       notification.error({
@@ -75,9 +79,15 @@ const GeneralDataForm = () => {
         scrollToFirstError
         onFinish={onFinish}
         labelWrap
+        initialValues={{
+          practicalTestCorrectAnswerValue: 0,
+          practicalTestIncorrectAnswerValue: 0,
+          standarTestCorrectAnswerValue: 0,
+          standarTestIncorrectAnswerValue: 0,
+        }}
       >
         <Row gutter={[24, 24]} style={{ width: '100%' }}>
-          <Col sm={24} lg={12}>
+          {/* <Col sm={24} lg={12}>
             <Form.Item
               name='fiftyMaxQty'
               label='Cantidad máxima de 50 %'
@@ -135,11 +145,12 @@ const GeneralDataForm = () => {
                 placeholder='Correo del administrador'
               />
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col sm={24} lg={12}>
             <Form.Item
               name='practicalTestCorrectAnswerValue'
               label='Valor de acertadas en test prácticos'
+              rules={[{ required: true, message: 'Este campo es requerido' }]}
             >
               <InputNumber
                 style={{ minWidth: 250 }}
@@ -152,6 +163,7 @@ const GeneralDataForm = () => {
             <Form.Item
               name='practicalTestIncorrectAnswerValue'
               label='Valor de falladas en test prácticos'
+              rules={[{ required: true, message: 'Este campo es requerido' }]}
             >
               <InputNumber
                 style={{ minWidth: 250 }}
@@ -164,6 +176,7 @@ const GeneralDataForm = () => {
             <Form.Item
               name='standarTestCorrectAnswerValue'
               label='Valor de acertadas en test normales'
+              rules={[{ required: true, message: 'Este campo es requerido' }]}
             >
               <InputNumber
                 style={{ minWidth: 250 }}
@@ -177,6 +190,7 @@ const GeneralDataForm = () => {
             <Form.Item
               name='standarTestIncorrectAnswerValue'
               label='Valor de falladas en test normales'
+              rules={[{ required: true, message: 'Este campo es requerido' }]}
             >
               <InputNumber
                 style={{ minWidth: 250 }}
@@ -200,6 +214,7 @@ const GeneralDataForm = () => {
             type='primary'
             htmlType='submit'
             style={{ marginRight: 15, alignSelf: 'flex-end' }}
+            disabled={!submittable}
             loading={loading}
           >
             SALVAR
