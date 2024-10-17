@@ -20,7 +20,7 @@ type Props = {
   themeId?: number;
 };
 
-const TAGS = ["Informática", "General"];
+const TAGS = ["Informática", "General", "Tercer Ejercicio"];
 
 const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const editMode = !!themeId;
