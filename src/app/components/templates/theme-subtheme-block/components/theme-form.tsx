@@ -30,6 +30,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const [categories, setCategories] = useState<ISelect[]>([]);
   const [excludedCategories, setExcludedCategories] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [tags, setTags] = useState<string[]>(TAGS);
   const { submittable, setSubmittable } = useSubmitable({ form });
 
   const fetchTheme = async () => {
@@ -61,6 +62,17 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
         (categoryTheme) => categoryTheme.attributes.category.data.id
       ),
     });
+  };
+
+  const handleCategoryChange = (values: number[]) => {
+    setExcludedCategories(values);
+    console.log('values: ', values);
+    
+    if (values.includes(1)) { // Assuming 1 is the ID for "Tramitación Procesal"
+      setTags(["Informática", "General", "Tercer Ejercicio"]);
+    } else {
+      setTags(["General", "Tercer Ejercicio"]);
+    }
   };
 
   useEffect(() => {
@@ -187,14 +199,12 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
-            onChange={(values) => {
-              setExcludedCategories(values);
-            }}
+            onChange={handleCategoryChange}
           />
         </Form.Item>
         <Form.Item label="Etiqueta" name="tag">
           <Select
-            options={TAGS.map((tag) => ({ label: tag, value: tag }))}
+            options={tags.map((tag) => ({ label: tag, value: tag }))}
             filterOption={(input, opt) => {
               return (
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
