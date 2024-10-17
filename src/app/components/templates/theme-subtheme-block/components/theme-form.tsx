@@ -66,12 +66,14 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
 
   const handleCategoryChange = (values: number[]) => {
     setExcludedCategories(values);
-    
-    if (values.includes(1)) { // Assuming 1 is the ID for "Tramitación Procesal"
-      setTags(TAGS);
-    } else {
-      setTags(TAGS.slice(-2));
-    }
+
+    const updatedTags = TAGS.filter(tag => {
+      if (tag === "Informática" && !values.includes(1)) return false;
+      if (tag === "Tercer Ejercicio" && !values.includes(3)) return false;
+      return true;
+    });
+
+    setTags(updatedTags);
   };
 
   useEffect(() => {
