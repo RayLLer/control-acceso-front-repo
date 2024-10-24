@@ -64,14 +64,14 @@ export const details_columns: ColumnsType<IRealizedTestResponse>[] = [
     title: 'Fecha de Inicio',
     dataIndex: ['attributes', 'initDate'],
     align: 'right',
-    render: (value) => moment(value).format('DD/mm/yyyy HH:mm:ss'),
+    render: (value) => moment(value).format('DD/MM/yyyy HH:mm:ss'),
   },
   {
     title: 'Fecha de Finalización',
     dataIndex: ['attributes', 'finishDate'],
     align: 'right',
     render: (value) =>
-      value ? moment(value).format('DD/mm/yyyy HH:mm:ss') : 'No finalizado',
+      value ? moment(value).format('DD/MM/yyyy HH:mm:ss') : 'No finalizado',
   },
   {
     title: 'Calificación',

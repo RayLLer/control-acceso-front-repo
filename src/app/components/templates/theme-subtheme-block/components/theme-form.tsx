@@ -20,7 +20,7 @@ type Props = {
   themeId?: number;
 };
 
-const TAGS = ["Informática", "General"];
+const TAGS = ["Informática", "General", "Tercer Ejercicio"];
 
 const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const editMode = !!themeId;
@@ -30,6 +30,7 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const [categories, setCategories] = useState<ISelect[]>([]);
   const [excludedCategories, setExcludedCategories] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [tags, setTags] = useState<string[]>(TAGS);
   const { submittable, setSubmittable } = useSubmitable({ form });
 
   const fetchTheme = async () => {
@@ -61,6 +62,18 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
         (categoryTheme) => categoryTheme.attributes.category.data.id
       ),
     });
+  };
+
+  const handleCategoryChange = (values: number[]) => {
+    setExcludedCategories(values);
+
+    const updatedTags = TAGS.filter(tag => {
+      if (tag === "Informática" && !values.includes(1)) return false;
+      if (tag === "Tercer Ejercicio" && !values.includes(3)) return false;
+      return true;
+    });
+
+    setTags(updatedTags);
   };
 
   useEffect(() => {
@@ -187,14 +200,12 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false
               );
             }}
-            onChange={(values) => {
-              setExcludedCategories(values);
-            }}
+            onChange={handleCategoryChange}
           />
         </Form.Item>
         <Form.Item label="Etiqueta" name="tag">
           <Select
-            options={TAGS.map((tag) => ({ label: tag, value: tag }))}
+            options={tags.map((tag) => ({ label: tag, value: tag }))}
             filterOption={(input, opt) => {
               return (
                 opt?.label.toLowerCase().includes(input.toLowerCase()) ?? false

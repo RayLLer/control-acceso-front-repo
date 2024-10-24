@@ -30,16 +30,16 @@ export const question_columns: ColumnsType<IQuestionResponse>[] = [
     filtrable: true,
     filterType: 'string',
   },
+  {
+    title: 'Referencia',//'Ley y Artículo',
+    dataIndex: ['attributes', 'referencia'],
+    sorter: true,
+    filtrable: true,
+    filterType: 'string',
+  },
   // {
   //   title: 'Bloque',
   //   dataIndex: ['attributes', 'block', 'data', 'attributes', 'name'],
-  //   sorter: true,
-  //   filtrable: true,
-  //   filterType: 'string',
-  // },
-  // {
-  //   title: 'Ley y Artículo',
-  //   dataIndex: ['attributes', 'referencia'],
   //   sorter: true,
   //   filtrable: true,
   //   filterType: 'string',
