@@ -64,6 +64,7 @@ export interface IRealizedTest2 {
   realized_questions: { data?: IRealizedQuestionsResponse[] };
   users_permissions_user: { data?: { id: number; attributes: IUser } };
   attempts: number;
+  themes?: string
 }
 
 export interface IRealizedTest {
