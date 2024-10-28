@@ -41,12 +41,11 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
       filtrable: true,
       filterType: "number",
       render: (value) => (
-        <Typography.Text
-          type={value <= 0.5 ? "danger" : "success"}
-        >{`${new Intl.NumberFormat("es-Es", {
-          style: "percent",
-        }).format(value)}`}</Typography.Text>
-      ),
+		<Typography.Text
+		  type={value <= 50 ? 'danger' : 'success'}>
+		  {value}%
+		</Typography.Text>
+	  ),
     },
     {
       title: "fecha del último intento",

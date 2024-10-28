@@ -74,16 +74,13 @@ export const details_columns: ColumnsType<IRealizedTestResponse>[] = [
       value ? moment(value).format('DD/MM/yyyy HH:mm:ss') : 'No finalizado',
   },
   {
-    title: 'Calificación',
-    dataIndex: ['attributes', 'evaluationPercent'],
-    align: 'right',
-    render: (value) => (
-      <Typography.Text
-        type={value <= 0.5 ? 'danger' : 'success'}
-      >{`${new Intl.NumberFormat('es-Es', {
-        style: 'percent',
-        minimumFractionDigits: 1,
-      }).format(value)}`}</Typography.Text>
-    ),
-  },
+	  title: 'Calificación',
+	  dataIndex: ['attributes', 'evaluationPercent'],
+	  align: 'right',
+	  render: (value) => (
+		<Typography.Text
+		  type={value <= 50 ? 'danger' : 'success'}>
+		  {value}%		</Typography.Text>
+	  ),
+	},
 ];
