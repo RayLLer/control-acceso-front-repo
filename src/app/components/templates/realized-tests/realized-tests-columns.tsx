@@ -13,7 +13,7 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
     },
     {
       title: "Tema",
-      dataIndex: ["test", "theme", "name"],
+      dataIndex: ["themes"],
       filtrable: true,
       filterType: "string",
     },

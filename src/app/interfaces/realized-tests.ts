@@ -4,6 +4,7 @@ import { ITestResponse } from "./test";
 export interface IRealizedTestAttemptsResponse {
   users_permissions_user: User;
   id: number;
+  themes: string;
   initDate: Date;
   finishDate: Date;
   evaluationPercent: number;
@@ -14,7 +15,7 @@ export interface IRealizedTestAttemptsResponse {
   attempts: number;
 }
 
-export interface LastTest {}
+export interface LastTest { }
 
 export interface Test {
   id: number;
@@ -63,6 +64,7 @@ export interface IRealizedTest2 {
   realized_questions: { data?: IRealizedQuestionsResponse[] };
   users_permissions_user: { data?: { id: number; attributes: IUser } };
   attempts: number;
+  themes?: string
 }
 
 export interface IRealizedTest {
