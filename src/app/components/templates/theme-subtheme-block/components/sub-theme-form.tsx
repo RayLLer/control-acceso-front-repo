@@ -36,7 +36,12 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
   };
 
   const fetchThemes = async () => {
-    const response = await themeService.getForSelect("name");
+    const response = await themeService.getForSelect("name", {
+      filters: {
+        deleted: false, // Excluir temas eliminados
+      },
+    });
+
     setThemes(() =>
       response.data.data.map((theme) => ({
         label: theme.attributes.name,
