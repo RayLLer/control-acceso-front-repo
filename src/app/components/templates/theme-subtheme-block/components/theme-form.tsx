@@ -68,8 +68,8 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
     setExcludedCategories(values);
 
     const updatedTags = TAGS.filter(tag => {
-      if (tag === TAG.INFORMATIC && !values.includes(1)) return false;
-      if (tag === TAG.THIRD_EXERCISE && !values.includes(3)) return false;
+      if (tag === TAG.INFORMATIC && !values.includes(2)) return false;
+      if (tag === TAG.THIRD_EXERCISE && !values.includes(1)) return false;
       return true;
     });
 
