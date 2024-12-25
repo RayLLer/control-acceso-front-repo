@@ -27,7 +27,7 @@ export class BaseApi<T, R> {
         fields: {
           0: labelAttr,
         },
-        _limit: 100,
+        _limit: -1,
 
         populate: undefined,
       },
