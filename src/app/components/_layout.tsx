@@ -10,9 +10,11 @@ import {
   UnorderedListOutlined,
   UserOutlined,
   SolutionOutlined,
+  BulbOutlined
 } from "@ant-design/icons";
 import {
   Button,
+  Divider,
   Card,
   Col,
   Dropdown,
@@ -121,6 +123,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             "/pages/general-config",
             validate(PermissionsEnum.GestionarConfiguracion),
             <SolutionOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            "Gestión de Tips",
+            paths.tips.root,
+            validate(PermissionsEnum.GestionarTips),
+            <BulbOutlined style={{ fontSize: FONT_SIZE }} />
           ),
         ];
   }, [loggedUser]);

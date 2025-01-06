@@ -10,12 +10,17 @@ export const paths = {
   questions: {
     root: `${ROOT}/questions`,
     create: `${ROOT}/questions/create`,
-    edit: (id: number)=> `${ROOT}/questions/edit/${id}`,
+    edit: (id: number) => `${ROOT}/questions/edit/${id}`,
   },
   tests: {
     root: `${ROOT}/tests`,
     create: `${ROOT}/tests/create`,
-    edit: (id: number)=> `${ROOT}/tests/edit/${id}`,
+    edit: (id: number) => `${ROOT}/tests/edit/${id}`,
+  },
+  tips: {
+    root: `${ROOT}/tips`,
+    create: `${ROOT}/tips/create`,
+    edit: (id: number) => `${ROOT}/tips/edit/${id}`,
   },
   error_reports: {
     root: `${ROOT}/error-reports`,
@@ -27,7 +32,7 @@ export const paths = {
   theme_subtheme_block: {
     root: `${ROOT}/theme-subtheme-block`,
     create: `${ROOT}/theme-subtheme-block/create`,
-    edit: (id: number)=> `${ROOT}/theme-subtheme-block/edit/${id}`,
+    edit: (id: number) => `${ROOT}/theme-subtheme-block/edit/${id}`,
   },
   forgot_password: `${AUTH_ROOT}/forgot-password`,
   reset_password: `${AUTH_ROOT}/reset-password`,
