@@ -8,6 +8,7 @@ import { tipService } from "@/app/services/tip.service";
 import { App, Button, Form, Input } from "antd";
 import { questionService } from "@/app/services/question.service";
 import useSubmitable from "@/app/hooks/use-submitable";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const TipForm = () => {
     const router = useRouter();
@@ -72,6 +73,15 @@ const TipForm = () => {
             requiredMark={false}
             autoComplete="off"
         >
+            <Button
+                type="link"
+                color="primary"
+                icon={<ArrowLeftOutlined />}
+                style={{ marginBottom: 10 }}
+                onClick={() => router.push(paths.tips.root)}
+            >
+                VOLVER
+            </Button>
             <Form.Item
                 label="Texto del tip"
                 name="tipText"
