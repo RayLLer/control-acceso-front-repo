@@ -22,6 +22,10 @@ export const paths = {
     create: `${ROOT}/tips/create`,
     edit: (id: number) => `${ROOT}/tips/edit/${id}`,
   },
+  final_phrase: {
+    root: `${ROOT}/final-phrases`,
+    edit: (id: number) => `${ROOT}/final-phrases/edit/${id}`,
+  },
   error_reports: {
     root: `${ROOT}/error-reports`,
   },

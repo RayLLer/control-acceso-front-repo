@@ -7,7 +7,8 @@ export enum PermissionsEnum {
   VerReporteDeQuejasYErrores = 'Ver Reporte de Quejas y Errores',
   GestionarTest = 'Gestionar Test',
   GestionarConfiguracion = 'Gestionar Configuración',
-  GestionarTips = 'Gestionar Tips'
+  GestionarTips = 'Gestionar Tips',
+  EditarFrase = 'Editar Frase Final',
 }
 
 interface Permission {

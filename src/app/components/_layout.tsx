@@ -10,7 +10,8 @@ import {
   UnorderedListOutlined,
   UserOutlined,
   SolutionOutlined,
-  BulbOutlined
+  BulbOutlined,
+  EditOutlined
 } from "@ant-design/icons";
 import {
   Button,
@@ -129,6 +130,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             paths.tips.root,
             validate(PermissionsEnum.GestionarTips),
             <BulbOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            "Edición de Frase Final",
+            paths.final_phrase.root,
+            validate(PermissionsEnum.EditarFrase),
+            <EditOutlined style={{ fontSize: FONT_SIZE }} />
           ),
         ];
   }, [loggedUser]);

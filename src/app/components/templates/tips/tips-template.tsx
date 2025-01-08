@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 
 const TipTemplate = () => {
   const router = useRouter();
-  const [showUploadModal, setShowUploadModal] = useState(false)
 
   return (
     <>
