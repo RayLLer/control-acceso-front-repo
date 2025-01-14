@@ -11,21 +11,21 @@ const ErrorReportsTemplate = () => {
       key: 'general',
       label: 'Todos',
       children: (
-        <ErrorReportsGeneral />
+        <ErrorReportsGeneral activeKey={selectedIndex}/>
       )
     },
     {
       key: 'unanswered',
       label: 'No Respondidos',
       children: (
-        <ErrorReportsUnanswered />
+        <ErrorReportsUnanswered activeKey={selectedIndex}/>
       )
     },
     {
       key: 'resolved',
       label: 'Resueltos',
       children: (
-        <ErrorReportsResolved />
+        <ErrorReportsResolved activeKey={selectedIndex}/>
       )
     }
   ]

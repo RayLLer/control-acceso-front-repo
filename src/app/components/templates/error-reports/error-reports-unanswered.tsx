@@ -1,5 +1,5 @@
 'use client'
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { EyeOutlined, EditOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import MagicTable from '../../table-v2/table-custom';
@@ -12,7 +12,7 @@ import { error_report_columns } from './error-report-columns';
 import { ERROR_REPORT_STATES } from '@/utils/constants/constants';
 import ErrorReportForm from './error-reports-form';
 
-const ErrorReportsUnanswered = () => {
+const ErrorReportsUnanswered = ({ activeKey }: { activeKey: string }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedErrorId, setSelectedErrorId] = useState<number | undefined>();
   const [refetch, setRefetch] = useState(false);
@@ -23,7 +23,12 @@ const ErrorReportsUnanswered = () => {
     setSelectedErrorId(undefined);
   };
 
-  const router = useRouter();
+  useEffect(() => {
+    if (activeKey === "unanswered") {
+      setRefetch((prev) => !prev);
+    }
+  }, [activeKey]);
+
   return (
     <>
       <MagicTable<IErrorReportResponse, IErrorReport>
@@ -47,27 +52,12 @@ const ErrorReportsUnanswered = () => {
         setRefetch={setRefetch}
         refetch={refetch}
         moreActions={[
-          /*{
-            icon: <EditOutlined />,
-            onClick: (record) => {
-              handleShowModal();
-              setSelectedErrorId(record?.id);
-            },
-            tooltip: "Editar",
-          },*/
           {
             icon: <EyeOutlined />,
             onClick: (record) => {
               handleShowModal();
               setSelectedErrorId(record?.id);
             },
-            /*onClick: (record) => {
-              router.push(
-                paths.error_reports.details(
-                  record!.id,
-                )
-              );
-            },*/
             tooltip: "Ver detalles",
           },
         ]}

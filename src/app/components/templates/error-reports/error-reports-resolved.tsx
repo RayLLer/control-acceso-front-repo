@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import MagicTable from '../../table-v2/table-custom';
@@ -12,7 +12,7 @@ import { error_report_columns } from './error-report-columns';
 import { ERROR_REPORT_STATES } from '@/utils/constants/constants';
 import ErrorReportForm from './error-reports-form';
 
-const ErrorReportsResolved = () => {
+const ErrorReportsResolved = ({ activeKey }: { activeKey: string }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedErrorId, setSelectedErrorId] = useState<number | undefined>();
   const [refetch, setRefetch] = useState(false);
@@ -23,7 +23,12 @@ const ErrorReportsResolved = () => {
     setSelectedErrorId(undefined);
   };
 
-  const router = useRouter();
+  useEffect(() => {
+    if (activeKey === "resolved") {
+      setRefetch((prev) => !prev);
+    }
+  }, [activeKey]);
+
   return (
     <>
     <MagicTable<IErrorReportResponse, IErrorReport>
