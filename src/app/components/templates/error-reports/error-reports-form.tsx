@@ -19,7 +19,7 @@ const ErrorReportForm: FC<Props> = ({ open, errorReportId, onClose, onSaved }) =
   const [form] = Form.useForm();
   const { notification } = App.useApp();
   const [loading, setLoading] = useState(false);
-  const [errorReport, setErrorReport] = useState<IErrorReportResponse>();
+  const [errorReport, setErrorReport] = useState<IErrorReportResponse | null>(null);
   const { setSubmittable } = useSubmitable({ form });
 
   // Función para cargar los datos del reporte
@@ -152,13 +152,32 @@ const ErrorReportForm: FC<Props> = ({ open, errorReportId, onClose, onSaved }) =
         <Form.Item
           label="Responder"
           name="answer"
-          rules={[{ required: true, message: "Debes ingresar una respuesta." }]}
+          rules={[{
+            required:
+              errorReport?.attributes.state !== ERROR_REPORT_STATES.RESOLVED &&
+              errorReport !== null, // Validar solo si el reporte está cargado y no es RESOLVED
+            message: "Debes ingresar una respuesta.",
+          },]}
         >
-          <Input.TextArea rows={4} placeholder="Escribe tu respuesta aquí..." />
+          <Input.TextArea 
+            rows={4} 
+            placeholder="Escribe tu respuesta aquí..."
+            disabled={
+              !errorReport || errorReport.attributes.state === ERROR_REPORT_STATES.RESOLVED // Deshabilitar si no hay datos o si el estado es RESOLVED
+            }
+          />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading} style={{ float: "right" }}>
+          <Button 
+            type="primary" 
+            htmlType="submit" 
+            loading={loading} 
+            style={{ float: "right" }}
+            disabled={
+              !errorReport || errorReport.attributes.state === ERROR_REPORT_STATES.RESOLVED // Deshabilitar si no hay datos o si el estado es RESOLVED
+            }
+          >
             Enviar y Resolver
           </Button>
         </Form.Item>

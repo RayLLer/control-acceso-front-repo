@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, {useState} from 'react';
 import { EyeOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import MagicTable from '../../table-v2/table-custom';
@@ -9,10 +9,23 @@ import {
 } from '@/app/interfaces/error-reports';
 import { paths } from "@/app/routes/paths";
 import { error_report_columns } from './error-report-columns';
+import { ERROR_REPORT_STATES } from '@/utils/constants/constants';
+import ErrorReportForm from './error-reports-form';
 
 const ErrorReportsGeneral = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedErrorId, setSelectedErrorId] = useState<number | undefined>();
+  const [refetch, setRefetch] = useState(false);
+    
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedErrorId(undefined);
+  };
+
   const router = useRouter();
   return (
+    <>
     <MagicTable<IErrorReportResponse, IErrorReport>
       columns={error_report_columns}
       url='error-reports'
@@ -30,21 +43,32 @@ const ErrorReportsGeneral = () => {
           }
         },
       }}
+      setRefetch={setRefetch}
+      refetch={refetch}
       moreActions={[
         {
           icon: <EyeOutlined />,
           onClick: (record) => {
-            router.push(
-              paths.error_reports.details(
-                record!.id,
-              )
-            );
-          },
+              handleShowModal();
+              setSelectedErrorId(record?.id);
+            },
           tooltip: "Ver detalles",
         },
       ]}
 
     />
+    {showModal && (
+        <ErrorReportForm
+          errorReportId={selectedErrorId}
+          open={showModal}
+          onClose={handleCloseModal}
+          onSaved={() => {
+            handleCloseModal();
+            setRefetch(true);
+          }}
+        />
+      )}
+    </>
   );
 };
 

@@ -7,14 +7,14 @@ import {
   createEntityAdapter,
   createSlice,
 } from "@reduxjs/toolkit";
-import { IUser } from "./users.interface";
+import { IUser, IUserPlane } from "./users.interface";
 import { UsersService } from "./users.service";
 import { RolesServices } from "../roles/roles.service";
 import showNotification from "@/utils/message";
 import { paths } from "@/app/routes/paths";
 import { PermissionsEnum } from "@/utils/permissions";
 
-const usersAdapter = createEntityAdapter<IUser>({
+const usersAdapter = createEntityAdapter<IUserPlane>({
   sortComparer: (a, b) => (a.createdAt < b.createdAt ? 1 : -1),
 });
 const usersService = new UsersService();
@@ -99,7 +99,7 @@ export const getLoggedUser = createAsyncThunk(
 
 export const postUsers = createAsyncThunk(
   "user/postUsers",
-  async (payload: IUser, { rejectWithValue }) => {
+  async (payload: IUserPlane, { rejectWithValue }) => {
     try {
       const response = await usersService.postUser(payload);
 
@@ -124,7 +124,7 @@ export const postUsers = createAsyncThunk(
 
 export const patchUsers = createAsyncThunk(
   "user/patchUsers",
-  async (payload: IUser, { rejectWithValue }) => {
+  async (payload: IUserPlane, { rejectWithValue }) => {
     try {
       let response = await usersService.putUser(payload.id, payload);
       return { ...response.data, id: payload.id };
@@ -152,7 +152,7 @@ const usersSlice = createSlice({
     error: undefined as string | undefined,
     loading: false,
     loadingLoggedUser: false,
-    loggedUser: {} as IUser,
+    loggedUser: {} as IUserPlane,
   }),
   reducers: {
     addUser: usersAdapter.addOne,
@@ -164,7 +164,7 @@ const usersSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(getUsers.fulfilled, (state, action) => {
-      usersAdapter.setAll(state, action.payload as IUser[]);
+      usersAdapter.setAll(state, action.payload as IUserPlane[]);
       state.loading = false;
       state.error = undefined;
     });
@@ -178,14 +178,15 @@ const usersSlice = createSlice({
       state.loadingLoggedUser = true;
     });
     builder.addCase(getLoggedUser.fulfilled, (state, action) => {
-      state.loggedUser = action.payload;
+      state.loggedUser = action.payload as IUserPlane;
       state.loadingLoggedUser = false;
       state.error = undefined;
     });
+
     builder.addCase(getLoggedUser.rejected, (state, action) => {
       state.error = action.error.message || "";
       state.loadingLoggedUser = false;
-      state.loggedUser = {} as IUser;
+      state.loggedUser = {} as IUserPlane;
     });
 
     /** POST */
@@ -193,7 +194,7 @@ const usersSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(postUsers.fulfilled, (state, action) => {
-      usersAdapter.addOne(state, action.payload);
+      usersAdapter.addOne(state, action.payload as IUserPlane);
       state.loading = false;
       state.error = undefined;
     });

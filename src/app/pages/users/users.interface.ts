@@ -21,3 +21,7 @@ export interface IUserResponse {
   id: number;
   attributes: IUser;
 }
+
+export interface IUserPlane extends IUser {
+  id: number;
+}

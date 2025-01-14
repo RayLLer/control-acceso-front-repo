@@ -47,23 +47,27 @@ const ErrorReportsUnanswered = () => {
         setRefetch={setRefetch}
         refetch={refetch}
         moreActions={[
-          {
+          /*{
             icon: <EditOutlined />,
             onClick: (record) => {
               handleShowModal();
               setSelectedErrorId(record?.id);
             },
             tooltip: "Editar",
-          },
+          },*/
           {
             icon: <EyeOutlined />,
             onClick: (record) => {
+              handleShowModal();
+              setSelectedErrorId(record?.id);
+            },
+            /*onClick: (record) => {
               router.push(
                 paths.error_reports.details(
                   record!.id,
                 )
               );
-            },
+            },*/
             tooltip: "Ver detalles",
           },
         ]}

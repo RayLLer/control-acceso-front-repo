@@ -74,7 +74,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { validate } = useValidatePermissions();
 
   const items: MenuItem[] = useMemo(() => {
-    return !loggedUser.id
+    return !loggedUser.username
       ? []
       : [
           getItem(
