@@ -18,3 +18,9 @@ export const BASE_FILTER = {
 };
 
 export const dateFormat = 'DD/MM/YYYY';
+
+export const ERROR_REPORT_STATES = {
+  SUBMITTED: 'SUBMITTED',
+  PENDING: 'No Respondido',
+  RESOLVED: 'Resuelto',
+}

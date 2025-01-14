@@ -28,6 +28,7 @@ export const paths = {
   },
   error_reports: {
     root: `${ROOT}/error-reports`,
+    details: (id: number) => `${ROOT}/error-reports/details/${id}`
   },
   realized_tests: {
     root: `${ROOT}/realized-tests`,

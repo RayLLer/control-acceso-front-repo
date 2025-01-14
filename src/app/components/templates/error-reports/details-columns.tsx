@@ -36,7 +36,7 @@ export const error_report_columns: ColumnsType<IErrorReportResponse>[] = [
     filtrable: true,
     filterType: 'string',
   },
-  /*{
+  {
     title: 'Fecha',
     dataIndex: ['attributes', 'date'],
     filtrable: true,
@@ -56,7 +56,7 @@ export const error_report_columns: ColumnsType<IErrorReportResponse>[] = [
     ],
     filtrable: true,
     filterType: 'string',
-  },*/
+  },
   {
     title: 'Estado',
     dataIndex: ['attributes', 'state'],
