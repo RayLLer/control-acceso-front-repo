@@ -8,7 +8,6 @@ import { themeService } from "@/app/services/themes.service";
 import { App, Form, Input, Modal, Select } from "antd";
 import { isAxiosError } from "axios";
 import { FC, useEffect, useState } from "react";
-import { CategoryThemes } from "@/app/interfaces/theme";
 
 type Props = {
   open: boolean;
@@ -37,28 +36,15 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
   };
 
   const fetchThemes = async () => {
-    const response = await themeService.get({
-      fields: ["name"],
-      filters: {
-        deleted: false, // Excluir temas eliminados
-      },
-      populate: { category_themes : {
-        populate: { category: true },
-      } },
-    });
-
-    const categories = (array: CategoryThemes[]): string => {
-      return array
-        .map(item => item.attributes.category.data.attributes.name)
-        .join(", ");
+     try {
+      const formattedThemes = await themeService.fetchThemesWithCategories();
+      setThemes(() => formattedThemes);
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: "No se pudieron cargar los temas.",
+      });
     }
-    
-    setThemes(() =>
-      response.data.data.map((theme) => ({
-        label: `${theme.attributes.name}: ${categories(theme.attributes.category_themes.data ?? [])}`,
-        value: theme.id,
-      }))
-    );
   };
 
   const updateFields = (subTheme: ISubThemeResponse) => {
