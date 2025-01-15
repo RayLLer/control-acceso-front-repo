@@ -87,55 +87,55 @@ const GeneralDataForm = () => {
         }}
       >
         <Row gutter={[24, 24]} style={{ width: '100%' }}>
-          {/* <Col sm={24} lg={12}>
+          <Col sm={24} lg={12}>
             <Form.Item
               name='fiftyMaxQty'
-              label='Cantidad máxima de 50 %'
+              label='Cantidad máximo uso de la ayuda 50/50'
             >
               <InputNumber
                 style={{ minWidth: 250 }}
                 min={0}
-                placeholder='Cantidad máxima de 50 %'
+                placeholder='Cantidad máximo uso de la ayuda 50/50'
               />
             </Form.Item>
           </Col>
           <Col sm={24} lg={12}>
             <Form.Item
               name='clueMaxQty'
-              label='Cantidad máxima de pistas'
+              label='Cantidad máximo uso de la ayuda Pista'
             >
               <InputNumber
                 style={{ minWidth: 250 }}
                 min={0}
-                placeholder='Cantidad máxima de pistas'
+                placeholder='Cantidad máximo uso de la ayuda Pista'
               />
             </Form.Item>
           </Col>
           <Col sm={24} lg={12}>
             <Form.Item
               name='ruleOutMaxQty'
-              label='Cantidad máxima de exclusiones'
+              label='Cantidad máximo uso de la ayuda El arte del descarte'
             >
               <InputNumber
                 style={{ minWidth: 250 }}
                 min={0}
-                placeholder='Cantidad máxima de exclusiones'
+                placeholder='Cantidad máximo uso de la ayuda El arte del descarte'
               />
             </Form.Item>
           </Col>
           <Col sm={24} lg={12}>
             <Form.Item
               name='twoAnswersQty'
-              label='Cantidad de preguntas con dos respuestas'
+              label='Cantidad máximo uso de la ayuda Me la juego'
             >
               <InputNumber
                 style={{ minWidth: 250 }}
                 min={0}
-                placeholder='Cantidad de preguntas con dos respuestas'
+                placeholder='Cantidad máximo uso de la ayuda Me la juego'
               />
             </Form.Item>
           </Col>
-          <Col sm={24} lg={12}>
+          {/*<Col sm={24} lg={12}>
             <Form.Item
               name='adminEmail'
               label='Correo del administrador'
@@ -145,7 +145,7 @@ const GeneralDataForm = () => {
                 placeholder='Correo del administrador'
               />
             </Form.Item>
-          </Col> */}
+          </Col>*/}
           <Col sm={24} lg={12}>
             <Form.Item
               name='practicalTestCorrectAnswerValue'
