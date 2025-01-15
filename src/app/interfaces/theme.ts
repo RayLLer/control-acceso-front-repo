@@ -73,7 +73,7 @@ interface TestAttributes {
   publishedAt: string;
 }
 
-interface CategoryThemes {
+export interface CategoryThemes {
   id: number;
   attributes: {
     category: { data: ICategoryResponse };
