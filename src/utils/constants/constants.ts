@@ -24,3 +24,14 @@ export const ERROR_REPORT_STATES = {
   PENDING: 'No Respondido',
   RESOLVED: 'Resuelto',
 }
+
+export const TEST_TYPES = {
+  OFICIAL: 'Oficial',
+  PRACTICE: 'Práctico',
+  CHALLENGE: 'Reto'
+}
+
+export const SUB_TEST_TYPES = {
+  GENERAL: 'General',
+  PRACTICE: 'Práctico'
+}
