@@ -50,6 +50,7 @@ export const realized_tests_columns: ColumnsType<IRealizedTestAttemptsResponse>[
     {
       title: "fecha del último intento",
       dataIndex: ["finishDate"],
+      sorter: true,
       filtrable: true,
       filterType: "date",
       render: (value) =>
