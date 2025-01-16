@@ -28,7 +28,7 @@ class ThemeService extends BaseApi<IThemeResponse, ITheme> {
 
     // Formatear el resultado para Select
     return response.data.data.map((theme) => ({
-      label: `${theme.attributes.name}: ${categories(theme.attributes.category_themes.data ?? [])}`,
+      label: `${theme.attributes.name}, Categoría(s): ${categories(theme.attributes.category_themes.data ?? [])}`,
       value: theme.id,
     }));
   }
