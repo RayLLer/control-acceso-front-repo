@@ -6,7 +6,7 @@ import { paths } from "@/app/routes/paths";
 import { testService } from "@/app/services/test.service";
 import { convertForSelect } from "@/utils/select-utils";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { App, Button, DatePicker, Form, Input, Select } from "antd";
+import { App, Button, DatePicker, Form, Input, Select, Switch } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useHierarchy } from "../questions/use-hierarchy";
@@ -104,6 +104,8 @@ const TestForm = () => {
     setTestQuestionLength(
       response.data.data.attributes.test_questions.data.length
     );
+    console.log("tests::", response.data.data);
+    
     updateFields(response.data.data);
   };
 
@@ -381,6 +383,42 @@ const TestForm = () => {
       >
         <MyDatePicker style={{ width: "100%" }} format={dateFormat} />
       </Form.Item>
+      {testType === TEST_TYPES.CHALLENGE && (
+        <Form.Item
+          label="Gratis o pago"
+          name="challengeFree"
+          rules={[
+            {
+              required: true,
+              message: "Es obligatorio definir si es gratis o de pago",
+            },
+          ]}
+        >
+          <Switch
+            checkedChildren="Pago"
+            unCheckedChildren="Gratis"
+            defaultChecked={false}
+          />
+        </Form.Item>
+      )}
+      {testType === TEST_TYPES.PRACTICE && (
+        <Form.Item
+          label="Básico o Pro"
+          name="practicBasic"
+          rules={[
+            {
+              required: true,
+              message: "Es obligatorio definir si el plan es básico o de pago",
+            },
+          ]}
+        >
+          <Switch
+            checkedChildren="Pro"
+            unCheckedChildren="Básico"
+            defaultChecked={false}
+          />
+        </Form.Item>
+      )}
       <Form.Item>
         <Button
           loading={loading}
