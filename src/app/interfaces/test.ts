@@ -24,12 +24,14 @@ export interface ITest {
   category: Category;
   theme: Category;
   sub_theme: Category;
-  test: {data?: ITestResponse};
+  test: { data?: ITestResponse };
   test_questions: TestQuestions;
   realized_tests: RealizedTests;
   users_permissions_user: UsersPermissionsUser;
   initDate: Date
   spireDate: Date
+  challengeFree: boolean
+  practicBasic: boolean
 }
 
 export interface Category {

@@ -1,3 +1,5 @@
+import { IThemeResponse } from "./theme";
+
 export interface IQuestionResponse {
   id: number;
   attributes: IQuestion;
@@ -13,15 +15,15 @@ export interface IQuestion {
   justificationText: string;
   referencia: string;
   clueText: string;
-  category: {data: ICategoryResponse};
-  theme: {data: IThemeResponse}; //TODO: Change to theme interface
-  sub_theme: {data: ISubThemeResponse}; //TODO: Change to sub_theme interface
+  category: { data: ICategoryResponse };
+  theme: { data: IThemeResponse }; //TODO: Change to theme interface
+  sub_theme: { data: ISubThemeResponse }; //TODO: Change to sub_theme interface
   deleted: boolean;
   test_questions: any; //TODO: Change to test_question interface
   realized_questions: any; //TODO: Change to test_question interface
   error_reports: any; //TODO: Change to test_question interface
   retired_questions: any; //TODO: Change to test_question interface
-  block: {data: IBlockResponse}; //TODO: Change to block interface
+  block: { data: IBlockResponse }; //TODO: Change to block interface
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date;
@@ -60,16 +62,6 @@ export interface ICategory {
   name: string
 }
 
-export interface IThemeResponse {
-  id: number;
-  attributes: ITheme;
-}
-
-export interface ITheme {
-  name: string;
-  deleted: boolean;
-}
-
 export interface ISubThemeResponse {
   id: number;
   attributes: ISubTheme;
@@ -89,7 +81,7 @@ export interface IBlockResponse {
 
 export interface IBlock {
   name: string;
-  sub_theme: {data: ISubThemeResponse};
+  sub_theme: { data: ISubThemeResponse };
   deleted: boolean;
 }
 

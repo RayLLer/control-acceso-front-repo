@@ -42,19 +42,22 @@ const BlockForm: FC<Props> = ({ open, blockId, onClose, onSaved }) => {
   };
 
   const fetchSubThemes = async () => {
-    const response = await subThemeService.getForSelect("name");
-    setSubThemes(() =>
-      response.data.data.map((theme) => ({
-        label: theme.attributes.name,
-        value: theme.id,
-      }))
-    );
+    try {
+      const formattedSubThemes = await subThemeService.fetchSubThemesWithThemesAndCategories();
+      setSubThemes(() => formattedSubThemes);
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: "No se pudieron cargar los temas.",
+      });
+    }
+    
   };
 
-  const updateFields = (subTheme: IBlockResponse) => {
+  const updateFields = (block: IBlockResponse) => {
     form.setFieldsValue({
-      name: subTheme.attributes.name,
-      sub_theme: subTheme.attributes.sub_theme.data?.id,
+      name: block.attributes.name,
+      sub_theme: block.attributes.sub_theme.data?.id,
     });
   };
 

@@ -11,7 +11,7 @@ import AddQuestionModal from './add-question-modal';
 import { test_columns } from './test-columns';
 import { nested_columns } from './test-nested-columns';
 import { testQuestionService } from '@/app/services/test-question';
-import { CHALLENGE, OFICIAL } from './test-form';
+import { TEST_TYPES } from '@/utils/constants/constants';
 
 const TestTemplate = () => {
   const router = useRouter();
@@ -88,7 +88,7 @@ const TestTemplate = () => {
           filters: {
             // $ne: 'Personalizado'
             $and: [
-              {$or: [{ testType: OFICIAL }, { testType: CHALLENGE }]},
+              {$or: [{ testType: TEST_TYPES.OFICIAL }, { testType: TEST_TYPES.CHALLENGE }]},
               {...BASE_FILTER},
 
             ]

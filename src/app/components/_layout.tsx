@@ -10,9 +10,12 @@ import {
   UnorderedListOutlined,
   UserOutlined,
   SolutionOutlined,
+  BulbOutlined,
+  EditOutlined
 } from "@ant-design/icons";
 import {
   Button,
+  Divider,
   Card,
   Col,
   Dropdown,
@@ -71,7 +74,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { validate } = useValidatePermissions();
 
   const items: MenuItem[] = useMemo(() => {
-    return !loggedUser.id
+    return !loggedUser.username
       ? []
       : [
           getItem(
@@ -121,6 +124,18 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             "/pages/general-config",
             validate(PermissionsEnum.GestionarConfiguracion),
             <SolutionOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            "Gestión de Tips",
+            paths.tips.root,
+            validate(PermissionsEnum.GestionarTips),
+            <BulbOutlined style={{ fontSize: FONT_SIZE }} />
+          ),
+          getItem(
+            "Edición de Frase Final",
+            paths.final_phrase.root,
+            validate(PermissionsEnum.EditarFrase),
+            <EditOutlined style={{ fontSize: FONT_SIZE }} />
           ),
         ];
   }, [loggedUser]);

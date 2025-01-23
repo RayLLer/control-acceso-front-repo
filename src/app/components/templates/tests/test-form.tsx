@@ -6,7 +6,7 @@ import { paths } from "@/app/routes/paths";
 import { testService } from "@/app/services/test.service";
 import { convertForSelect } from "@/utils/select-utils";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { App, Button, DatePicker, Form, Input, Select } from "antd";
+import { App, Button, DatePicker, Form, Input, Select, Switch } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useHierarchy } from "../questions/use-hierarchy";
@@ -15,18 +15,18 @@ import { BASE_FILTER, dateFormat } from "@/utils/constants/constants";
 import useSubmitable from "@/app/hooks/use-submitable";
 import { changeUndefinedToNull } from "@/utils/utils";
 import MyDatePicker from "./MyDatePicker";
-
-export const OFICIAL = "Oficial";
-export const CHALLENGE = "Reto";
+import { TEST_TYPES } from "@/utils/constants/constants";
+import { SUB_TEST_TYPES } from "@/utils/constants/constants";
 
 const testTypeOpt = [
-  { label: "Reto", value: CHALLENGE },
-  { label: "Oficial", value: OFICIAL },
+  { label: TEST_TYPES.CHALLENGE, value: TEST_TYPES.CHALLENGE },
+  { label: TEST_TYPES.OFICIAL, value: TEST_TYPES.OFICIAL },
+  { label: TEST_TYPES.PRACTICE, value: TEST_TYPES.PRACTICE },
 ];
 
 const suTestTypeOpt = [
-  { label: "General", value: "General" },
-  { label: "Práctico", value: "Práctico" },
+  { label: SUB_TEST_TYPES.GENERAL, value: SUB_TEST_TYPES.GENERAL },
+  { label: SUB_TEST_TYPES.PRACTICE, value: SUB_TEST_TYPES.PRACTICE },
 ];
 
 const TestForm = () => {
@@ -88,7 +88,7 @@ const TestForm = () => {
             year: { $eq: form.getFieldValue("year") },
           },
           {
-            testType: { $eq: OFICIAL },
+            testType: { $eq: TEST_TYPES.OFICIAL },
           },
           { ...BASE_FILTER },
         ],
@@ -104,6 +104,8 @@ const TestForm = () => {
     setTestQuestionLength(
       response.data.data.attributes.test_questions.data.length
     );
+    console.log("tests::", response.data.data);
+    
     updateFields(response.data.data);
   };
 
@@ -112,7 +114,7 @@ const TestForm = () => {
   }, [id]);
 
   useEffect(() => {
-    if (testType === OFICIAL && subTestType && year) {
+    if (testType === TEST_TYPES.OFICIAL && subTestType && year) {
       fetchAsociatedTest();
     }
   }, [testType, subTestType, year]);
@@ -149,7 +151,7 @@ const TestForm = () => {
 
   const renderLinkedTest = () => {
     // Render linked test
-    if (testType !== OFICIAL || !suTestTypeOpt || !year) return null;
+    if (testType !== TEST_TYPES.OFICIAL || !suTestTypeOpt || !year) return null;
 
     return (
       <Form.Item label="Test vinculado" name="test">
@@ -219,20 +221,20 @@ const TestForm = () => {
           allowClear
           onChange={(value) => {
             form.setFieldsValue({
-              year: value === OFICIAL ? new Date().getFullYear() : undefined,
-              suTestType: value === OFICIAL ? "General" : undefined,
+              year: value === TEST_TYPES.OFICIAL ? new Date().getFullYear() : undefined,
+              suTestType: value === TEST_TYPES.OFICIAL ? "General" : undefined,
             });
           }}
         />
       </Form.Item>
 
-      {testType === OFICIAL && (
+      {testType === TEST_TYPES.OFICIAL && (
         <Form.Item
           label="Subtipo de Test"
           name="suTestType"
           rules={[
             {
-              required: testType === OFICIAL,
+              required: testType === TEST_TYPES.OFICIAL,
               message: "Subtipo de test es obligatorio.",
             },
           ]}
@@ -249,7 +251,7 @@ const TestForm = () => {
         name="theme"
         label="Tema"
         rules={
-          testType === OFICIAL && subTestType === "Práctico"
+          (testType === TEST_TYPES.OFICIAL && subTestType === "Práctico") || (testType === TEST_TYPES.PRACTICE)
             ? [{ required: true, message: "El tema es obligatorio" }]
             : []
         }
@@ -279,7 +281,7 @@ const TestForm = () => {
         name="sub_theme"
         label="SubTema"
         rules={
-          testType === OFICIAL && subTestType === "Práctico"
+          (testType === TEST_TYPES.OFICIAL && subTestType === "Práctico") || (testType === TEST_TYPES.PRACTICE)
             ? [{ required: true, message: "El subtema es obligatorio" }]
             : []
         }
@@ -287,13 +289,13 @@ const TestForm = () => {
         <Select options={subThemes} loading={loadingSubThemes} allowClear />
       </Form.Item>
 
-      {testType === OFICIAL && (
+      {testType === TEST_TYPES.OFICIAL && (
         <Form.Item
           label="Año"
           name="year"
           rules={[
             {
-              required: testType === OFICIAL,
+              required: testType === TEST_TYPES.OFICIAL,
               message: "El año es obligatorio",
             },
           ]}
@@ -312,7 +314,7 @@ const TestForm = () => {
 
       {renderLinkedTest()}
 
-      {subTestType === "Práctico" && (
+      {(subTestType === SUB_TEST_TYPES.PRACTICE || testType === TEST_TYPES.PRACTICE) && (
         <Form.Item
           label="Descripción del caso práctico"
           name="practicCaseText"
@@ -381,6 +383,42 @@ const TestForm = () => {
       >
         <MyDatePicker style={{ width: "100%" }} format={dateFormat} />
       </Form.Item>
+      {testType === TEST_TYPES.CHALLENGE && (
+        <Form.Item
+          label="Gratis o pago"
+          name="challengeFree"
+          rules={[
+            {
+              required: true,
+              message: "Es obligatorio definir si es gratis o de pago",
+            },
+          ]}
+        >
+          <Switch
+            checkedChildren="Pago"
+            unCheckedChildren="Gratis"
+            defaultChecked={false}
+          />
+        </Form.Item>
+      )}
+      {testType === TEST_TYPES.PRACTICE && (
+        <Form.Item
+          label="Básico o Pro"
+          name="practicBasic"
+          rules={[
+            {
+              required: true,
+              message: "Es obligatorio definir si el plan es básico o de pago",
+            },
+          ]}
+        >
+          <Switch
+            checkedChildren="Pro"
+            unCheckedChildren="Básico"
+            defaultChecked={false}
+          />
+        </Form.Item>
+      )}
       <Form.Item>
         <Button
           loading={loading}

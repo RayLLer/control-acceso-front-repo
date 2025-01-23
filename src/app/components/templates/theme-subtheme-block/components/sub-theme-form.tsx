@@ -36,13 +36,15 @@ const SubThemeForm: FC<Props> = ({ open, subThemeId, onClose, onSaved }) => {
   };
 
   const fetchThemes = async () => {
-    const response = await themeService.getForSelect("name");
-    setThemes(() =>
-      response.data.data.map((theme) => ({
-        label: theme.attributes.name,
-        value: theme.id,
-      }))
-    );
+     try {
+      const formattedThemes = await themeService.fetchThemesWithCategories();
+      setThemes(() => formattedThemes);
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: "No se pudieron cargar los temas.",
+      });
+    }
   };
 
   const updateFields = (subTheme: ISubThemeResponse) => {

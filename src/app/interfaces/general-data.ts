@@ -1,8 +1,8 @@
 export interface IGeneralConfig {
-    // fiftyMaxQty: number;
-    // clueMaxQty: number;
-    // ruleOutMaxQty: number;
-    // twoAnswersQty: number;
+    fiftyMaxQty: number;
+    clueMaxQty: number;
+    ruleOutMaxQty: number;
+    twoAnswersQty: number;
     // adminEmail: string;
     practicalTestCorrectAnswerValue: number;
     practicalTestIncorrectAnswerValue: number;

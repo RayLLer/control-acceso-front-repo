@@ -44,6 +44,7 @@ export const useHierarchy = (
           category_themes: {
             category: { id: { $eq: category } },
           },
+          deleted: false, // Excluir temas eliminados
           ...BASE_FILTER
         },
       });

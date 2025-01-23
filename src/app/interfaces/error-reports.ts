@@ -1,4 +1,4 @@
-import { IUser } from '../pages/users/users.interface';
+import { IUserResponse } from '../pages/users/users.interface';
 import { IQuestionResponse } from './question';
 
 export interface IErrorReportResponse {
@@ -7,12 +7,13 @@ export interface IErrorReportResponse {
 }
 
 export interface IErrorReport {
+  answer: string;
   date: Date;
+  question: { data?: IQuestionResponse };
   selectedCause: string;
+  state: string;
   textError: string;
   createdAt: Date;
   updatedAt: Date;
-  publishedAt: Date;
-  question: {data?: IQuestionResponse};
-  users_permissions_user: IUser;
+  users_permissions_user: { data?: IUserResponse };
 }

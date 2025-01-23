@@ -2,7 +2,7 @@
 "use client";
 import { ISelect } from "@/app/interfaces/basics";
 import { ICategoryResponse } from "@/app/interfaces/question";
-import { ITheme, IThemeResponse } from "@/app/interfaces/theme";
+import { ITheme, IThemeResponse, TAG } from "@/app/interfaces/theme";
 import { categoryThemeService } from "@/app/services/category-theme.service";
 import { categoryService } from "@/app/services/category.service";
 import { themeService } from "@/app/services/themes.service";
@@ -20,7 +20,7 @@ type Props = {
   themeId?: number;
 };
 
-const TAGS = ["Informática", "General", "Tercer Ejercicio"];
+const TAGS = [TAG.INFORMATIC, TAG.GENERAL, TAG.THIRD_EXERCISE];
 
 const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
   const editMode = !!themeId;
@@ -68,8 +68,8 @@ const ThemeForm: FC<Props> = ({ open, themeId, onClose, onSaved }) => {
     setExcludedCategories(values);
 
     const updatedTags = TAGS.filter(tag => {
-      if (tag === "Informática" && !values.includes(1)) return false;
-      if (tag === "Tercer Ejercicio" && !values.includes(3)) return false;
+      if (tag === TAG.INFORMATIC && !values.includes(2)) return false;
+      if (tag === TAG.THIRD_EXERCISE && !values.includes(1)) return false;
       return true;
     });
 

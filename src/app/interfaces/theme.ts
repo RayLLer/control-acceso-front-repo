@@ -2,6 +2,8 @@ import { ICategoryResponse } from './question';
 
 export enum TAG {
   INFORMATIC = 'Informática',
+  GENERAL = 'General',
+  THIRD_EXERCISE = 'Tercer Ejercicio'
 }
 
 export interface IThemeResponse {
@@ -16,8 +18,8 @@ export interface ITheme {
   updatedAt: string;
   questions: Questions;
   tests: Tests;
-  category_themes: {data?: CategoryThemes[]};
-  sub_themes: {data?: SubTheme[]};
+  category_themes: { data?: CategoryThemes[] };
+  sub_themes: { data?: SubTheme[] };
   deleted: boolean
 }
 
@@ -71,10 +73,10 @@ interface TestAttributes {
   publishedAt: string;
 }
 
-interface CategoryThemes {
+export interface CategoryThemes {
   id: number;
   attributes: {
-    category: {data: ICategoryResponse};
+    category: { data: ICategoryResponse };
   }
 }
 

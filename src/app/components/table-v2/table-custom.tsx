@@ -249,6 +249,9 @@ const MagicTable = <T, R>({
       ...tableParamsRef.current.filters,
       ...filter,
     };
+    if (newTableParams.pagination) {
+      newTableParams.pagination.current = 1;
+    };
     fetchData(newTableParams);
     setTableParams(() => ({ ...newTableParams }));
     tableParamsRef.current = { ...newTableParams };
@@ -267,6 +270,9 @@ const MagicTable = <T, R>({
       };
       removeItemsFromFilter(index);
     }
+    if (newTableParams.pagination) {
+      newTableParams.pagination.current = 1;
+    };
     fetchData(newTableParams);
     setTableParams(() => ({ ...newTableParams }));
   };
