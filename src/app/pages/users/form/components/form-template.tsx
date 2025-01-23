@@ -107,7 +107,7 @@ const FormUser = () => {
       phone: phone,
       role: data.role,
       blocked: data.blocked,
-      confirmed: userId ? user.confirmed : true,
+      confirmed: userId ? data.confirmed : true,
     };
 
     if (data.password !== undefined && data.password.length > 0) {
