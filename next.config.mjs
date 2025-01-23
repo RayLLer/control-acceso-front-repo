@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  trailingSlash: true,
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: "/flutter/:path*",
+        destination: "/flutter/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

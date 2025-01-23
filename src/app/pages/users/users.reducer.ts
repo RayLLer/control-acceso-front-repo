@@ -1,6 +1,7 @@
 import { RootState } from "@/app/store/store";
 import { sources } from "@/utils/sources";
 import secureStorage from "react-secure-storage";
+import Cookies from "js-cookie";
 
 import {
   createAsyncThunk,
@@ -42,9 +43,16 @@ export const getLoggedUser = createAsyncThunk(
         response.data.role.id
       );
       if (response.data.role.name === "Alumno") {
-        secureStorage.clear();
-        window.location.href = "/login"; // Redirige a la página de login
-        throw new Error("No tiene permisos para acceder");
+        const token = secureStorage.getItem('token');
+        if (token) {
+          Cookies.set('jwt', String(token), { secure: true, sameSite: 'strict' });
+          window.location.href = '/flutter/index.html';
+          secureStorage.clear();
+        } else {
+          secureStorage.clear();
+          window.location.href = "/login"; // Redirige a la página de login
+          throw new Error("No tiene permisos para acceder");
+        }
       }
 
       if (params) {
