@@ -71,6 +71,7 @@ const FormUser = () => {
           role: response.data.role.id,
           blocked: response.data.blocked,
           positionHeld: response.data?.official?.positionHeld ?? "",
+          confirmed: response.data.confirmed,
         });
       }
     } catch (error) {
