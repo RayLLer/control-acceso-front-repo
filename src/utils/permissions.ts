@@ -1,14 +1,15 @@
 export enum PermissionsEnum {
   GestionarUsuarios = 'Gestionar Usuarios',
-  GestionarRolesPermisos = 'Gestionar Roles y Permisos',
-  GestionarCategorias = 'Gestionar Categorías',
-  GestionarPreguntas = 'Gestionar Preguntas',
-  VerTestsRealizados = 'Ver Tests Realizados',
-  VerReporteDeQuejasYErrores = 'Ver Reporte de Quejas y Errores',
-  GestionarTest = 'Gestionar Test',
-  GestionarConfiguracion = 'Gestionar Configuración',
-  GestionarTips = 'Gestionar Tips',
-  EditarFrase = 'Editar Frase Final',
+  GestionarPromociones = 'Gestionar Promociones',
+  // GestionarRolesPermisos = 'Gestionar Roles y Permisos',
+  // GestionarCategorias = 'Gestionar Categorías',
+  // GestionarPreguntas = 'Gestionar Preguntas',
+  // VerTestsRealizados = 'Ver Tests Realizados',
+  // VerReporteDeQuejasYErrores = 'Ver Reporte de Quejas y Errores',
+  // GestionarTest = 'Gestionar Test',
+  // GestionarConfiguracion = 'Gestionar Configuración',
+  // GestionarTips = 'Gestionar Tips',
+  // EditarFrase = 'Editar Frase Final',
 }
 
 interface Permission {

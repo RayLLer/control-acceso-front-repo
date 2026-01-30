@@ -10,6 +10,7 @@ import {
   Typography,
   notification,
 } from "antd";
+import PhotoUpload from "./photo-upload";
 import { MaskedInput } from "antd-mask-input";
 import { useForm } from "antd/es/form/Form";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -60,14 +61,22 @@ const FormUser = () => {
   const fetchUser = async () => {
     try {
       let response: any = await usersService.getById(+userId, {
-        populate: "role",
+        populate: "*",
       });
       if (isUser(response.data)) {
         form.setFieldsValue({
           username: response.data.username,
           email: response.data.email,
           name: response.data.name ?? "",
+          numeroIdentificacion: response.data.numeroIdentificacion ?? "",
+          nombreApellidos: response.data.nombreApellidos ?? "",
           phone: response.data.phone,
+          foto:
+            response.data.foto && response.data.foto !== "undefined"
+              ? Array.isArray(response.data.foto)
+                ? response.data.foto[0]
+                : response.data.foto
+              : null,
           role: response.data.role.id,
           blocked: response.data.blocked,
           positionHeld: response.data?.official?.positionHeld ?? "",
@@ -96,15 +105,16 @@ const FormUser = () => {
   }, []);
 
   const onFinish = async (data: any) => {
-    let phone: string = data.phone;
-    phone = phone.replace(/\D/g, "");
+    
 
     const userDto: any = {
       username: data.username,
       email: data.email,
       name: data.name,
       lastName: data.lastName,
-      phone: phone,
+      numeroIdentificacion: data.numeroIdentificacion,
+      phone: data.phone,
+      nombreApellidos: data.nombreApellidos,
       role: data.role,
       blocked: data.blocked,
       confirmed: userId ? data.confirmed : true,
@@ -112,6 +122,15 @@ const FormUser = () => {
 
     if (data.password !== undefined && data.password.length > 0) {
       userDto.password = data.password;
+    }
+    if (data.foto && data.foto !== "undefined") {
+      if (Array.isArray(data.foto)) {
+        userDto.foto = data.foto[0]?.id ?? null;
+      } else {
+        userDto.foto = data.foto.id ?? data.foto ?? null;
+      }
+    } else {
+      userDto.foto = null;
     }
     userId ? (userDto.id = userId) : (userDto.password = data.password);
     dispatch(userId ? patchUsers(userDto) : postUsers(userDto))
@@ -245,7 +264,7 @@ const FormUser = () => {
         </Form.Item>
 
         <Form.Item
-          name="name"
+          name="nombreApellidos"
           label="Nombre completo"
           rules={[
             { required: true, message: "El nombre completo es obligatorio." },
@@ -271,6 +290,19 @@ const FormUser = () => {
           <Input disabled={disabled} />
         </Form.Item> */}
 
+        <Form.Item
+          name="numeroIdentificacion"
+          label="Número de identificación"
+          rules={[
+            { required: true, message: "El nombre completo es obligatorio." },
+            {
+              message: "Introduzca el nombre",
+              whitespace: true,
+            },
+          ]}
+        >
+          <Input disabled={disabled} />
+        </Form.Item>
         <Form.Item
           name="phone"
           label="Teléfono"
@@ -307,6 +339,10 @@ const FormUser = () => {
             }}
             disabled={disabled}
           />
+        </Form.Item>
+
+        <Form.Item name="foto" label="Foto">
+          <PhotoUpload />
         </Form.Item>
 
         <Form.Item

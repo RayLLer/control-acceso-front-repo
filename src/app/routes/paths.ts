@@ -12,6 +12,11 @@ export const paths = {
     create: `${ROOT}/questions/create`,
     edit: (id: number) => `${ROOT}/questions/edit/${id}`,
   },
+  usuarios: {
+    root: `${ROOT}/users`,
+    create: `${ROOT}/users/create`,
+    edit: (id: number) => `${ROOT}/users/edit/${id}`,
+  },
   tests: {
     root: `${ROOT}/tests`,
     create: `${ROOT}/tests/create`,

@@ -3,6 +3,6 @@ export const sources = {
   USERS: 'users',
   ROLES: 'users-permissions/roles',
   ROUTES_INFOS: 'routes-infos',
-  PERMISSIONS: 'custom-permissions',
-  ROLE_PERMISSION: 'custom-permission',
+  PERMISSIONS: 'custom-permissioms',
+  ROLE_PERMISSION: 'custom-permissiom',
 };

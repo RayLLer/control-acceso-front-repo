@@ -78,65 +78,67 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       ? []
       : [
           getItem(
-            "Gestión de Test",
-            paths.tests.root,
-            validate(PermissionsEnum.GestionarTest),
-            <IdcardOutlined style={{ fontSize: FONT_SIZE }} />
-          ),
-          getItem(
-            "Gestión de Categorías",
-            paths.theme_subtheme_block.root,
-            validate(PermissionsEnum.GestionarCategorias),
-            <UnorderedListOutlined style={{ fontSize: FONT_SIZE }} />
-          ),
-          getItem(
-            "Gestión de Preguntas",
-            paths.questions.root,
-            validate(PermissionsEnum.GestionarPreguntas),
-            <QuestionCircleOutlined style={{ fontSize: FONT_SIZE }} />
-          ),
-          getItem(
-            "Tests Realizados",
-            paths.realized_tests.root,
-            validate(PermissionsEnum.VerTestsRealizados),
-            <FileDoneOutlined style={{ fontSize: FONT_SIZE }} />
-          ),
-          getItem(
-            "Quejas y Errores",
-            paths.error_reports.root,
-            validate(PermissionsEnum.VerReporteDeQuejasYErrores),
-            <BugOutlined style={{ fontSize: FONT_SIZE }} />
-          ),
-          getItem(
-            "Gestión de Usuarios",
+            "Gestión de Clientes",
             "/pages/users",
             validate(PermissionsEnum.GestionarUsuarios),
             <UserOutlined style={{ fontSize: FONT_SIZE }} />
           ),
           getItem(
-            "Roles y permisos",
-            "/pages/roles",
-            validate(PermissionsEnum.GestionarRolesPermisos),
-            <SafetyCertificateOutlined style={{ fontSize: FONT_SIZE }} />
-          ),
-          getItem(
-            "Gestión de Calificación",
-            "/pages/general-config",
-            validate(PermissionsEnum.GestionarConfiguracion),
+            "Promociones",
+            "/pages/promos",
+            validate(PermissionsEnum.GestionarPromociones),
             <SolutionOutlined style={{ fontSize: FONT_SIZE }} />
           ),
-          getItem(
-            "Gestión de Tips",
-            paths.tips.root,
-            validate(PermissionsEnum.GestionarTips),
-            <BulbOutlined style={{ fontSize: FONT_SIZE }} />
-          ),
-          getItem(
-            "Edición de Frase Final",
-            paths.final_phrase.root,
-            validate(PermissionsEnum.EditarFrase),
-            <EditOutlined style={{ fontSize: FONT_SIZE }} />
-          ),
+          // getItem(
+          //   "Gestión de Test",
+          //   paths.tests.root,
+          //   validate(PermissionsEnum.GestionarTest),
+          //   <IdcardOutlined style={{ fontSize: FONT_SIZE }} />
+          // ),
+          // getItem(
+          //   "Gestión de Categorías",
+          //   paths.theme_subtheme_block.root,
+          //   validate(PermissionsEnum.GestionarCategorias),
+          //   <UnorderedListOutlined style={{ fontSize: FONT_SIZE }} />
+          // ),
+          // getItem(
+          //   "Gestión de Preguntas",
+          //   paths.questions.root,
+          //   validate(PermissionsEnum.GestionarPreguntas),
+          //   <QuestionCircleOutlined style={{ fontSize: FONT_SIZE }} />
+          // ),
+          // getItem(
+          //   "Tests Realizados",
+          //   paths.realized_tests.root,
+          //   validate(PermissionsEnum.VerTestsRealizados),
+          //   <FileDoneOutlined style={{ fontSize: FONT_SIZE }} />
+          // ),
+          // getItem(
+          //   "Quejas y Errores",
+          //   paths.error_reports.root,
+          //   validate(PermissionsEnum.VerReporteDeQuejasYErrores),
+          //   <BugOutlined style={{ fontSize: FONT_SIZE }} />
+          // ),
+          
+          // getItem(
+          //   "Roles y permisos",
+          //   "/pages/roles",
+          //   validate(PermissionsEnum.GestionarRolesPermisos),
+          //   <SafetyCertificateOutlined style={{ fontSize: FONT_SIZE }} />
+          // ),
+          
+          // getItem(
+          //   "Gestión de Tips",
+          //   paths.tips.root,
+          //   validate(PermissionsEnum.GestionarTips),
+          //   <BulbOutlined style={{ fontSize: FONT_SIZE }} />
+          // ),
+          // getItem(
+          //   "Edición de Frase Final",
+          //   paths.final_phrase.root,
+          //   validate(PermissionsEnum.EditarFrase),
+          //   <EditOutlined style={{ fontSize: FONT_SIZE }} />
+          // ),
         ];
   }, [loggedUser]);
 

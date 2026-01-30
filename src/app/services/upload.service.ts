@@ -36,3 +36,18 @@ export const uploadQuestions = async (file: UploadFile) => {
     console.log(error)
   }
 };
+
+export const deleteUpload = async (id: number) => {
+  try {
+    return axios.delete(
+      process.env.NEXT_PUBLIC_API_URL + `/upload/files/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${secureStorage.getItem('token')}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};

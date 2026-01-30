@@ -42,7 +42,7 @@ export const getLoggedUser = createAsyncThunk(
         sources.ROLE_PERMISSION + "/getCustomPermissionsByRoleId",
         response.data.role.id
       );
-      if (response.data.role.name === "Alumno") {
+      if (response.data.role.name === "Cliente") {
         const token = secureStorage.getItem('token');
         if (token) {
           Cookies.set('jwt', String(token), { secure: true, sameSite: 'strict' });
@@ -57,33 +57,39 @@ export const getLoggedUser = createAsyncThunk(
 
       if (params) {
         switch (permissionsResponse.data[0].custom_permissions[0].name) {
-          case PermissionsEnum.GestionarTest:
-            window.location.href = paths.tests.root;
+          // case PermissionsEnum.GestionarTest:
+          //   window.location.href = paths.tests.root;
+          //   break;
+          // case PermissionsEnum.GestionarCategorias:
+          //   window.location.href = paths.theme_subtheme_block.root;
+          //   break;
+          // case PermissionsEnum.GestionarPreguntas:
+          //   window.location.href = paths.questions.root;
+          //   break;
+          // case PermissionsEnum.VerTestsRealizados:
+          //   window.location.href = paths.realized_tests.root;
+          //   break;
+          // case PermissionsEnum.VerReporteDeQuejasYErrores:
+          //   window.location.href = paths.error_reports.root;
+          //   break;
+          case PermissionsEnum.GestionarPromociones:
+            window.location.href = "/pages/promociones";
             break;
-          case PermissionsEnum.GestionarCategorias:
-            window.location.href = paths.theme_subtheme_block.root;
-            break;
-          case PermissionsEnum.GestionarPreguntas:
-            window.location.href = paths.questions.root;
-            break;
-          case PermissionsEnum.VerTestsRealizados:
-            window.location.href = paths.realized_tests.root;
-            break;
-          case PermissionsEnum.VerReporteDeQuejasYErrores:
-            window.location.href = paths.error_reports.root;
-            break;
-          case PermissionsEnum.GestionarUsuarios:
-            window.location.href = "/pages/users";
-            break;
-          case PermissionsEnum.GestionarRolesPermisos:
-            window.location.href = "/pages/roles";
-            break;
+          // case PermissionsEnum.GestionarRolesPermisos:
+          //   window.location.href = "/pages/roles";
+          //   break;
           default:
-            window.location.href = paths.tests.root;
+            window.location.href = paths.usuarios.root;
             break;
         }
       }
+      // console.log("response.data", response.data);
 
+      // // Only redirect to the users page if we're not already there.
+      // // Unconditional redirects here caused the page to reload repeatedly.
+      // if (params) {
+      //   window.location.href = "/pages/users";
+      // }
       response.data.role.permissions =
         permissionsResponse.data[0]?.custom_permissions ?? [];
       return response.data;

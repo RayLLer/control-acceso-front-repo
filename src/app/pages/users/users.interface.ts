@@ -13,6 +13,7 @@ export interface IUser {
   role: IRole;
   name?: string;
   phone?: string;
+  foto?: any;
   identityCard: string;
   client: any
 }

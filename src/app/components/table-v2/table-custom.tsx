@@ -350,6 +350,7 @@ const MagicTable = <T, R>({
           });
           return (
             <Space size="small">
+              {more}
               <Tooltip title="Editar">
                 <Button
                   type="text"
@@ -369,7 +370,6 @@ const MagicTable = <T, R>({
                   onClick={() => handleDelete((record as any).id as number)}
                 />
               </Tooltip>
-              {more}
             </Space>
           );
         },

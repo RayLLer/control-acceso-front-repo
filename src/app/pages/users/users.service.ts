@@ -32,9 +32,10 @@ export class UsersService extends BaseApi<IUser, IUser> {
     return axiosInstance.post<IUser>(this.url, body);
   }
   deleteUser(id: number) {
-    return axiosInstance.post<any>(`/realized-tests/deleteUserRecords`, {
-      userId: id,
-    });
+    // return axiosInstance.post<any>(`/realized-tests/rRecords`, {
+    //   userId: id,
+    // });
+    return axiosInstance.delete<any>(`${this.url}/${id}`);
   }
 }
 

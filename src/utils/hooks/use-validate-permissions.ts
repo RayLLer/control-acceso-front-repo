@@ -14,7 +14,7 @@ const useValidatePermissions = () => {
   const validate = useCallback(
     (permission: PermissionsEnum) => {
       const role = loggedUser.role.name;
-      const index = loggedUser.role.permissions.findIndex(
+      const index = loggedUser.role.permissions?.findIndex(
         (permissionItem: any) => permissionItem.name === permission
       );
       return index !== -1 || role === "Administrador";
