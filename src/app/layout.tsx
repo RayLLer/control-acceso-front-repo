@@ -4,8 +4,8 @@ import "./globals.css";
 import Providers from "./providers/provider";
 
 export const metadata: Metadata = {
-  title: "Test Opo",
-  description: "El giro que necesitas",
+  title: "Proyecto X",
+  description: "Ponte Strong",
 };
 
 export default function RootLayout({

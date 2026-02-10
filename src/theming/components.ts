@@ -27,7 +27,7 @@ export const componentsLigth = {
     colorText: 'rgb(255, 255, 255)',
     groupTitleColor: 'rgb(255, 255, 255)',
     itemColor: 'rgb(255, 255, 255)',
-    itemBg: 'rgb(193, 48, 29)',
+    itemBg: '#700845',
     itemSelectedColor: 'rgb(237, 185, 38)',
   },
   // Table: {
@@ -38,8 +38,8 @@ export const componentsLigth = {
   // },
   Layout: {
     headerBg: 'rgb(255, 255, 255)',
-    siderBg: 'rgb(193, 48, 29)',
-    triggerBg: 'rgb(193, 48, 29)',
+    siderBg: '#700845',
+    triggerBg: '#700845',
   },
   Result: {
     algorithm: true,

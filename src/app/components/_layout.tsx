@@ -176,17 +176,17 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           <Image
             alt="Logo"
             src="/img/logo.png"
-            height={70}
-            width={"80%"}
-            style={{ marginLeft: 20 }}
+            height={80}
+            style={{ marginLeft: 80, width: "50%" }}
             preview={false}
           />
         ) : (
           <Image
             alt="Logo"
-            src="/img/logo-collapsed.png"
-            height={30}
-            style={{ marginLeft: 5 }}
+            src="/img/logo.png"
+            height={35}
+    
+            style={{ marginLeft: 20, width: "70%" }}
             preview={false}
           />
         )}
@@ -222,7 +222,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
                 placement="bottomRight"
                 arrow
               >
-                <Button icon={<UserOutlined />} danger>
+                <Button icon={<UserOutlined />}>
                   {loggedUser.username ?? "Usuario"}
                 </Button>
               </Dropdown>

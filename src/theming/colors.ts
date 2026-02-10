@@ -11,7 +11,7 @@ export type ColorsType = {
 
 export const colors: ColorsType = {
   colorBgBase: '#F5F5F5',
-  colorPrimary: '#C1301D',
+  colorPrimary: ''#700845,
   colorSecondary: '#EDB926',
   colorTertiary: '#3c3d40',
   colorSuccess: '#12B347',

@@ -2,7 +2,7 @@ import { componentsDark } from './components';
 
 export const darkTheme = {
   token: {
-    colorPrimary: '#4d130b',
+    colorPrimary: '#440329',
     colorInfo: '#4d130b',
     colorSuccess: '#12b347',
     colorWarning: '#edb926',

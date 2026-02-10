@@ -3,8 +3,8 @@ import { componentsLigth } from './components';
 
 export const lightTheme: ThemeConfig = {
   token: {
-    colorPrimary: '#c1301d',
-    colorInfo: '#c1301d',
+    colorPrimary: '#700845',
+    colorInfo: '#700845',
     colorSuccess: '#12b347',
     colorWarning: '#edb926',
     wireframe: false,

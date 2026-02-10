@@ -4,7 +4,7 @@ import { FC, ReactElement } from "react";
 import MagicTable from "@/app/components/table-v2/table-custom";
 import { ColumnsType } from "@/app/interfaces/strapi";
 import { useRouter } from "next/navigation";
-import { Image, Modal, Form, InputNumber, DatePicker, Button, notification, Tag, Descriptions, Table, Spin, Collapse } from "antd";
+import { Image, Modal, Form, Input, InputNumber, DatePicker, Button, notification, Tag, Descriptions, Table, Spin, Collapse } from "antd";
 import { DollarOutlined, EyeOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import dayjs from "dayjs";
@@ -21,6 +21,9 @@ const User: FC = (): ReactElement => {
   const [submittingPayment, setSubmittingPayment] = useState(false);
   const [form] = Form.useForm();
   const [refetch, setRefetch] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [searchResult, setSearchResult] = useState<any | null>(null);
+  const [searchNotFound, setSearchNotFound] = useState(false);
 
   // Details modal & payments
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
@@ -221,6 +224,57 @@ const User: FC = (): ReactElement => {
     return isFutureOrCurrent ? "#f6ffed" : "#fff1f0";
   };
 
+  const getBgColorForUser = (u: any) => {
+    if (!u) return undefined;
+    const raw =
+      u?.ultimoPeriodoPago ??
+      u?.ultimo_periodo_pago ??
+      u?.periodo_pagado ??
+      null;
+    if (!raw) return "#fff1f0";
+    let periodStr: string | null = null;
+    if (typeof raw === "string") {
+      const maybe = raw.trim();
+      if (/^\d{4}-\d{2}$/.test(maybe)) periodStr = maybe;
+      else if (/^\d{4}-\d{2}-\d{2}/.test(maybe)) periodStr = maybe.substring(0, 7);
+    } else if (raw?.attributes?.periodo_pagado) {
+      periodStr = raw.attributes.periodo_pagado;
+    }
+    if (!periodStr) return "#fff1f0";
+    const period = dayjs(periodStr, "YYYY-MM");
+    const current = dayjs().startOf("month");
+    const isFutureOrCurrent = period.isSame(current, "month") || period.isAfter(current, "month");
+    return isFutureOrCurrent ? "#f6ffed" : "#fff1f0";
+  };
+
+  const searchByIdentifier = async (value?: string) => {
+    const v = (value ?? searchValue)?.toString().trim();
+    if (!v) return;
+    try {
+      const res = await axiosInstance.get("/users", {
+        params: {
+          populate: "*",
+          filters: { numeroIdentificacion: v },
+        },
+      });
+      const data = res?.data?.data ?? res?.data ?? [];
+      if (Array.isArray(data) && data.length > 0) {
+        const first = data[0];
+        const u = first?.attributes ? { id: first.id, ...first.attributes } : first;
+        setSearchResult(u);
+        setSearchNotFound(false);
+      } else {
+        setSearchResult(null);
+        setSearchNotFound(true);
+      }
+    } catch (err) {
+      setSearchResult(null);
+      setSearchNotFound(true);
+    } finally {
+      setSearchValue("");
+    }
+  };
+
   const getUserImage = (u: any) => {
     if (!u) return null;
     const foto = u?.foto ?? u?.photo ?? u?.image ?? null;
@@ -322,6 +376,40 @@ const User: FC = (): ReactElement => {
 
   return (
     <>
+      <div style={{ marginBottom: 12 }}>
+        <Input
+          placeholder="Buscar por identificador"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          onPressEnter={(e: any) => searchByIdentifier(e.target.value)}
+          autoFocus
+          style={{ width: 300 }}
+          allowClear
+        />
+        {searchResult || searchNotFound ? (
+          <div style={{ marginTop: 12 }}>
+            {searchResult ? (
+              <div style={{ display: "flex", alignItems: "center", padding: 12, borderRadius: 6, background: getBgColorForUser(searchResult) }}>
+                {getUserImage(searchResult) ? (
+                  <Image src={getUserImage(searchResult)} width={80} preview={false} alt="Foto" />
+                ) : (
+                  <div style={{ width: 80, height: 80, background: "#eee" }} />
+                )}
+                <div style={{ marginLeft: 12 }}>
+                  <div style={{ fontWeight: 600 }}>{searchResult.nombreApellidos ?? searchResult.name ?? "-"}</div>
+                  <div>Identificador: {searchResult.numeroIdentificacion ?? searchResult.documentId ?? "-"}</div>
+                  <div>Último periodo: {searchResult.ultimoPeriodoPago ?? searchResult.ultimo_periodo_pago ?? searchResult.periodo_pagado ?? "Sin pago"}</div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ padding: 12, borderRadius: 6, background: "#fff1f0", color: "#a8071a" }}>
+                No existe usuario con identificador buscado
+              </div>
+            )}
+          </div>
+        ) : null}
+      </div>
+
       <MagicTable<IUser, IUser>
         columns={columns}
         url={"users"}
