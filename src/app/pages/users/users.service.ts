@@ -19,7 +19,7 @@ export class UsersService extends BaseApi<IUser, IUser> {
 
   getLoggedUser(url: string) {
     return axiosInstance.get<IUser>(url, {
-      params: { populate: "role" },
+      params: { populate: "*" },
     });
   }
   putLoggedUser(url: string, body: IUser) {

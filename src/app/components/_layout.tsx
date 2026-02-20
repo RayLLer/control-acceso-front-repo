@@ -165,41 +165,43 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Layout style={{ minHeight: "100vh", backgroundColor: token.colorPrimary }}>
-      <Sider
-        collapsible
-        style={{ marginTop: 20 }}
-        width={250}
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
-      >
-        {!collapsed ? (
-          <Image
-            alt="Logo"
-            src="/img/logo.png"
-            height={80}
-            style={{ marginLeft: 80, width: "50%" }}
-            preview={false}
-          />
-        ) : (
-          <Image
-            alt="Logo"
-            src="/img/logo.png"
-            height={35}
-    
-            style={{ marginLeft: 20, width: "70%" }}
-            preview={false}
-          />
-        )}
+      {/* Hide Sider for Cliente users or for client route */}
+      {!(loggedUser?.role?.name === "Cliente" || (path || "").includes("/pages/client")) && (
+        <Sider
+          collapsible
+          style={{ marginTop: 20 }}
+          width={250}
+          collapsed={collapsed}
+          onCollapse={setCollapsed}
+        >
+          {!collapsed ? (
+            <Image
+              alt="Logo"
+              src="/img/logo.png"
+              height={80}
+              style={{ marginLeft: 80, width: "50%" }}
+              preview={false}
+            />
+          ) : (
+            <Image
+              alt="Logo"
+              src="/img/logo.png"
+              height={35}
+              style={{ marginLeft: 20, width: "70%" }}
+              preview={false}
+            />
+          )}
 
-        <Menu
-          defaultSelectedKeys={[path]}
-          mode="inline"
-          items={items}
-          style={{ marginTop: 20, fontWeight: 700 }}
-          onClick={onClick}
-          defaultActiveFirst
-        />
-      </Sider>
+          <Menu
+            defaultSelectedKeys={[path]}
+            mode="inline"
+            items={items}
+            style={{ marginTop: 20, fontWeight: 700 }}
+            onClick={onClick}
+            defaultActiveFirst
+          />
+        </Sider>
+      )}
       <Layout className="site-layout">
         <Header
           style={{
@@ -229,11 +231,15 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             </Col>
           </Row>
         </Header>
-        <Content style={{ margin: "0 16px" }}>
-          <Card style={{ marginTop: 10, minHeight: "80vh" }}>{children}</Card>
+        <Content style={{ margin: (loggedUser?.role?.name === "Cliente" || (path || "").includes("/pages/client")) ? 0 : "0 16px" }}>
+          {loggedUser?.role?.name === "Cliente" || (path || "").includes("/pages/client") ? (
+            <div style={{ marginTop: 0 }}>{children}</div>
+          ) : (
+            <Card style={{ marginTop: 10, minHeight: "80vh" }}>{children}</Card>
+          )}
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          TestOpo©{new Date().getFullYear()}
+          ProyectoX©{new Date().getFullYear()}
         </Footer>
       </Layout>
     </Layout>

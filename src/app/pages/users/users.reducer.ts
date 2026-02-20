@@ -43,11 +43,21 @@ export const getLoggedUser = createAsyncThunk(
         response.data.role.id
       );
       if (response.data.role.name === "Cliente") {
-        const token = secureStorage.getItem('token');
+        const token = secureStorage.getItem("token");
         if (token) {
-          Cookies.set('jwt', String(token), { secure: true, sameSite: 'strict' });
-          window.location.href = '/flutter/index.html';
-          secureStorage.clear();
+          Cookies.set("jwt", String(token), { secure: true, sameSite: "strict" });
+          // Redirigir a la vista cliente que muestra QR, foto y datos
+          // Avoid redirecting if we're already on that page to prevent reload loops
+          try {
+            const path = window.location.pathname || "";
+            if (!path.includes("/pages/client")) {
+              window.location.href = "/pages/client";
+            }
+          } catch (e) {
+            // if window is not available or any error, still attempt redirect
+            window.location.href = "/pages/client";
+          }
+          // keep storage so the client page can read the user info
         } else {
           secureStorage.clear();
           window.location.href = "/login"; // Redirige a la página de login

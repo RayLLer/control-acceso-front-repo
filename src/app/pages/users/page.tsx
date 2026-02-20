@@ -391,11 +391,11 @@ const User: FC = (): ReactElement => {
             {searchResult ? (
               <div style={{ display: "flex", alignItems: "center", padding: 12, borderRadius: 6, background: getBgColorForUser(searchResult) }}>
                 {getUserImage(searchResult) ? (
-                  <Image src={getUserImage(searchResult)} width={80} preview={false} alt="Foto" />
+                  <Image src={getUserImage(searchResult)} width={200} preview={false} alt="Foto" />
                 ) : (
                   <div style={{ width: 80, height: 80, background: "#eee" }} />
                 )}
-                <div style={{ marginLeft: 12 }}>
+                <div style={{ marginLeft: 12, fontSize:17}}>
                   <div style={{ fontWeight: 600 }}>{searchResult.nombreApellidos ?? searchResult.name ?? "-"}</div>
                   <div>Identificador: {searchResult.numeroIdentificacion ?? searchResult.documentId ?? "-"}</div>
                   <div>Último periodo: {searchResult.ultimoPeriodoPago ?? searchResult.ultimo_periodo_pago ?? searchResult.periodo_pagado ?? "Sin pago"}</div>

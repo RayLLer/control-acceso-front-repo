@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body style={{ marginTop: 0, marginLeft: 0 }}>
+      <body style={{ marginTop: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -20,6 +20,8 @@ import styles from "./page.module.css";
 import secureStorage from "react-secure-storage";
 import { getLoggedUser } from "@/app/pages/users/users.reducer";
 import { useAppDispatch } from "@/app/store/hooks";
+import { requestFcmToken } from "@/utils/firebase";
+import { userService } from "@/app/pages/users/users.service";
 
 interface ILogin {
   identifier: string;
@@ -64,8 +66,33 @@ const Login: React.FC = () => {
       }
 
       // const responseFcm = await userService.putUser(user.id, user);
-      setLoading(false);
-      dispatch(getLoggedUser(true));
+      try {
+        const fcm = await requestFcmToken();
+        console.debug("Obtained FCM token:", fcm);
+        if (fcm) {
+          try {
+            const userId = user?.id ?? (user?.data?.id ?? null);
+            const body = { ...(user as any), fcm } as any;
+            if (userId) {
+              await userService.putUser(userId, body);
+              const updated = { ...(user as any), fcm };
+              secureStorage.setItem("user", JSON.stringify(updated));
+            } else {
+              // fallback: try updating /users/me
+              try {
+                await userService.putLoggedUser("/users/me", body);
+                const updated = { ...(user as any), fcm};
+                secureStorage.setItem("user", JSON.stringify(updated));
+              } catch (e) {}
+            }
+          } catch (e) {
+            console.error("Failed saving FCM token", e);
+          }
+        }
+      } finally {
+        setLoading(false);
+        dispatch(getLoggedUser(true));
+      }
 
       // router.push(paths.tests.root);
     } catch (error: any) {
@@ -107,14 +134,14 @@ const Login: React.FC = () => {
         backgroundSize: "cover",
       }}
     >
-      <Image
-        src="/img/logo.png"
-        width={200}
-        alt="Logo"
-        style={{ marginBottom: "5px" }}
-      />
+      
       <Card className={styles.card}>
-        <Typography.Title level={3}>Ingresar</Typography.Title>
+        <div className={styles.logoContainer}>
+          <Image src="/img/logo.png" alt="Logo" className={styles.logoImage} preview={false} />
+        </div>
+        <Typography.Title 
+        style={{ marginTop: "-10px", }}
+        level={3}>Ingresar</Typography.Title>
         <Form
           name="normal_login"
           className="login-form"

@@ -11,11 +11,11 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   role: IRole;
-  name?: string;
+  nombreApellidos?: string;
   phone?: string;
   foto?: any;
   identityCard: string;
-  client: any
+  fcm?: string | null;
 }
 
 export interface IUserResponse {
