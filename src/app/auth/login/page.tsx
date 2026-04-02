@@ -189,7 +189,7 @@ const Login: React.FC = () => {
               Acceder
             </Button>
           </Form.Item>
-          <Link href={paths.forgot_password}>Has olvidado tu contraseña</Link>
+          {/* <Link href={paths.forgot_password}>Has olvidado tu contraseña</Link> */}
         </Form>
       </Card>
     </div>

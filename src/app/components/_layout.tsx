@@ -164,7 +164,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", backgroundColor: token.colorPrimary }}>
+    <Layout style={{ minHeight: "70vh", backgroundColor: token.colorPrimary }}>
       {/* Hide Sider for Cliente users or for client route */}
       {!(loggedUser?.role?.name === "Cliente" || (path || "").includes("/pages/client")) && (
         <Sider
