@@ -376,26 +376,31 @@ const User: FC = (): ReactElement => {
 
   return (
     <>
-      <div style={{ marginBottom: 12 }}>
+      <div style={{ marginBottom: 12, width: "100%" }}>
         <Input
           placeholder="Buscar por identificador"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           onPressEnter={(e: any) => searchByIdentifier(e.target.value)}
           autoFocus
-          style={{ width: 300 }}
+          style={{ width: "100%", maxWidth: 300 }}
           allowClear
         />
         {searchResult || searchNotFound ? (
           <div style={{ marginTop: 12 }}>
             {searchResult ? (
-              <div style={{ display: "flex", alignItems: "center", padding: 12, borderRadius: 6, background: getBgColorForUser(searchResult) }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", padding: 12, borderRadius: 6, background: getBgColorForUser(searchResult) }}>
                 {getUserImage(searchResult) ? (
-                  <Image src={getUserImage(searchResult)} width={200} preview={false} alt="Foto" />
+                  <Image
+                    src={getUserImage(searchResult)}
+                    preview={false}
+                    alt="Foto"
+                    style={{ width: "100%", maxWidth: 200, objectFit: "contain" }}
+                  />
                 ) : (
                   <div style={{ width: 80, height: 80, background: "#eee" }} />
                 )}
-                <div style={{ marginLeft: 12, fontSize:17}}>
+                <div style={{ minWidth: 0, flex: 1, fontSize: 17 }}>
                   <div style={{ fontWeight: 600 }}>{searchResult.nombreApellidos ?? searchResult.name ?? "-"}</div>
                   <div>Identificador: {searchResult.numeroIdentificacion ?? searchResult.documentId ?? "-"}</div>
                   <div>Último periodo: {searchResult.ultimoPeriodoPago ?? searchResult.ultimo_periodo_pago ?? searchResult.periodo_pagado ?? "Sin pago"}</div>
@@ -453,15 +458,20 @@ const User: FC = (): ReactElement => {
         open={detailsModalVisible}
         onCancel={() => setDetailsModalVisible(false)}
         footer={null}
-        width={800}
-        styles={{ body: { backgroundColor: getModalBgColor() } }}
+        style={{ maxWidth: 800, width: "100%" }}
+        bodyStyle={{ backgroundColor: getModalBgColor() }}
       >
         {detailsUser ? (
           <div>
             <Descriptions bordered column={1} size="small">
               <Descriptions.Item label="Foto">
                 {getUserImage(detailsUser) ? (
-                  <Image src={getUserImage(detailsUser)} width={200} style={{ objectFit: "contain" }} alt="Foto usuario" />
+                  <Image
+                    src={getUserImage(detailsUser)}
+                    preview={false}
+                    alt="Foto usuario"
+                    style={{ width: "100%", maxWidth: 200, objectFit: "contain" }}
+                  />
                 ) : (
                   "-"
                 )}
@@ -512,7 +522,7 @@ const User: FC = (): ReactElement => {
           <Spin />
         ) : qrDataUrl ? (
           <div style={{ textAlign: "center" }}>
-            <img src={qrDataUrl} alt="QR" style={{ width: 300, height: 300, objectFit: "contain" }} />
+            <img src={qrDataUrl} alt="QR" style={{ width: "100%", maxWidth: 300, height: "auto", objectFit: "contain" }} />
           </div>
         ) : (
           <div>No se generó QR</div>

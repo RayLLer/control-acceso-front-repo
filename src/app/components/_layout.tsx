@@ -146,6 +146,17 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     dispatch(getLoggedUser(undefined));
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setCollapsed(mobile);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const onClick: MenuProps["onClick"] = (e) => {
     if (e.key == "/auth/login") {
       const keepSign = secureStorage.getItem("keepSign");
@@ -169,6 +180,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       {!(loggedUser?.role?.name === "Cliente" || (path || "").includes("/pages/client")) && (
         <Sider
           collapsible
+          breakpoint="md"
+          collapsedWidth={80}
           style={{ marginTop: 20 }}
           width={250}
           collapsed={collapsed}
