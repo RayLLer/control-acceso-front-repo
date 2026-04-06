@@ -82,8 +82,12 @@ export const getLoggedUser = createAsyncThunk(
           // case PermissionsEnum.VerReporteDeQuejasYErrores:
           //   window.location.href = paths.error_reports.root;
           //   break;
+          case PermissionsEnum.GestionarUsuarios:
+            window.location.href = "/pages/users/";
+            break;
+          
           case PermissionsEnum.GestionarPromociones:
-            window.location.href = "/pages/promociones";
+            window.location.href = "/pages/promos";
             break;
           // case PermissionsEnum.GestionarRolesPermisos:
           //   window.location.href = "/pages/roles";
