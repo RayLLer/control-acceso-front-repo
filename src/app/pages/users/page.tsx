@@ -45,16 +45,16 @@ const User: FC = (): ReactElement => {
       key: "monto",
       render: (value: any) => (value !== undefined ? Number(value).toFixed(2) : "-"),
     },
+    // {
+    //   title: "Periodo",
+    //   dataIndex: "periodo_pagado",
+    //   key: "periodo_pagado",
+    // },
     {
-      title: "Periodo",
-      dataIndex: "periodo_pagado",
-      key: "periodo_pagado",
-    },
-    {
-      title: "Fecha",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (value: any) => (value ? dayjs(value).format("YYYY-MM-DD HH:mm") : "-"),
+      title: "Fecha de pago",
+      dataIndex: "fecha_inicio_periodo",
+      key: "fecha_inicio_periodo",
+      render: (value: any) => (value ? dayjs(value).format("YYYY-MM-DD") : "-"),
     },
   ];
 
@@ -108,6 +108,7 @@ const User: FC = (): ReactElement => {
       key: "email",
       filtrable: true,
       filterType: "string",
+      sorter: true,
     },
     {
       title: "Nombre Completo",
@@ -115,6 +116,7 @@ const User: FC = (): ReactElement => {
       key: "nombreApellidos",
       filtrable: true,
       filterType: "string",
+      sorter: true,
     },
     {
       title: "Rol",
@@ -122,6 +124,7 @@ const User: FC = (): ReactElement => {
       key: "role.name",
       filtrable: true,
       filterType: "string",
+      sorter: true,
     },
     {
       title: "Identificador",
@@ -129,36 +132,24 @@ const User: FC = (): ReactElement => {
       key: "numeroIdentificacion",
       filtrable: true,
       filterType: "string",
+      sorter: true,
     },
     {
       title: "Último periodo",
       dataIndex: ["ultimoPeriodoPago"],
       key: "ultimoPeriodoPago",
+      sorter: true,
       render: (_: any, record: any) => {
-        // posible formas: 'YYYY-MM' o date string
-        const raw =
-          record?.ultimoPeriodoPago ??
-          null;
+        const raw = record?.ultimoPeriodoPago ?? null;
         if (!raw) return <Tag color="red">Sin pago</Tag>;
-        // Obtener string YYYY-MM
-        let periodStr = null as string | null;
+        
         if (typeof raw === "string") {
-          // si viene como 'YYYY-MM' o 'YYYY-MM-DD'
-          const maybe = raw.trim();
-          if (/^\d{4}-\d{2}$/.test(maybe)) periodStr = maybe;
-          else if (/^\d{4}-\d{2}-\d{2}/.test(maybe)) periodStr = maybe.substring(0, 7);
-          else periodStr = maybe; // intentar parsear
-        } else if (raw?.id && raw?.attributes?.periodo_pagado) {
-          periodStr = raw.attributes.periodo_pagado;
-        } else {
-          periodStr = null;
+          const periodStr = raw.trim();
+          const isActive = isPeriodActive(periodStr);
+          return <Tag color={isActive ? "green" : "red"}>{periodStr}</Tag>;
         }
-        if (!periodStr) return <Tag color="red">Sin pago</Tag>;
-        const period = dayjs(periodStr, "YYYY-MM");
-        const current = dayjs().startOf("month");
-        const isFutureOrCurrent = period.isSame(current, "month") || period.isAfter(current, "month");
-        const label = period.format("YYYY-MM");
-        return <Tag color={isFutureOrCurrent ? "green" : "red"}>{label}</Tag>;
+        
+        return <Tag color="red">Sin pago</Tag>;
       },
     },
     // {
@@ -194,6 +185,21 @@ const User: FC = (): ReactElement => {
     }
   };
 
+  const isPeriodActive = (periodStr: string | null | undefined): boolean => {
+    if (!periodStr || typeof periodStr !== "string") return false;
+    
+    const parts = periodStr.trim().split("::");
+    if (parts.length !== 2) return false;
+    
+    const todayDay = dayjs().startOf("day");
+    const fechaInicioDay = dayjs(parts[0].trim(), "DD/MM/YYYY").startOf("day");
+    const fechaFinDay = dayjs(parts[1].trim(), "DD/MM/YYYY").startOf("day");
+    
+    // true si today >= fechaInicio AND today <= fechaFin
+    return (todayDay.isAfter(fechaInicioDay) || todayDay.isSame(fechaInicioDay)) && 
+           (todayDay.isBefore(fechaFinDay) || todayDay.isSame(fechaFinDay));
+  };
+
   const openDetails = async (record: any) => {
     setDetailsUser(record);
     setDetailsModalVisible(true);
@@ -209,19 +215,9 @@ const User: FC = (): ReactElement => {
       detailsUser?.periodo_pagado ??
       null;
     if (!raw) return undefined;
-    let periodStr: string | null = null;
-    if (typeof raw === "string") {
-      const maybe = raw.trim();
-      if (/^\d{4}-\d{2}$/.test(maybe)) periodStr = maybe;
-      else if (/^\d{4}-\d{2}-\d{2}/.test(maybe)) periodStr = maybe.substring(0, 7);
-    } else if (raw?.attributes?.periodo_pagado) {
-      periodStr = raw.attributes.periodo_pagado;
-    }
-    if (!periodStr) return undefined;
-    const period = dayjs(periodStr, "YYYY-MM");
-    const current = dayjs().startOf("month");
-    const isFutureOrCurrent = period.isSame(current, "month") || period.isAfter(current, "month");
-    return isFutureOrCurrent ? "#f6ffed" : "#fff1f0";
+    
+    const isActive = isPeriodActive(raw);
+    return isActive ? "#72f581" : "#fa876a";
   };
 
   const getBgColorForUser = (u: any) => {
@@ -232,19 +228,9 @@ const User: FC = (): ReactElement => {
       u?.periodo_pagado ??
       null;
     if (!raw) return "#fff1f0";
-    let periodStr: string | null = null;
-    if (typeof raw === "string") {
-      const maybe = raw.trim();
-      if (/^\d{4}-\d{2}$/.test(maybe)) periodStr = maybe;
-      else if (/^\d{4}-\d{2}-\d{2}/.test(maybe)) periodStr = maybe.substring(0, 7);
-    } else if (raw?.attributes?.periodo_pagado) {
-      periodStr = raw.attributes.periodo_pagado;
-    }
-    if (!periodStr) return "#fff1f0";
-    const period = dayjs(periodStr, "YYYY-MM");
-    const current = dayjs().startOf("month");
-    const isFutureOrCurrent = period.isSame(current, "month") || period.isAfter(current, "month");
-    return isFutureOrCurrent ? "#f6ffed" : "#fff1f0";
+    
+    const isActive = isPeriodActive(raw);
+    return isActive ? "#72f581" : "#fa876a";
   };
 
   const searchByIdentifier = async (value?: string) => {
@@ -351,11 +337,11 @@ const User: FC = (): ReactElement => {
     try {
       setSubmittingPayment(true);
       const periodo = values.periodo;
-      const periodoStr = periodo && periodo.format ? periodo.format("YYYY-MM") : periodo;
+      const fechaInicioPeriodo = periodo && periodo.format ? periodo.format("YYYY-MM-DD") : periodo;
       const body = {
         users_permissions_user: selectedUser.id,
         monto: Number(values.monto),
-        periodo_pagado: periodoStr,
+        fecha_inicio_periodo: fechaInicioPeriodo,
       };
       const response = await axiosInstance.post("/pagos", { data: body });
       if (response && (response.status === 200 || response.status === 201)) {
@@ -445,10 +431,10 @@ const User: FC = (): ReactElement => {
           </Form.Item>
           <Form.Item
             name="periodo"
-            label="Periodo pagado"
-            rules={[{ required: true, message: "Seleccione mes y año" }]}
+            label="Fecha inicio del periodo"
+            rules={[{ required: true, message: "Seleccione día, mes y año" }]}
           >
-            <DatePicker.MonthPicker style={{ width: "100%" }} />
+            <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
           </Form.Item>
         </Form>
       </Modal>
