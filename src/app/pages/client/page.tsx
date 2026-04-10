@@ -35,7 +35,7 @@ const resolvePhoto = (user: any) => {
 
 const resolveLastPayment = (user: any) => {
   const raw = user?.ultimoPeriodoPago ?? user?.ultimo_periodo_pago ?? user?.periodo_pagado ?? null;
-  console.debug("Raw last payment data:", raw);
+  console.log("Raw last payment data:", raw);
   if (raw) return raw;
   
   return null;
@@ -135,13 +135,13 @@ const ClientPage: React.FC = () => {
       setPromoLoading(true);
       try {
         const resp = await promoServices.getPromos();
-        console.debug("Fetched promo response:", resp);
+        console.log("Fetched promo response:", resp);
         //const body = resp?.data ?? resp;
         // Normalize several possible shapes:
         // { data: { texto: '...' }, meta: {} }
         // { data: { attributes: { texto: '...' } } }
         // or already the object with texto
-        console.debug("Normalized promo body:", resp?.data);
+        console.log("Normalized promo body:", resp?.data);
         const candidate = resp.data.data;
         const texto = candidate?.texto ?? candidate?.attributes?.texto ?? '';
         const finalText = typeof texto === 'string' ? texto : String(texto ?? '');
@@ -191,6 +191,7 @@ const ClientPage: React.FC = () => {
   const fullName = `${user?.nombreApellidos || ""}`.trim();
   const lastPayment = resolveLastPayment(user);
   const paid = isPeriodActive(lastPayment);
+  console.log("User payment status:", { lastPayment, paid });
   const photo = resolvePhoto(user);
 
   useEffect(() => {
