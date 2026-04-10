@@ -44,10 +44,11 @@
   margin-top: 6px;
 }
 .paid{
-  background-color: #2ecc71; /* green */
+  background-color: #72f581; /* green */
+  
 }
 .unpaid{
-  background-color: #72f581; /* red */
+  background-color: #fa876a; /* red */
 }
 
 @media (max-width: 480px){

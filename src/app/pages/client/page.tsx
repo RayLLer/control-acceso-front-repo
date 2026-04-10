@@ -5,6 +5,7 @@ import secureStorage from "react-secure-storage";
 import { userService } from "@/app/pages/users/users.service";
 import { promoServices } from '@/app/services/promos.service';
 import { sources } from "@/utils/sources";
+import { isPeriodActive } from "@/utils/payment-period";
 import styles from "./page.module.css";
 import { IUserPlane } from "@/app/pages/users/users.interface";
 
@@ -34,34 +35,48 @@ const resolvePhoto = (user: any) => {
 
 const resolveLastPayment = (user: any) => {
   const raw = user?.ultimoPeriodoPago ?? user?.ultimo_periodo_pago ?? user?.periodo_pagado ?? null;
+  console.debug("Raw last payment data:", raw);
   if (raw) return raw;
-  const payments = user?.pagos ?? user?.payments ?? user?.pagos?.data ?? user?.payments?.data ?? null;
-  if (Array.isArray(payments) && payments.length > 0) {
-    const p = payments[0];
-    const attrs = p?.attributes ?? p;
-    return attrs?.createdAt ?? attrs?.fecha ?? attrs?.date ?? null;
-  }
+  
   return null;
 };
 
-const isPaidCurrentPeriod = (lastPaymentRaw: string | null) => {
-  if (!lastPaymentRaw) return false;
+const parseDateString = (value: string) => {
+  const trimmed = String(value).trim();
+  const isoMatch = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(trimmed);
+  if (isoMatch) {
+    return new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
+  }
+  const dmyMatch = /^([0-9]{2})[\/\-]([0-9]{2})[\/\-]([0-9]{4})$/.exec(trimmed);
+  if (dmyMatch) {
+    return new Date(Number(dmyMatch[3]), Number(dmyMatch[2]) - 1, Number(dmyMatch[1]));
+  }
+  const parsed = new Date(trimmed);
+  return isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const formatDateForModal = (date: Date) => {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+const isDateInDaysFromNow = (date: Date, days: number) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((target.getTime() - today.getTime()) / 86400000);
+  return diffDays === days;
+};
+
+const parsePaymentRangeEndDate = (lastPaymentRaw: string | null) => {
+  if (!lastPaymentRaw) return null;
   const maybe = String(lastPaymentRaw).trim();
-  const now = new Date();
-  if (/^\d{4}-\d{2}$/.test(maybe)) {
-    const [y, m] = maybe.split("-");
-    return Number(y) === now.getFullYear() && Number(m) - 1 === now.getMonth();
-  }
-  if (/^\d{4}-\d{2}-\d{2}/.test(maybe)) {
-    const d = new Date(maybe);
-    if (isNaN(d.getTime())) return false;
-    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-  }
-  const parsed = new Date(maybe);
-  if (!isNaN(parsed.getTime())) {
-    return parsed.getFullYear() === now.getFullYear() && parsed.getMonth() === now.getMonth();
-  }
-  return false;
+  const parts = maybe.split("::").map((part) => part.trim()).filter(Boolean);
+  if (parts.length < 2) return null;
+  return parseDateString(parts[parts.length - 1]);
 };
 
 const ClientPage: React.FC = () => {
@@ -71,6 +86,8 @@ const ClientPage: React.FC = () => {
   const [promoText, setPromoText] = useState<string>('');
   const [promoVisible, setPromoVisible] = useState<boolean>(false);
   const [promoLoading, setPromoLoading] = useState<boolean>(false);
+  const [dueVisible, setDueVisible] = useState<boolean>(false);
+  const [dueDate, setDueDate] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -171,6 +188,22 @@ const ClientPage: React.FC = () => {
     };
   }, [identification]);
 
+  const fullName = `${user?.nombreApellidos || ""}`.trim();
+  const lastPayment = resolveLastPayment(user);
+  const paid = isPeriodActive(lastPayment);
+  const photo = resolvePhoto(user);
+
+  useEffect(() => {
+    const endDate = parsePaymentRangeEndDate(lastPayment);
+    if (endDate && isDateInDaysFromNow(endDate, 2)) {
+      setDueDate(formatDateForModal(endDate));
+      setDueVisible(true);
+    } else {
+      setDueVisible(false);
+      setDueDate(null);
+    }
+  }, [lastPayment]);
+
   if (!user) {
     return (
       <div className={styles.container}>
@@ -178,11 +211,6 @@ const ClientPage: React.FC = () => {
       </div>
     );
   }
-
-  const fullName = `${user?.nombreApellidos || ""}`.trim();
-  const lastPayment = resolveLastPayment(user);
-  const paid = isPaidCurrentPeriod(lastPayment);
-  const photo = resolvePhoto(user);
 
   return (
     <div className={`${styles.container} ${paid ? styles.paid : styles.unpaid}`}>
@@ -199,6 +227,20 @@ const ClientPage: React.FC = () => {
         {promoLoading ? <div style={{ textAlign: 'center' }}><Spin /></div> : (
           <div style={{ whiteSpace: 'pre-wrap' }}>{promoText || 'No hay promociones disponibles.'}</div>
         )}
+      </Modal>
+      <Modal
+        title="Pago próximo"
+        open={dueVisible}
+        onCancel={() => setDueVisible(false)}
+        footer={[
+          <Button key="close" onClick={() => setDueVisible(false)}>
+            Cerrar
+          </Button>,
+        ]}
+      >
+        <div>
+          Su pago vence en fecha: {dueDate ?? "-"}
+        </div>
       </Modal>
       <div className={styles.card}>
         <img src={photo} alt="Foto" className={styles.photo} />
