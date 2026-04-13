@@ -259,22 +259,23 @@ const MagicTable = <T, R>({
   };
 
   const handleReset = (index?: string) => {
-    const newTableParams = { ...tableParams };
+    const newTableParams = { ...tableParamsRef.current };
     if (index === undefined) {
       newTableParams.filters = undefined;
       clearFilters();
     } else {
       newTableParams.filters = {
-        ...tableParams.filters,
+        ...tableParamsRef.current.filters,
         [index.split(".")[0] as any]: undefined,
       };
       removeItemsFromFilter(index);
     }
     if (newTableParams.pagination) {
       newTableParams.pagination.current = 1;
-    };
+    }
     fetchData(newTableParams);
     setTableParams(() => ({ ...newTableParams }));
+    tableParamsRef.current = { ...newTableParams };
   };
 
   const getColumnSearchProps = (

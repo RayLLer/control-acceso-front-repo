@@ -103,12 +103,10 @@ const FormRole = () => {
             (rol: IPermissions) => rol.attributes.name === "Básico"
           )?.id,
         ];
-        console.log(data.permissions);
       } catch (error) {
         console.log(error);
       }
 
-      console.log(data.permissions);
       roleId && (roleDto.id = roleId);
       setLoading(true);
       try {

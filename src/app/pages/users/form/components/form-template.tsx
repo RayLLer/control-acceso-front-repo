@@ -46,6 +46,7 @@ const SuspenseForm = () => {
 
 const FormUser = () => {
   const [form] = useForm();
+  const [notificationApi, notificationContextHolder] = notification.useNotification();
   const userId = useParams().id;
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -84,15 +85,14 @@ const FormUser = () => {
         });
       }
     } catch (error) {
-      notification.error({
+      notificationApi.error({
         message: "Error de usuario",
         description: "Ha ocurrido un error obteniendo los datos del usuario.",
       });
     }
   };
 
-  useEffect(() => {
-    console.log(roles);
+  useEffect(() => {    
   }, [roles]);
 
   useEffect(() => {
@@ -148,7 +148,7 @@ const FormUser = () => {
         // } else {
         //   officialServices.post(funcDto as any);
         // }
-        notification.success({
+        notificationApi.success({
           message: userId
             ? "Usuario editado correctamente"
             : "Usuario creado correctamente",
@@ -185,15 +185,14 @@ const FormUser = () => {
 
   return (
     <>
+      {notificationContextHolder}
       <Title level={2}>{userId ? "Editar usuario" : "Crear usuario"}</Title>
       <Form
         {...formItemLayout}
         form={form}
         name="crear/editar"
         onFinish={onFinish}
-        // initialValues={{
-        //   prefix: '+34',
-        // }}
+        initialValues={{ blocked: false }}
         style={{ maxWidth: 600 }}
         scrollToFirstError
         labelWrap
@@ -260,7 +259,8 @@ const FormUser = () => {
             },
           ]}
         >
-          <Input disabled={!!userId || disabled} />
+          {/* <Input disabled={!!userId || disabled} /> */
+          <Input/>}
         </Form.Item>
 
         <Form.Item
@@ -399,7 +399,6 @@ const FormUser = () => {
                 value: false,
               },
             ]}
-            defaultValue={[{ label: "No", value: false }]}
             disabled={disabled}
           />
         </Form.Item>

@@ -27,8 +27,7 @@ const PromoDataForm = () => {
 
   const getPromoData = async () => {
     try {
-      const response = await promoServices.getPromos();
-      console.log('API Response:', response);
+      const response = await promoServices.getPromos();      
       // Ensure response.data.data.attributes exists before setting form values
       if (response?.data?.data) {
         form.setFieldsValue(response.data.data);

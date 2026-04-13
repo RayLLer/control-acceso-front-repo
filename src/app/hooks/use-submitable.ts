@@ -9,7 +9,6 @@ const useSubmitable = ({ form }: Props) => {
   const [submittable, setSubmittable] = useState<boolean>(false);
   const values = Form.useWatch([], form);
   useEffect(() => {
-    console.log(values);
     form
       .validateFields({ validateOnly: true })
       .then(() => setSubmittable(true))

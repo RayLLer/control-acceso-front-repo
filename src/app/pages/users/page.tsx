@@ -4,7 +4,7 @@ import { FC, ReactElement } from "react";
 import MagicTable from "@/app/components/table-v2/table-custom";
 import { ColumnsType } from "@/app/interfaces/strapi";
 import { useRouter } from "next/navigation";
-import { Image, Modal, Form, Input, InputNumber, DatePicker, Button, notification, Tag, Descriptions, Table, Spin, Collapse } from "antd";
+import { Image, Modal, Form, Input, InputNumber, DatePicker, Button, notification, Select, Tag, Descriptions, Table, Spin, Collapse } from "antd";
 import { DollarOutlined, EyeOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import dayjs from "dayjs";
@@ -21,6 +21,7 @@ const User: FC = (): ReactElement => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [submittingPayment, setSubmittingPayment] = useState(false);
   const [form] = Form.useForm();
+  const [notificationApi, notificationContextHolder] = notification.useNotification();
   const [refetch, setRefetch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<any | null>(null);
@@ -62,7 +63,7 @@ const User: FC = (): ReactElement => {
   const handleDelete = async (id: number) => {
     try {
       const response = await userService.deleteUser(id);
-      console.log(response);
+      
       // Return true when backend deletion succeeded so caller knows it's OK.
       if (response && response.status && response.status >= 200 && response.status < 300) {
         return true;
@@ -180,7 +181,7 @@ const User: FC = (): ReactElement => {
         : [];
       setPayments(normalized);
     } catch (error: any) {
-      notification.error({ message: "Error cargando pagos" });
+      notificationApi.error({ message: "Error cargando pagos" });
     } finally {
       setPaymentsLoading(false);
     }
@@ -259,10 +260,9 @@ const User: FC = (): ReactElement => {
   };
 
   const openQrModal = async (record: any) => {
-    console.log("openQrModal called", record);
     const value = record?.numeroIdentificacion ?? record?.documentId ?? record?.username;
     if (!value) {
-      notification.error({ message: "El usuario no tiene número de identificación" });
+      notificationApi.error({ message: "El usuario no tiene número de identificación" });
       return;
     }
     setQrModalVisible(true);
@@ -270,14 +270,13 @@ const User: FC = (): ReactElement => {
     setQrGenerating(true);
     setQrDataUrl(null);
     try {
-      console.log("Generating QR for", value);
       const QR = await import('qrcode');
       const dataUrl = await QR.toDataURL(String(value), { errorCorrectionLevel: 'H', width: 512 });
       setQrDataUrl(dataUrl);
     } catch (err) {
       console.error("QR generation error:", err);
       console.error(err);
-      notification.error({ message: "No se pudo generar el QR. Instale 'qrcode' (npm i qrcode)" });
+      notificationApi.error({ message: "No se pudo generar el QR. Instale 'qrcode' (npm i qrcode)" });
     } finally {
       setQrGenerating(false);
     }
@@ -312,6 +311,7 @@ const User: FC = (): ReactElement => {
         form.setFieldsValue({
           monto: undefined,
           periodo: dayjs(),
+          frecuencia: "mensual",
         });
         setPaymentModalVisible(true);
       },
@@ -324,23 +324,32 @@ const User: FC = (): ReactElement => {
       setSubmittingPayment(true);
       const periodo = values.periodo;
       const fechaInicioPeriodo = periodo && periodo.format ? periodo.format("YYYY-MM-DD") : periodo;
-      const body = {
+      const body: any = {
         users_permissions_user: selectedUser.id,
         monto: Number(values.monto),
         fecha_inicio_periodo: fechaInicioPeriodo,
       };
+
+      if (values.frecuencia === "diario") {
+        body.diario = true;
+        body.cantidad_dias = 1;
+      } else if (values.frecuencia === "semanal") {
+        body.diario = true;
+        body.cantidad_dias = 7;
+      }
+
       const response = await axiosInstance.post("/pagos", { data: body });
       if (response && (response.status === 200 || response.status === 201)) {
-        notification.success({ message: "Pago registrado correctamente" });
+        notificationApi.success({ message: "Pago registrado correctamente" });
         setPaymentModalVisible(false);
         setSelectedUser(null);
         setRefetch(true);
       } else {
         const msg = response?.data?.message ?? "Error registrando el pago";
-        notification.error({ message: String(msg) });
+        notificationApi.error({ message: String(msg) });
       }
     } catch (error: any) {
-      notification.error({ message: "Error registrando el pago" });
+      notificationApi.error({ message: "Error registrando el pago" });
     } finally {
       setSubmittingPayment(false);
     }
@@ -348,6 +357,7 @@ const User: FC = (): ReactElement => {
 
   return (
     <>
+      {notificationContextHolder}
       <div style={{ marginBottom: 12, width: "100%" }}>
         <Input
           placeholder="Buscar por identificador"
@@ -416,6 +426,18 @@ const User: FC = (): ReactElement => {
             <InputNumber style={{ width: "100%" }} min={0} step={0.01} stringMode />
           </Form.Item>
           <Form.Item
+            name="frecuencia"
+            label="Frecuencia"
+            initialValue="mensual"
+            rules={[{ required: true, message: "Seleccione frecuencia" }]}
+          >
+            <Select>
+              <Select.Option value="mensual">Mensual</Select.Option>
+              <Select.Option value="semanal">Semanal</Select.Option>
+              <Select.Option value="diario">Diario</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
             name="periodo"
             label="Fecha inicio del periodo"
             rules={[{ required: true, message: "Seleccione día, mes y año" }]}
@@ -431,7 +453,7 @@ const User: FC = (): ReactElement => {
         onCancel={() => setDetailsModalVisible(false)}
         footer={null}
         style={{ maxWidth: 800, width: "100%" }}
-        bodyStyle={{ backgroundColor: getModalBgColor() }}
+        styles={{ body: { backgroundColor: getModalBgColor() } }}
       >
         {detailsUser ? (
           <div>
@@ -457,21 +479,26 @@ const User: FC = (): ReactElement => {
             </Descriptions>
 
             <h3 style={{ marginTop: 16 }}>Historial de pagos</h3>
-            <Collapse defaultActiveKey={[]}>
-              <Collapse.Panel header={`Historial de pagos (${payments.length})`} key="payments">
-                {paymentsLoading ? (
-                  <Spin />
-                ) : (
-                  <Table
-                    columns={paymentsColumns}
-                    dataSource={payments}
-                    rowKey={(r: any) => r.id}
-                    pagination={{ pageSize: 5 }}
-                    style={{ marginTop: 8 }}
-                  />
-                )}
-              </Collapse.Panel>
-            </Collapse>
+            <Collapse
+              defaultActiveKey={[]}
+              items={[
+                {
+                  key: "payments",
+                  label: `Historial de pagos (${payments.length})`,
+                  children: paymentsLoading ? (
+                    <Spin />
+                  ) : (
+                    <Table
+                      columns={paymentsColumns}
+                      dataSource={payments}
+                      rowKey={(r: any) => r.id}
+                      pagination={{ pageSize: 5 }}
+                      style={{ marginTop: 8 }}
+                    />
+                  ),
+                },
+              ]}
+            />
           </div>
         ) : (
           <Spin />

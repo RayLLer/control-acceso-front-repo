@@ -97,7 +97,6 @@ export const getLoggedUser = createAsyncThunk(
             break;
         }
       }
-      // console.log("response.data", response.data);
 
       // // Only redirect to the users page if we're not already there.
       // // Unconditional redirects here caused the page to reload repeatedly.
