@@ -294,11 +294,25 @@ const FormUser = () => {
           name="numeroIdentificacion"
           label="Número de identificación"
           rules={[
-            { required: true, message: "El nombre completo es obligatorio." },
+            { required: true, message: "El numero de CI completo es obligatorio." },
             {
-              message: "Introduzca el nombre",
+              message: "Introduzca el CI",
               whitespace: true,
             },
+            () => ({
+              validator(_, value) {
+                if (!value) {
+                  return Promise.resolve();
+                }
+                const digits = String(value).replace(/\D/g, "");
+                if (digits.length === 11) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error("El número de identificación debe tener 11 dígitos")
+                );
+              },
+            }),
           ]}
         >
           <Input disabled={disabled} />
